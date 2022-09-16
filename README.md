@@ -39,6 +39,8 @@ npx react-native start
 
 ### Sửa lỗi Metro không thấy thiết bị sau khi rút USB, hoặc vì lý do nào đó bị disconnect
 
+Nhớ kết nối với điện thoại trước rồi mới làm nhe =))
+
 ```bash
 adb reverse tcp:8081 tcp:8081
 ```
