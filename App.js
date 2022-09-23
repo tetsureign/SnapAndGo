@@ -1,24 +1,12 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-
-import {Camera, useCameraDevices} from 'react-native-vision-camera';
-
-async function GetPerms() {
-  const cameraPermission = await Camera.getCameraPermissionStatus();
-  const newCameraPermission = await Camera.requestCameraPermission();
-}
+/* eslint-disable react/react-in-jsx-scope */
+import {NavigationContainer} from '@react-navigation/native';
+import Tabs from './Tabs';
 
 const App = () => {
-  GetPerms();
-
-  const devices = useCameraDevices();
-  const device = devices.back;
-
-  if (device == null) {
-    return <Text>No Device</Text>;
-  }
   return (
-    <Camera style={StyleSheet.absoluteFill} device={device} isActive={true} />
+    <NavigationContainer>
+      <Tabs />
+    </NavigationContainer>
   );
 };
 
