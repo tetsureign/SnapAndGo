@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
 
 async function GetPerms() {

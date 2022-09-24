@@ -1,8 +1,12 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 
 const MapPage = ({navigation}) => {
-  return <Text>Hello</Text>;
+  return (
+    <View>
+      <Text>Hello</Text>
+    </View>
+  );
 };
 
 export default MapPage;
