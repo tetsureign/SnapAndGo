@@ -1,8 +1,12 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {Text, View} from 'react-native';
 
-const AccountPage = ({navigation}) => {
-  return <Text>Hello</Text>;
+const AccountPage = () => {
+  return (
+    <View>
+      <Text>Hello</Text>
+    </View>
+  );
 };
 
 export default AccountPage;

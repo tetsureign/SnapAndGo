@@ -7,14 +7,18 @@ async function GetPerms() {
   const newCameraPermission = await Camera.requestCameraPermission();
 }
 
-const CameraPage = ({navigation}) => {
+const CameraPage = () => {
   GetPerms();
 
   const devices = useCameraDevices();
   const device = devices.back;
 
   if (device == null) {
-    return <Text>No Device</Text>;
+    return (
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Text>No Device</Text>
+      </View>
+    );
   }
   return (
     <Camera

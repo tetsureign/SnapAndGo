@@ -1,7 +1,7 @@
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View} from 'react-native';
 
-const MapPage = ({navigation}) => {
+const MapPage = () => {
   return (
     <View>
       <Text>Hello</Text>
