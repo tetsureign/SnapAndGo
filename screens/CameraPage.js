@@ -1,6 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Camera, useCameraDevices} from 'react-native-vision-camera';
+import {useIsFocused} from '@react-navigation/native';
 
 async function GetPerms() {
   const cameraPermission = await Camera.getCameraPermissionStatus();
@@ -12,6 +14,7 @@ const CameraPage = () => {
 
   const devices = useCameraDevices();
   const device = devices.back;
+  const isFocused = useIsFocused();
 
   if (device == null) {
     return (
@@ -24,7 +27,7 @@ const CameraPage = () => {
     <Camera
       style={(styles.camera, StyleSheet.absoluteFill)}
       device={device}
-      isActive={true}
+      isActive={isFocused}
     />
   );
 };
