@@ -1,8 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/react-in-jsx-scope */
-import React from 'react';
+import React, {useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Image} from 'react-native';
+import {View, Text, Image} from 'react-native';
 import MapPage from './screens/MapPage';
 import CameraPage from './screens/CameraPage';
 import AccountPage from './screens/AccountPage';
@@ -15,7 +15,8 @@ const Tabs = () => {
       initialRouteName="Camera"
       shifting={true}
       screenOptions={({route}) => ({
-        tabBarActiveTintColor: 'rgb(55, 174, 15)',
+        tabBarInactiveTintColor: 'rgb(170, 170, 170)',
+        tabBarShowLabel: false,
         tabBarStyle: {
           position: 'absolute',
           height: 75,
@@ -27,12 +28,24 @@ const Tabs = () => {
         name="Bản đồ"
         component={MapPage}
         options={{
-          tabBarIcon: ({color}) => (
-            <Image
-              source={require('./assets/icons/map.png')}
-              style={{width: 40, height: 40}}
-              tintColor={color}
-            />
+          tabBarIcon: ({focused}) => (
+            <View
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Image
+                source={require('./assets/icons/map.png')}
+                style={{
+                  width: 40,
+                  height: 40,
+                  tintColor: focused ? '#37AE0F' : '#AAAAAA',
+                }}
+              />
+              <Text
+                style={{
+                  color: focused ? '#37AE0F' : '#AAAAAA',
+                }}>
+                Bản đồ
+              </Text>
+            </View>
           ),
         }}
       />
@@ -45,12 +58,21 @@ const Tabs = () => {
         name="Tài khoản"
         component={AccountPage}
         options={{
-          tabBarIcon: ({color}) => (
-            <Image
-              source={require('./assets/icons/user.png')}
-              style={{width: 40, height: 40}}
-              tintColor={color}
-            />
+          tabBarIcon: ({focused}) => (
+            <View
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Image
+                source={require('./assets/icons/user.png')}
+                style={{
+                  width: 40,
+                  height: 40,
+                  tintColor: focused ? '#FF6901' : '#AAAAAA',
+                }}
+              />
+              <Text style={{color: focused ? '#FF6901' : '#AAAAAA'}}>
+                Tài khoản
+              </Text>
+            </View>
           ),
           // tabBarColor: '#fff',
         }}
