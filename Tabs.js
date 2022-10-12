@@ -6,6 +6,7 @@ import {View, Text, Image} from 'react-native';
 import MapPage from './screens/MapPage';
 import CameraPage from './screens/CameraPage';
 import AccountPage from './screens/AccountPage';
+import {BlurView} from '@react-native-community/blur';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,6 +24,13 @@ const Tabs = () => {
           elevation: 0,
           backgroundColor: 'rgba(38, 38, 38, 0.75)',
         },
+        // tabBarBackground: () => (
+        //   <BlurView
+        //     style={{position: 'absolute'}}
+        //     blurType="dark"
+        //     blurAmount={100}
+        //   />
+        // ),
       })}>
       <Tab.Screen
         name="Bản đồ"
