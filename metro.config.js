@@ -4,14 +4,19 @@
  *
  * @format
  */
+const {getDefaultConfig} = require('@expo/metro-config');
 
-module.exports = {
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: true,
-      },
-    }),
-  },
-};
+const defaultConfig = getDefaultConfig(__dirname);
+defaultConfig.resolver.assetExts.push('ort');
+module.exports = defaultConfig;
+// module.exports = {
+//   transformer: {
+//     getTransformOptions: async () => ({
+//       transform: {
+//         experimentalImportSupport: false,
+//         inlineRequires: true,
+//       },
+//     }),
+//   },
+//   defaultConfig,
+// };

@@ -1,10 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/react-in-jsx-scope */
-import React, {useState} from 'react';
+import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View, Text, Image} from 'react-native';
 import MapPage from './screens/MapPage';
-import CameraPage from './screens/CameraPage';
+import CameraStack from './screens/Camera/CameraPagesNavigator';
 import AccountPage from './screens/AccountPage';
 import {BlurView} from '@react-native-community/blur';
 
@@ -59,7 +59,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name="Camera"
-        component={CameraPage}
+        component={CameraStack}
         // options={{tabBarColor: '#262626'}}
       />
       <Tab.Screen
