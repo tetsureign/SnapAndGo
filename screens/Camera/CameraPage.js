@@ -26,7 +26,6 @@ const CameraPage = ({navigation}) => {
       return;
     }
     const photo = await camera.takePictureAsync();
-    console.log(photo);
     setPreviewVisible(true);
     setCapturedImage(photo);
 

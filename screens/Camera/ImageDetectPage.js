@@ -12,6 +12,7 @@ import {Asset} from 'expo-asset';
 import ndarray from 'ndarray';
 import * as FileSystem from 'expo-file-system';
 import * as tf from '@tensorflow/tfjs';
+import axios from 'axios';
 
 function preprocess(data, width, height) {
   const dataFromImage = ndarray(new Float32Array(data), [width, height, 4]);
@@ -42,6 +43,14 @@ function preprocess(data, width, height) {
 
   return dataProcessed.data;
 }
+
+const convertPhotoBase64 = async photo => {
+  const imgUri = photo.uri;
+  const imgB64 = await FileSystem.readAsStringAsync(imgUri, {
+    encoding: FileSystem.EncodingType.Base64,
+  });
+  return imgB64;
+};
 
 const TensorConvert = async photo => {
   const imgUri = photo.uri;
@@ -112,9 +121,33 @@ async function Detect(photo) {
   console.log(result);
 }
 
+async function FetchAPI(source) {
+  let photo = {uri: source.uri};
+  let formData = new FormData();
+  formData.append('file', {
+    uri: photo.uri,
+    name: 'image.jpg',
+    type: 'image/jpeg',
+  });
+
+  const baseUrl = 'http://192.168.1.9:8000';
+
+  axios
+    .post(`${baseUrl}/api/v1/yolo-obj-detect/images/detect`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(response => {
+      console.log(response.data);
+      return response.data;
+    });
+}
+
 const ImageDetectPage = ({route, navigation}) => {
   const photo = route.params;
-  Detect(photo);
+  // Detect(photo);
+  const result = FetchAPI(photo);
 
   return (
     <View style={styles.container}>
