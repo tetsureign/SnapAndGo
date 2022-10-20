@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   StyleSheet,
@@ -9,9 +9,11 @@ import {
   Button,
   Dimensions,
   Platform,
+  Alert,
 } from 'react-native';
 import {Camera, CameraType, setHasCameraPermission} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
+import axios from 'axios';
 
 const CameraPage = ({navigation}) => {
   let camera = Camera;
@@ -27,6 +29,43 @@ const CameraPage = ({navigation}) => {
   // Check Focused
   const isFocused = useIsFocused();
 
+  // Detection result
+  const [result, setResult] = useState('');
+  const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setResult('');
+    setLoading(true);
+  }, []);
+
+  const FetchAPI = async source => {
+    let photoUpload = {uri: source.uri};
+    let formData = new FormData();
+    formData.append('file', {
+      uri: photoUpload.uri,
+      name: 'image.jpg',
+      type: 'image/jpeg',
+    });
+
+    const baseUrl = 'http://192.168.1.9:8000';
+
+    axios
+      .post(`${baseUrl}/api/v1/yolo-obj-detect/images/detect`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        console.log('From API: ', response.data);
+        setResult(response.data);
+        setLoading(false);
+        // return response.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   const __takePicture = async () => {
     if (!camera) {
       return;
@@ -36,7 +75,12 @@ const CameraPage = ({navigation}) => {
     setCapturedImage(photo);
     console.log(photo);
 
-    navigation.navigate('Nhận diện', photo);
+    FetchAPI(photo);
+    console.log('Result form camera page: ', result);
+    if (isLoading) {
+      return <Alert>Loading...</Alert>;
+    }
+    navigation.navigate('Nhận diện', {photo, result});
   };
 
   // Screen Ratio and image padding

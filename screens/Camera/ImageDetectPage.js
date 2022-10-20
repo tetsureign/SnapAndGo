@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useEffect} from 'react';
 import {
   Text,
   StyleSheet,
@@ -6,13 +6,14 @@ import {
   SafeAreaView,
   View,
   ImageBackground,
+  Button,
 } from 'react-native';
+import ActionSheet from 'react-native-actions-sheet';
 // import {Tensor, InferenceSession} from 'onnxruntime-react-native';
 // import {Asset} from 'expo-asset';
 // import ndarray from 'ndarray';
 // import * as FileSystem from 'expo-file-system';
 // import * as tf from '@tensorflow/tfjs';
-import axios from 'axios';
 
 // function preprocess(data, width, height) {
 //   const dataFromImage = ndarray(new Float32Array(data), [width, height, 4]);
@@ -121,45 +122,27 @@ import axios from 'axios';
 //   console.log(result);
 // }
 
-const FetchAPI = (source, [result, setResult]) => {
-  let photo = {uri: source.uri};
-  let formData = new FormData();
-  formData.append('file', {
-    uri: photo.uri,
-    name: 'image.jpg',
-    type: 'image/jpeg',
-  });
-
-  const baseUrl = 'http://192.168.1.9:8000';
-
-  axios
-    .post(`${baseUrl}/api/v1/yolo-obj-detect/images/detect`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-    .then(response => {
-      // console.log(response.data);
-      setResult(response.data);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-};
-
 const ImageDetectPage = ({route, navigation}) => {
-  const [result, setResult] = useState(null);
-  const photo = route.params;
+  const {photo, result} = route.params;
   // Detect(photo);
-  FetchAPI(photo, [result, setResult]);
+
+  const actionSheetRef = useRef(null);
+
+  useEffect(() => {
+    actionSheetRef.current?.show();
+  }, []);
+
+  console.log('From imgDetect page: ', result);
 
   return (
     <View style={styles.container}>
-      <Text>{result}</Text>
       <ImageBackground
         source={{uri: photo && photo.uri}}
         style={styles.container}
       />
+      <ActionSheet ref={actionSheetRef}>
+        <Text style={{color: '#000000'}}>{result}</Text>
+      </ActionSheet>
     </View>
   );
 };
