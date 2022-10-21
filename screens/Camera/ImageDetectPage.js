@@ -1,4 +1,5 @@
-import React, {useRef, useEffect} from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useRef, useEffect, useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -7,8 +8,10 @@ import {
   View,
   ImageBackground,
   Button,
+  ActivityIndicator,
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
+import axios from 'axios';
 // import {Tensor, InferenceSession} from 'onnxruntime-react-native';
 // import {Asset} from 'expo-asset';
 // import ndarray from 'ndarray';
@@ -123,23 +126,80 @@ import ActionSheet from 'react-native-actions-sheet';
 // }
 
 const ImageDetectPage = ({route, navigation}) => {
-  const {photo, result} = route.params;
-  // Detect(photo);
+  const {photo} = route.params;
+
+  const [result, setResult] = useState(null);
+  const [isLoading, setLoading] = useState(true);
+
+  const FetchAPI = source => {
+    let photoUpload = {uri: source.uri};
+    let formData = new FormData();
+    formData.append('file', {
+      uri: photoUpload.uri,
+      name: 'image.jpg',
+      type: 'image/jpeg',
+    });
+
+    const baseUrl = 'http://192.168.1.9:8000';
+
+    return axios
+      .post(`${baseUrl}/api/v1/yolo-obj-detect/images/detect`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        console.log('From API: ', response.data);
+        setResult(response.data);
+        // return result;
+        setLoading(false);
+        // return response.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   const actionSheetRef = useRef(null);
 
-  useEffect(() => {
-    actionSheetRef.current?.show();
-  }, []);
+  const __getResults = () => {
+    FetchAPI(photo);
+  };
 
-  console.log('From imgDetect page: ', result);
+  useEffect(() => {
+    if (!isLoading) {
+      actionSheetRef.current?.show();
+      console.log('From imgDetect page: ', result);
+    }
+    // setLoading(true);
+  }, [isLoading, photo, result]);
 
   return (
     <View style={styles.container}>
       <ImageBackground
         source={{uri: photo && photo.uri}}
-        style={styles.container}
+        style={styles.background}
       />
+      {/* <View>{isLoading && <ActivityIndicator />}</View> */}
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          flexDirection: 'row',
+          flex: 1,
+          width: '100%',
+          padding: 90,
+          justifyContent: 'space-between',
+        }}>
+        <View
+          style={{
+            alignSelf: 'center',
+            flex: 1,
+            alignItems: 'center',
+          }}>
+          <Button onPress={__getResults} title="Detect" style={styles.button} />
+        </View>
+      </View>
       <ActionSheet ref={actionSheetRef}>
         <Text style={{color: '#000000'}}>{result}</Text>
       </ActionSheet>
@@ -149,6 +209,12 @@ const ImageDetectPage = ({route, navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  background: {
+    flex: 1,
+  },
+  button: {
     flex: 1,
   },
 });

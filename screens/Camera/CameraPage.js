@@ -29,44 +29,6 @@ const CameraPage = ({navigation}) => {
   // Check Focused
   const isFocused = useIsFocused();
 
-  // Detection result
-  const [result, setResult] = useState(null);
-  const [isLoading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   setResult('');
-  //   setLoading(true);
-  // }, []);
-
-  const FetchAPI = source => {
-    let photoUpload = {uri: source.uri};
-    let formData = new FormData();
-    formData.append('file', {
-      uri: photoUpload.uri,
-      name: 'image.jpg',
-      type: 'image/jpeg',
-    });
-
-    const baseUrl = 'http://192.168.1.9:8000';
-
-    return axios
-      .post(`${baseUrl}/api/v1/yolo-obj-detect/images/detect`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then(response => {
-        console.log('From API: ', response.data);
-        setResult(response.data);
-        // return result;
-        setLoading(false);
-        // return response.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
   const __takePicture = async () => {
     if (!camera) {
       return;
@@ -75,14 +37,7 @@ const CameraPage = ({navigation}) => {
     setPreviewVisible(true);
     console.log(photo);
 
-    function getPromiseFetch() {
-      return Promise.all([FetchAPI(photo)]);
-    }
-
-    getPromiseFetch().then(([fetchResult]) => {
-      console.log('Result form camera page after promise solved: ', result);
-      navigation.navigate('Nhận diện', {photo, result});
-    });
+    navigation.navigate('Nhận diện', {photo});
   };
 
   // Screen Ratio and image padding
