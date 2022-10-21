@@ -4,12 +4,10 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   View,
   Button,
   Dimensions,
   Platform,
-  Alert,
 } from 'react-native';
 import {Camera, CameraType, setHasCameraPermission} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';

@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   View,
   ImageBackground,
   Button,
@@ -12,6 +11,7 @@ import {
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
 import axios from 'axios';
+
 // import {Tensor, InferenceSession} from 'onnxruntime-react-native';
 // import {Asset} from 'expo-asset';
 // import ndarray from 'ndarray';
@@ -129,7 +129,8 @@ const ImageDetectPage = ({route, navigation}) => {
   const {photo} = route.params;
 
   const [result, setResult] = useState(null);
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(false);
+  const [isDetectPressed, setPressed] = useState(false);
 
   const FetchAPI = source => {
     let photoUpload = {uri: source.uri};
@@ -151,9 +152,7 @@ const ImageDetectPage = ({route, navigation}) => {
       .then(response => {
         console.log('From API: ', response.data);
         setResult(response.data);
-        // return result;
         setLoading(false);
-        // return response.data;
       })
       .catch(err => {
         console.log(err);
@@ -163,45 +162,62 @@ const ImageDetectPage = ({route, navigation}) => {
   const actionSheetRef = useRef(null);
 
   const __getResults = () => {
+    setLoading(true);
+    setPressed(true);
     FetchAPI(photo);
   };
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && isDetectPressed) {
       actionSheetRef.current?.show();
       console.log('From imgDetect page: ', result);
     }
     // setLoading(true);
-  }, [isLoading, photo, result]);
+  }, [isLoading, isDetectPressed, photo, result]);
+
+  const buttons = [];
+
+  if (result) {
+    result.forEach(element => {
+      buttons.push(<Button title={element} key={element} />);
+    });
+  }
 
   return (
     <View style={styles.container}>
       <ImageBackground
         source={{uri: photo && photo.uri}}
-        style={styles.background}
-      />
-      {/* <View>{isLoading && <ActivityIndicator />}</View> */}
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          flexDirection: 'row',
-          flex: 1,
-          width: '100%',
-          padding: 90,
-          justifyContent: 'space-between',
-        }}>
+        style={styles.background}>
+        <View styles={styles.loadingIndicator}>
+          {isLoading && <ActivityIndicator size="large" />}
+        </View>
+
         <View
           style={{
-            alignSelf: 'center',
+            position: 'absolute',
+            bottom: 0,
+            flexDirection: 'row',
             flex: 1,
-            alignItems: 'center',
+            width: '100%',
+            padding: 80,
+            justifyContent: 'space-between',
           }}>
-          <Button onPress={__getResults} title="Detect" style={styles.button} />
+          <View
+            style={{
+              alignSelf: 'center',
+              flex: 1,
+              alignItems: 'center',
+            }}>
+            <Button
+              onPress={__getResults}
+              title="Nhận diện"
+              style={styles.button}
+            />
+          </View>
         </View>
-      </View>
+      </ImageBackground>
       <ActionSheet ref={actionSheetRef}>
-        <Text style={{color: '#000000'}}>{result}</Text>
+        <View style={styles.actionSheet}>{buttons}</View>
       </ActionSheet>
     </View>
   );
@@ -209,6 +225,7 @@ const ImageDetectPage = ({route, navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
+    justifyContent: 'center',
     flex: 1,
   },
   background: {
@@ -216,6 +233,15 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
+  },
+  loadingIndicator: {
+    flex: 1,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionSheet: {
+    padding: 20,
   },
 });
 
