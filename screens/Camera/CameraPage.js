@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {Camera, CameraType, setHasCameraPermission} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
-import axios from 'axios';
+import LoadingIndicator from '../../components/LoadingIndicator';
 
 const CameraPage = ({navigation}) => {
   let camera = Camera;
@@ -21,8 +21,8 @@ const CameraPage = ({navigation}) => {
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
   // Set capture stuff
-  const [previewVisible, setPreviewVisible] = useState(false);
-  const [capturedImage, setCapturedImage] = useState(null);
+  // const [previewVisible, setPreviewVisible] = useState(false);
+  // const [capturedImage, setCapturedImage] = useState(null);
 
   // Check Focused
   const isFocused = useIsFocused();
@@ -32,9 +32,8 @@ const CameraPage = ({navigation}) => {
       return;
     }
     const photo = await camera.takePictureAsync();
-    setPreviewVisible(true);
+    // setPreviewVisible(true);
     console.log(photo);
-
     navigation.navigate('Nhận diện', {photo});
   };
 
@@ -106,22 +105,8 @@ const CameraPage = ({navigation}) => {
           ref={r => {
             camera = r;
           }}>
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              flexDirection: 'row',
-              flex: 1,
-              width: '100%',
-              padding: 90,
-              justifyContent: 'space-between',
-            }}>
-            <View
-              style={{
-                alignSelf: 'center',
-                flex: 1,
-                alignItems: 'center',
-              }}>
+          <View style={styles.buttonContainer}>
+            <View style={styles.button}>
               <TouchableOpacity
                 onPress={__takePicture}
                 style={{
@@ -153,20 +138,16 @@ const styles = StyleSheet.create({
     zIndex: 0,
   },
   buttonContainer: {
+    position: 'absolute',
+    bottom: 90,
     flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64,
+    width: '100%',
+    justifyContent: 'space-between',
   },
   button: {
+    alignSelf: 'center',
     flex: 1,
-    alignSelf: 'flex-end',
     alignItems: 'center',
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
   },
 });
 

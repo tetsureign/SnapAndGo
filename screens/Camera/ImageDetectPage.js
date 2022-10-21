@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
 import axios from 'axios';
+import LoadingIndicator from '../../components/LoadingIndicator';
 
 // import {Tensor, InferenceSession} from 'onnxruntime-react-native';
 // import {Asset} from 'expo-asset';
@@ -156,6 +157,7 @@ const ImageDetectPage = ({route, navigation}) => {
       })
       .catch(err => {
         console.log(err);
+        setLoading(false);
       });
   };
 
@@ -178,8 +180,8 @@ const ImageDetectPage = ({route, navigation}) => {
   const buttons = [];
 
   if (result) {
-    result.forEach(element => {
-      buttons.push(<Button title={element} key={element} />);
+    result.forEach((element, index) => {
+      buttons.push(<Button title={element} key={index} />);
     });
   }
 
@@ -188,35 +190,17 @@ const ImageDetectPage = ({route, navigation}) => {
       <ImageBackground
         source={{uri: photo && photo.uri}}
         style={styles.background}>
-        <View styles={styles.loadingIndicator}>
-          {isLoading && <ActivityIndicator size="large" />}
+        <View style={styles.buttonContainer}>
+          <Button
+            onPress={__getResults}
+            title="Nhận diện"
+            style={styles.button}
+          />
         </View>
-
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            flexDirection: 'row',
-            flex: 1,
-            width: '100%',
-            padding: 80,
-            justifyContent: 'space-between',
-          }}>
-          <View
-            style={{
-              alignSelf: 'center',
-              flex: 1,
-              alignItems: 'center',
-            }}>
-            <Button
-              onPress={__getResults}
-              title="Nhận diện"
-              style={styles.button}
-            />
-          </View>
-        </View>
+        {isLoading && <LoadingIndicator />}
       </ImageBackground>
-      <ActionSheet ref={actionSheetRef}>
+
+      <ActionSheet ref={actionSheetRef} elevation={0}>
         <View style={styles.actionSheet}>{buttons}</View>
       </ActionSheet>
     </View>
@@ -231,14 +215,17 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
   },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 75,
+    flex: 1,
+    width: '100%',
+    justifyContent: 'space-between',
+  },
   button: {
     flex: 1,
-  },
-  loadingIndicator: {
-    flex: 1,
-    position: 'absolute',
+    alignSelf: 'center',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   actionSheet: {
     padding: 20,
