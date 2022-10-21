@@ -61,6 +61,19 @@ const Tabs = () => {
             color: '#FFFFFF',
           },
           headerBackground: () => <View style={styles.darkHeader} />,
+          tabBarIcon: ({focused}) => (
+            <View
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <Image
+                source={require('./assets/icons/search.png')}
+                style={{
+                  width: 40,
+                  height: 40,
+                  tintColor: focused ? '#00C5FF' : '#AAAAAA',
+                }}
+              />
+            </View>
+          ),
         }}
       />
       <Tab.Screen
