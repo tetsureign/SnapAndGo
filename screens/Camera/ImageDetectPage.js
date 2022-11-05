@@ -142,7 +142,7 @@ const ImageDetectPage = ({route, navigation}) => {
       type: 'image/jpeg',
     });
 
-    const baseUrl = 'http://192.168.1.9:8000';
+    const baseUrl = 'http://35.78.235.36';
 
     return axios
       .post(`${baseUrl}/api/v1/yolo-obj-detect/images/detect`, formData, {
