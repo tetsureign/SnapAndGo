@@ -8,6 +8,7 @@ import {
   ImageBackground,
   Button,
   Linking,
+  ScrollView,
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
 import axios from 'axios';
@@ -18,7 +19,7 @@ const ImageDetectPage = ({route, navigation}) => {
 
   const [result, setResult] = useState(null);
   const [isLoading, setLoading] = useState(false);
-  const [isDetectPressed, setPressed] = useState(false);
+  const [isDetectPressed, setDetectPressed] = useState(false);
 
   const FetchAPI = source => {
     let photoUpload = {uri: source.uri};
@@ -52,7 +53,7 @@ const ImageDetectPage = ({route, navigation}) => {
 
   const __getResults = () => {
     setLoading(true);
-    setPressed(true);
+    setDetectPressed(true);
     FetchAPI(photo);
   };
 
@@ -68,13 +69,16 @@ const ImageDetectPage = ({route, navigation}) => {
   if (result) {
     result.forEach((element, index) => {
       buttons.push(
-        <Button
-          title={element}
-          key={index}
-          onPress={() => {
-            Linking.openURL('http://maps.google.com/?q=' + element + ' shop');
-          }}
-        />,
+        // <Button
+        //   title={element}
+        //   key={index}
+        //   onPress={() => {
+        //     Linking.openURL('http://maps.google.com/?q=' + element + ' shop');
+        //   }}
+        // />
+        <TouchableOpacity style={styles.detectedItemsButton} key={index}>
+          <Text style={{fontSize: 25}}>{element}</Text>
+        </TouchableOpacity>,
       );
     });
   }
@@ -94,8 +98,11 @@ const ImageDetectPage = ({route, navigation}) => {
         {isLoading && <LoadingIndicator />}
       </ImageBackground>
 
-      <ActionSheet ref={actionSheetRef} elevation={0}>
-        <View style={styles.actionSheet}>{buttons}</View>
+      <ActionSheet
+        ref={actionSheetRef}
+        backgroundInteractionEnabled={true}
+        containerStyle={styles.actionSheet}>
+        <View style={styles.actionSheetItems}>{buttons}</View>
       </ActionSheet>
     </View>
   );
@@ -122,7 +129,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionSheet: {
+    backgroundColor: '#434343',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    paddingBottom: 30,
+  },
+  actionSheetItems: {
     padding: 20,
+    paddingBottom: 20 + 70,
+  },
+  detectedItemsButton: {
+    padding: 5,
   },
 });
 
