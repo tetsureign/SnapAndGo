@@ -55,12 +55,13 @@ const Tabs = () => {
         name="Camera"
         component={CameraStack}
         options={{
-          headerTitle: 'Snap&Go',
-          headerTransparent: true,
-          headerTitleStyle: {
-            color: '#FFFFFF',
-          },
-          headerBackground: () => <View style={styles.darkHeader} />,
+          headerShown: false,
+          // headerTitle: 'Snap&Go',
+          // headerTransparent: true,
+          // headerTitleStyle: {
+          //   color: '#FFFFFF',
+          // },
+          // headerBackground: () => <View style={styles.darkHeader} />,
           tabBarIcon: ({focused}) => (
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
