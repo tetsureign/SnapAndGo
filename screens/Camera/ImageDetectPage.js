@@ -8,11 +8,12 @@ import {
   ImageBackground,
   Button,
   Linking,
-  ScrollView,
+  Image,
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
 import axios from 'axios';
 import LoadingIndicator from '../../components/LoadingIndicator';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const ImageDetectPage = ({route, navigation}) => {
   const {photo} = route.params;
@@ -20,6 +21,8 @@ const ImageDetectPage = ({route, navigation}) => {
   const [result, setResult] = useState(null);
   const [isLoading, setLoading] = useState(false);
   const [isDetectPressed, setDetectPressed] = useState(false);
+  const [selectedResultIndex, setSelectedResultIndex] = useState(null);
+  const [selectedResult, setSelectedResult] = useState(null);
 
   const FetchAPI = source => {
     let photoUpload = {uri: source.uri};
@@ -57,29 +60,36 @@ const ImageDetectPage = ({route, navigation}) => {
     FetchAPI(photo);
   };
 
+  const insets = useSafeAreaInsets();
+
   useEffect(() => {
     if (!isLoading && isDetectPressed) {
       actionSheetRef.current?.show();
     }
-    // setLoading(true);
-  }, [isLoading, isDetectPressed, photo, result]);
+  }, [isLoading, isDetectPressed, photo, result, insets.bottom]);
 
   const buttons = [];
+  let itemsCount = 0;
 
   if (result) {
     result.forEach((element, index) => {
       buttons.push(
-        // <Button
-        //   title={element}
-        //   key={index}
-        //   onPress={() => {
-        //     Linking.openURL('http://maps.google.com/?q=' + element + ' shop');
-        //   }}
-        // />
-        <TouchableOpacity style={styles.detectedItemsButton} key={index}>
-          <Text style={{fontSize: 25}}>{element}</Text>
+        <TouchableOpacity
+          style={styles.detectedItemsButton}
+          key={index}
+          onPress={() => {
+            setSelectedResultIndex(index);
+            setSelectedResult(element);
+          }}>
+          <View>
+            {selectedResultIndex === index && (
+              <View style={styles.selectedItemBackground} />
+            )}
+            <Text style={styles.itemsText}>{element}</Text>
+          </View>
         </TouchableOpacity>,
       );
+      itemsCount++;
     });
   }
 
@@ -101,8 +111,35 @@ const ImageDetectPage = ({route, navigation}) => {
       <ActionSheet
         ref={actionSheetRef}
         backgroundInteractionEnabled={true}
-        containerStyle={styles.actionSheet}>
-        <View style={styles.actionSheetItems}>{buttons}</View>
+        containerStyle={styles.actionSheet}
+        useBottomSafeAreaPadding={true}
+        headerAlwaysVisible={true}
+        gestureEnabled={true}
+        indicatorStyle={{marginTop: 15, width: 60}}>
+        <View style={styles.actionSheetItems}>
+          {buttons}
+          {selectedResult && (
+            <TouchableOpacity
+              style={styles.searchButton}
+              onPress={() => {
+                Linking.openURL(
+                  'http://maps.google.com/?q=' + selectedResult + ' shop',
+                );
+              }}>
+              <View style={styles.searchButtonViewInside}>
+                <Image
+                  source={require('../../assets/icons/search.png')}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    tintColor: '#00C5FF',
+                  }}
+                />
+                <Text style={styles.searchText}>Tìm kiếm</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        </View>
       </ActionSheet>
     </View>
   );
@@ -128,20 +165,51 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
   },
+  selectedItemBackground: {
+    backgroundColor: '#646464',
+    borderWidth: 1,
+    borderColor: '#858585',
+    borderRadius: 10,
+    height: 40,
+    marginBottom: -40,
+  },
+  itemsText: {
+    fontSize: 25,
+    color: 'white',
+    paddingLeft: 5,
+    paddingRight: 5,
+  },
+  searchButton: {
+    height: 40,
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  searchButtonViewInside: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  searchText: {
+    fontSize: 25,
+    color: '#00C5FF',
+    paddingLeft: 5,
+  },
   actionSheet: {
     backgroundColor: '#434343',
     borderRadius: 10,
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    paddingBottom: 30,
   },
   actionSheetItems: {
     padding: 20,
-    paddingBottom: 20 + 70,
+    paddingTop: 0,
+    paddingBottom: 75,
   },
   detectedItemsButton: {
-    padding: 5,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
 });
 
