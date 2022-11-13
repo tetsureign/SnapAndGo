@@ -199,6 +199,10 @@ const styles = StyleSheet.create({
   actionSheet: {
     backgroundColor: '#434343',
     borderRadius: 10,
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
     shadowColor: '#000',
     shadowOpacity: 0.25,
     shadowRadius: 4,
