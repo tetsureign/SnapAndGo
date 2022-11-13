@@ -31,14 +31,12 @@ const CameraPage = ({navigation}) => {
     }
     const photo = await camera.takePictureAsync();
     const photoUri = Image.resolveAssetSource(photo).uri;
-    console.log(photoUri);
     navigation.navigate('Nhận diện', photoUri);
   };
 
   const __pickImage = async () => {
     const photo = await launchImageLibrary({mediaType: 'photo'});
     const photoUri = Image.resolveAssetSource(photo).assets[0].uri;
-    console.log(photoUri);
     navigation.navigate('Nhận diện', photoUri);
   };
 

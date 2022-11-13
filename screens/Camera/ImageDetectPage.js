@@ -17,7 +17,6 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const ImageDetectPage = ({route, navigation}) => {
   const photoUri = route.params;
-  console.log(photoUri);
 
   const [result, setResult] = useState(null);
   const [isLoading, setLoading] = useState(false);
