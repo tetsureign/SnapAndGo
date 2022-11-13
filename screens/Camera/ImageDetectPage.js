@@ -16,7 +16,8 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const ImageDetectPage = ({route, navigation}) => {
-  const {photo} = route.params;
+  const photoUri = route.params;
+  console.log(photoUri);
 
   const [result, setResult] = useState(null);
   const [isLoading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ const ImageDetectPage = ({route, navigation}) => {
   const [selectedResult, setSelectedResult] = useState(null);
 
   const FetchAPI = source => {
-    let photoUpload = {uri: source.uri};
+    let photoUpload = {uri: source};
     let formData = new FormData();
     formData.append('file', {
       uri: photoUpload.uri,
@@ -57,7 +58,7 @@ const ImageDetectPage = ({route, navigation}) => {
   const __getResults = () => {
     setLoading(true);
     setDetectPressed(true);
-    FetchAPI(photo);
+    FetchAPI(photoUri);
   };
 
   const insets = useSafeAreaInsets();
@@ -66,7 +67,7 @@ const ImageDetectPage = ({route, navigation}) => {
     if (!isLoading && isDetectPressed) {
       actionSheetRef.current?.show();
     }
-  }, [isLoading, isDetectPressed, photo, result, insets.bottom]);
+  }, [isLoading, isDetectPressed, photoUri, result, insets.bottom]);
 
   const buttons = [];
   let itemsCount = 0;
@@ -95,16 +96,16 @@ const ImageDetectPage = ({route, navigation}) => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={{uri: photo && photo.uri}}
-        style={styles.background}>
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={__getResults}
-            title="Nhận diện"
-            style={styles.button}
-          />
-        </View>
+      <ImageBackground source={{uri: photoUri}} style={styles.background}>
+        {result === null && (
+          <View style={styles.buttonContainer}>
+            <Button
+              onPress={__getResults}
+              title="Nhận diện"
+              style={styles.button}
+            />
+          </View>
+        )}
         {isLoading && <LoadingIndicator />}
       </ImageBackground>
 
@@ -115,6 +116,7 @@ const ImageDetectPage = ({route, navigation}) => {
         useBottomSafeAreaPadding={true}
         headerAlwaysVisible={true}
         gestureEnabled={true}
+        closable={false}
         indicatorStyle={{marginTop: 15, width: 60}}>
         <View style={styles.actionSheetItems}>
           {buttons}

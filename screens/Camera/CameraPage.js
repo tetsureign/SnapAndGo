@@ -5,13 +5,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  Button,
   Dimensions,
   Platform,
+  Image,
+  TouchableHighlight,
 } from 'react-native';
-import {Camera, CameraType, setHasCameraPermission} from 'expo-camera';
+import {Camera, CameraType} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
 import LoadingIndicator from '../../components/LoadingIndicator';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 const CameraPage = ({navigation}) => {
   let camera = Camera;
@@ -19,10 +21,6 @@ const CameraPage = ({navigation}) => {
   // Get permission
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
-
-  // Set capture stuff
-  // const [previewVisible, setPreviewVisible] = useState(false);
-  // const [capturedImage, setCapturedImage] = useState(null);
 
   // Check Focused
   const isFocused = useIsFocused();
@@ -32,9 +30,16 @@ const CameraPage = ({navigation}) => {
       return;
     }
     const photo = await camera.takePictureAsync();
-    // setPreviewVisible(true);
-    console.log(photo);
-    navigation.navigate('Nhận diện', {photo});
+    const photoUri = Image.resolveAssetSource(photo).uri;
+    console.log(photoUri);
+    navigation.navigate('Nhận diện', photoUri);
+  };
+
+  const __pickImage = async () => {
+    const photo = await launchImageLibrary({mediaType: 'photo'});
+    const photoUri = Image.resolveAssetSource(photo).assets[0].uri;
+    console.log(photoUri);
+    navigation.navigate('Nhận diện', photoUri);
   };
 
   // Screen Ratio and image padding
@@ -105,18 +110,35 @@ const CameraPage = ({navigation}) => {
           ref={r => {
             camera = r;
           }}>
-          <View style={styles.buttonContainer}>
-            <View style={styles.button}>
-              <TouchableOpacity
-                onPress={__takePicture}
-                style={{
-                  width: 70,
-                  height: 70,
-                  bottom: 0,
-                  borderRadius: 50,
-                  backgroundColor: '#fff',
-                }}
-              />
+          <View style={styles.buttonsPositioner}>
+            <View style={styles.buttonsContainer}>
+              <View>
+                <TouchableOpacity
+                  style={styles.imgPicker}
+                  onPress={__pickImage}>
+                  <Image
+                    source={require('../../assets/icons/media-image.png')}
+                    style={{
+                      width: 30,
+                      height: 30,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View>
+                <TouchableOpacity
+                  onPress={__takePicture}
+                  style={{
+                    width: 70,
+                    height: 70,
+                    borderRadius: 50,
+                    backgroundColor: '#fff',
+                  }}
+                />
+              </View>
+
+              <View style={{width: 60}} />
             </View>
           </View>
         </Camera>
@@ -137,17 +159,29 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     zIndex: 0,
   },
-  buttonContainer: {
+  buttonsPositioner: {
+    flex: 1,
     position: 'absolute',
     bottom: 90,
-    flex: 1,
     width: '100%',
-    justifyContent: 'space-between',
   },
-  button: {
-    alignSelf: 'center',
+  buttonsContainer: {
     flex: 1,
+    // flexShrink: 1,
+    justifyContent: 'space-evenly',
+    flexDirection: 'row',
     alignItems: 'center',
+    // borderColor: 'white',
+  },
+  imgPicker: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 60,
+    height: 60,
+    backgroundColor: 'rgba(33, 33, 33, 0.85)',
+    borderRadius: 10,
+    borderColor: 'white',
+    borderWidth: 5,
   },
 });
 
