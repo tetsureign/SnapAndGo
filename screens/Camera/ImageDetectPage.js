@@ -9,6 +9,7 @@ import {
   Button,
   Linking,
   Image,
+  Touchable,
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
 import axios from 'axios';
@@ -24,6 +25,11 @@ const ImageDetectPage = ({route, navigation}) => {
   const [selectedResultIndex, setSelectedResultIndex] = useState(null);
   const [selectedResult, setSelectedResult] = useState(null);
   const [isSuccess, setSuccess] = useState(false);
+  const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
+    useState(false);
+
+  const actionSheetRef = useRef(null);
+  const insets = useSafeAreaInsets();
 
   const FetchAPI = source => {
     let photoUpload = {uri: source};
@@ -55,46 +61,88 @@ const ImageDetectPage = ({route, navigation}) => {
       });
   };
 
-  const actionSheetRef = useRef(null);
-
   const __getResults = () => {
     setLoading(true);
     setDetectPressed(true);
     FetchAPI(photoUri);
   };
 
-  const insets = useSafeAreaInsets();
+  const __unreliableResultsCollapse = () => {
+    if (isUnreliableResultsOpened === false) {
+      setUnreliableResultsOpened(true);
+    } else {
+      setUnreliableResultsOpened(false);
+    }
+  };
+
+  const buttons = [];
+  const buttonsLow = [];
+  let itemsCount = 0;
+  let itemsLowCount = 0;
+
+  const ItemsButtonRender = ({element, index, isReliable}) => {
+    return (
+      <TouchableOpacity
+        style={styles.detectedItemsButton}
+        key={index}
+        onPress={() => {
+          setSelectedResultIndex(index);
+          setSelectedResult(element.object);
+        }}>
+        {selectedResultIndex === index && (
+          <View style={styles.selectedItemBackground} />
+        )}
+        <View style={styles.itemsTextContainer}>
+          <Text
+            style={[
+              styles.itemsText,
+              isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
+              selectedResultIndex === index && styles.itemsTextWhite,
+            ]}>
+            {element.object}
+          </Text>
+          <Text
+            style={[
+              styles.itemsText,
+              isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
+              selectedResultIndex === index && styles.itemsTextWhite,
+            ]}>
+            {element.score}%
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  if (result) {
+    result.forEach((element, index) => {
+      if (element.score >= 70) {
+        buttons.push(
+          <ItemsButtonRender
+            element={element}
+            index={index}
+            isReliable={true}
+          />,
+        );
+      } else {
+        itemsLowCount++;
+        buttonsLow.push(
+          <ItemsButtonRender
+            element={element}
+            index={index}
+            isReliable={false}
+          />,
+        );
+      }
+      itemsCount++;
+    });
+  }
 
   useEffect(() => {
     if (!isLoading && isDetectPressed) {
       actionSheetRef.current?.show();
     }
   }, [isLoading, isDetectPressed, photoUri, result, insets.bottom]);
-
-  const buttons = [];
-  let itemsCount = 0;
-
-  if (result) {
-    result.forEach((element, index) => {
-      buttons.push(
-        <TouchableOpacity
-          style={styles.detectedItemsButton}
-          key={index}
-          onPress={() => {
-            setSelectedResultIndex(index);
-            setSelectedResult(element.object);
-          }}>
-          <View>
-            {selectedResultIndex === index && (
-              <View style={styles.selectedItemBackground} />
-            )}
-            <Text style={styles.itemsText}>{element.object}</Text>
-          </View>
-        </TouchableOpacity>,
-      );
-      itemsCount++;
-    });
-  }
 
   return (
     <View style={styles.container}>
@@ -132,6 +180,27 @@ const ImageDetectPage = ({route, navigation}) => {
         indicatorStyle={{marginTop: 15, width: 60}}>
         <View style={styles.actionSheetItems}>
           {buttons}
+          {itemsLowCount >= 1 && (
+            <TouchableOpacity
+              style={styles.unreliableResultsButton}
+              onPress={__unreliableResultsCollapse}>
+              <Text style={styles.unreliableResultsButtonText}>
+                Kết quả có độ chính xác thấp
+              </Text>
+              {isUnreliableResultsOpened ? (
+                <Image
+                  source={require('../../assets/icons/nav-arrow-up.png')}
+                  style={styles.unreliableResultsArrow}
+                />
+              ) : (
+                <Image
+                  source={require('../../assets/icons/nav-arrow-down.png')}
+                  style={styles.unreliableResultsArrow}
+                />
+              )}
+            </TouchableOpacity>
+          )}
+          {isUnreliableResultsOpened && buttonsLow}
           {selectedResult && (
             <TouchableOpacity
               style={styles.searchButton}
@@ -160,6 +229,7 @@ const ImageDetectPage = ({route, navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  // General
   container: {
     justifyContent: 'center',
     flex: 1,
@@ -168,6 +238,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#212121',
   },
+
+  // Outside Actionsheet
   buttonContainer: {
     position: 'absolute',
     bottom: 75,
@@ -180,6 +252,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
   },
+
+  // Actionsheet area
+  //   Results
   selectedItemBackground: {
     backgroundColor: '#646464',
     borderWidth: 1,
@@ -188,12 +263,41 @@ const styles = StyleSheet.create({
     height: 40,
     marginBottom: -40,
   },
+  itemsTextContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   itemsText: {
     fontSize: 25,
-    color: 'white',
-    paddingLeft: 5,
-    paddingRight: 5,
+    paddingHorizontal: 5,
   },
+  itemsTextWhite: {
+    color: 'white',
+  },
+  itemsTextFade: {
+    color: 'rgba(255, 255, 255, 0.25)',
+  },
+  detectedItemsButton: {
+    paddingVertical: 5,
+  },
+
+  //   Unreliable results
+  unreliableResultsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  unreliableResultsButtonText: {
+    color: '#C7C7C7',
+    fontSize: 15,
+  },
+  unreliableResultsArrow: {
+    width: 18,
+    height: 18,
+    tintColor: '#C7C7C7',
+    marginHorizontal: 5,
+  },
+
+  //   Search button
   searchButton: {
     height: 40,
     marginTop: 5,
@@ -210,6 +314,8 @@ const styles = StyleSheet.create({
     color: '#00C5FF',
     paddingLeft: 5,
   },
+
+  //   Actionsheet styles
   actionSheet: {
     backgroundColor: '#434343',
     borderRadius: 10,
@@ -225,10 +331,6 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 0,
     paddingBottom: 75,
-  },
-  detectedItemsButton: {
-    paddingTop: 5,
-    paddingBottom: 5,
   },
 });
 
