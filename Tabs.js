@@ -1,12 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
-/* eslint-disable react/react-in-jsx-scope */
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View, Text, Image, StyleSheet} from 'react-native';
 import MapPage from './screens/MapPage';
 import CameraStack from './screens/Camera/CameraPagesNavigator';
 import AccountPage from './screens/AccountPage';
-import {MediaVideoFolder} from 'iconoir-react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -56,12 +54,6 @@ const Tabs = () => {
         component={CameraStack}
         options={{
           headerShown: false,
-          // headerTitle: 'Snap&Go',
-          // headerTransparent: true,
-          // headerTitleStyle: {
-          //   color: '#FFFFFF',
-          // },
-          // headerBackground: () => <View style={styles.darkHeader} />,
           tabBarIcon: ({focused}) => (
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>

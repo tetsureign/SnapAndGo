@@ -8,11 +8,9 @@ import {
   Dimensions,
   Platform,
   Image,
-  TouchableHighlight,
 } from 'react-native';
 import {Camera, CameraType} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
-import LoadingIndicator from '../../components/LoadingIndicator';
 import {launchImageLibrary} from 'react-native-image-picker';
 
 const CameraPage = ({navigation}) => {
@@ -36,6 +34,9 @@ const CameraPage = ({navigation}) => {
 
   const __pickImage = async () => {
     const photo = await launchImageLibrary({mediaType: 'photo'});
+    if (photo.didCancel === true) {
+      return;
+    }
     const photoUri = Image.resolveAssetSource(photo).assets[0].uri;
     navigation.navigate('Nhận diện', photoUri);
   };
@@ -172,11 +173,9 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flex: 1,
-    // flexShrink: 1,
     justifyContent: 'space-evenly',
     flexDirection: 'row',
     alignItems: 'center',
-    // borderColor: 'white',
   },
   imgPicker: {
     alignItems: 'center',

@@ -23,6 +23,7 @@ const ImageDetectPage = ({route, navigation}) => {
   const [isDetectPressed, setDetectPressed] = useState(false);
   const [selectedResultIndex, setSelectedResultIndex] = useState(null);
   const [selectedResult, setSelectedResult] = useState(null);
+  const [isSuccess, setSuccess] = useState(false);
 
   const FetchAPI = source => {
     let photoUpload = {uri: source};
@@ -44,10 +45,12 @@ const ImageDetectPage = ({route, navigation}) => {
       .then(response => {
         console.log('From API: ', response.data);
         setResult(response.data);
+        setSuccess(true);
         setLoading(false);
       })
       .catch(err => {
         console.log(err);
+        setSuccess(false);
         setLoading(false);
       });
   };
@@ -79,13 +82,13 @@ const ImageDetectPage = ({route, navigation}) => {
           key={index}
           onPress={() => {
             setSelectedResultIndex(index);
-            setSelectedResult(element);
+            setSelectedResult(element.object);
           }}>
           <View>
             {selectedResultIndex === index && (
               <View style={styles.selectedItemBackground} />
             )}
-            <Text style={styles.itemsText}>{element}</Text>
+            <Text style={styles.itemsText}>{element.object}</Text>
           </View>
         </TouchableOpacity>,
       );
@@ -95,7 +98,17 @@ const ImageDetectPage = ({route, navigation}) => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={{uri: photoUri}} style={styles.background}>
+      <ImageBackground
+        source={{uri: photoUri}}
+        style={styles.background}
+        resizeMode={'contain'}>
+        {isSuccess && (
+          <View>
+            <Text>
+              Đã tìm thấy sản phẩm! Vui lòng chọn kết quả bạn muốn sử dụng.
+            </Text>
+          </View>
+        )}
         {result === null && (
           <View style={styles.buttonContainer}>
             <Button
@@ -153,6 +166,7 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
+    backgroundColor: '#212121',
   },
   buttonContainer: {
     position: 'absolute',
