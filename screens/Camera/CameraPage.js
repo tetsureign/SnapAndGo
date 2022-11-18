@@ -29,7 +29,9 @@ const CameraPage = ({navigation}) => {
     }
     const photo = await camera.takePictureAsync();
     const photoUri = Image.resolveAssetSource(photo).uri;
-    navigation.navigate('Nhận diện', photoUri);
+    const photoWidth = Image.resolveAssetSource(photo).width;
+    const photoHeight = Image.resolveAssetSource(photo).height;
+    navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
   };
 
   const __pickImage = async () => {
@@ -38,7 +40,9 @@ const CameraPage = ({navigation}) => {
       return;
     }
     const photoUri = Image.resolveAssetSource(photo).assets[0].uri;
-    navigation.navigate('Nhận diện', photoUri);
+    const photoWidth = Image.resolveAssetSource(photo).assets[0].width;
+    const photoHeight = Image.resolveAssetSource(photo).assets[0].height;
+    navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
   };
 
   // Screen Ratio and image padding

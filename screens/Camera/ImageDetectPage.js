@@ -17,15 +17,23 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const ImageDetectPage = ({route, navigation}) => {
-  const photoUri = route.params;
+  const {photoUri, photoWidth, photoHeight} = route.params;
 
   const [result, setResult] = useState(null);
   const [isLoading, setLoading] = useState(false);
+
+  const [resizeRatio, setResizeRatio] = useState(null);
+  const [imageWidthDevice, setImageWidthDevice] = useState(null);
+  // const [imageHeightDevice, setImageHeightDevice] = useState(null);
+
   const [isDetectPressed, setDetectPressed] = useState(false);
   const [selectedResultIndex, setSelectedResultIndex] = useState(null);
   const [selectedResult, setSelectedResult] = useState(null);
+
+  // WIP
   const [isSuccess, setSuccess] = useState(false);
   const [isFetchComplete, setFetchComplete] = useState(false);
+
   const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
     useState(false);
 
@@ -80,6 +88,7 @@ const ImageDetectPage = ({route, navigation}) => {
   const buttons = [];
   const buttonsLow = [];
   const rectRegions = [];
+  const rectRegionsLow = [];
   let itemsCount = 0;
   let itemsLowCount = 0;
 
@@ -117,6 +126,27 @@ const ImageDetectPage = ({route, navigation}) => {
     );
   };
 
+  const RectRender = ({element, index, isReliable}) => {
+    return (
+      <View
+        key={index}
+        style={[
+          isReliable && styles.rectFade,
+          selectedResultIndex === index && styles.rectWhite,
+          {
+            position: 'absolute',
+            width:
+              (element.coordinate.x1 - element.coordinate.x0) * resizeRatio,
+            height:
+              (element.coordinate.y1 - element.coordinate.y0) * resizeRatio,
+            left: element.coordinate.x0 * resizeRatio,
+            top: element.coordinate.y0 * resizeRatio,
+          },
+        ]}
+      />
+    );
+  };
+
   if (result) {
     result.forEach((element, index) => {
       if (element.score >= 70) {
@@ -129,18 +159,25 @@ const ImageDetectPage = ({route, navigation}) => {
           />,
         );
         rectRegions.push(
-          <View
-            style={{
-              backgroundColor: 'red',
-              width: element.coordinate.x1 - element.coordinate.x0,
-              height: element.coordinate.y1 - element.coordinate.y0,
-            }}
+          <RectRender
+            element={element}
+            index={index}
+            key={index}
+            isReliable={true}
           />,
         );
       } else {
         itemsLowCount++;
         buttonsLow.push(
           <ItemsButtonRender
+            element={element}
+            index={index}
+            key={index}
+            isReliable={false}
+          />,
+        );
+        rectRegionsLow.push(
+          <RectRender
             element={element}
             index={index}
             key={index}
@@ -163,7 +200,12 @@ const ImageDetectPage = ({route, navigation}) => {
       <ImageBackground
         source={{uri: photoUri}}
         style={styles.background}
-        resizeMode={'contain'}>
+        resizeMode={'contain'}
+        onLayout={event => {
+          const {width} = event.nativeEvent.layout;
+          setResizeRatio(width / photoWidth);
+          setImageWidthDevice(width);
+        }}>
         {/* {isFetchComplete && isSuccess ? (
           <View>
             <Text>
@@ -177,7 +219,20 @@ const ImageDetectPage = ({route, navigation}) => {
             </View>
           )
         )} */}
-        {/* rectRegions */}
+
+        {result && (
+          <View style={styles.rectContainer}>
+            <View
+              style={{
+                width: imageWidthDevice,
+                height: photoHeight * resizeRatio,
+              }}>
+              {rectRegions}
+              {rectRegionsLow}
+            </View>
+          </View>
+        )}
+
         {result === null && (
           <View style={styles.buttonContainer}>
             <Button
@@ -261,6 +316,26 @@ const styles = StyleSheet.create({
   },
 
   // Outside Actionsheet
+  //   Rect region style
+  rectContainer: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  rectWhite: {
+    borderColor: 'white',
+    borderWidth: 5,
+    borderRadius: 10,
+    shadowRadius: 4,
+  },
+  rectFade: {
+    borderColor: 'rgba(255, 255, 255, 0.5)',
+    borderWidth: 5,
+    borderRadius: 10,
+    shadowRadius: 4,
+  },
+
+  //   Detect button
   buttonContainer: {
     position: 'absolute',
     bottom: 75,
