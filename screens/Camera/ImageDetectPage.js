@@ -25,6 +25,7 @@ const ImageDetectPage = ({route, navigation}) => {
   const [selectedResultIndex, setSelectedResultIndex] = useState(null);
   const [selectedResult, setSelectedResult] = useState(null);
   const [isSuccess, setSuccess] = useState(false);
+  const [isFetchComplete, setFetchComplete] = useState(false);
   const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
     useState(false);
 
@@ -51,12 +52,13 @@ const ImageDetectPage = ({route, navigation}) => {
       .then(response => {
         console.log('From API: ', response.data);
         setResult(response.data);
-        setSuccess(true);
+        setFetchComplete(true);
         setLoading(false);
       })
       .catch(err => {
         console.log(err);
         setSuccess(false);
+        setFetchComplete(true);
         setLoading(false);
       });
   };
@@ -77,6 +79,7 @@ const ImageDetectPage = ({route, navigation}) => {
 
   const buttons = [];
   const buttonsLow = [];
+  const rectRegions = [];
   let itemsCount = 0;
   let itemsLowCount = 0;
 
@@ -121,7 +124,17 @@ const ImageDetectPage = ({route, navigation}) => {
           <ItemsButtonRender
             element={element}
             index={index}
+            key={index}
             isReliable={true}
+          />,
+        );
+        rectRegions.push(
+          <View
+            style={{
+              backgroundColor: 'red',
+              width: element.coordinate.x1 - element.coordinate.x0,
+              height: element.coordinate.y1 - element.coordinate.y0,
+            }}
           />,
         );
       } else {
@@ -130,6 +143,7 @@ const ImageDetectPage = ({route, navigation}) => {
           <ItemsButtonRender
             element={element}
             index={index}
+            key={index}
             isReliable={false}
           />,
         );
@@ -150,13 +164,20 @@ const ImageDetectPage = ({route, navigation}) => {
         source={{uri: photoUri}}
         style={styles.background}
         resizeMode={'contain'}>
-        {isSuccess && (
+        {/* {isFetchComplete && isSuccess ? (
           <View>
             <Text>
               Đã tìm thấy sản phẩm! Vui lòng chọn kết quả bạn muốn sử dụng.
             </Text>
           </View>
-        )}
+        ) : (
+          isFetchComplete && (
+            <View>
+              <Text>Không tìm thấy sản phẩm! Vui lòng thử lại.</Text>
+            </View>
+          )
+        )} */}
+        {/* rectRegions */}
         {result === null && (
           <View style={styles.buttonContainer}>
             <Button
