@@ -5,7 +5,15 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 
+import android.os.Bundle;
+import androidx.core.view.WindowCompat;
+
 public class MainActivity extends ReactActivity {
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+  }
 
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
