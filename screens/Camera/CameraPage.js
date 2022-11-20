@@ -83,10 +83,10 @@ const CameraPage = ({navigation}) => {
       }
       // set the best match
       desiredRatio = minDistance;
-      const realCameraWidth = Math.floor(
+      const realCameraWidthCalc = Math.floor(
         (width * screenRatio) / realRatios[desiredRatio],
       );
-      setRealCameraWidth(realCameraWidth);
+      setRealCameraWidth(realCameraWidthCalc);
       // set the preview padding and preview ratio
       setRatio(desiredRatio);
       // Set a flag so we don't do this
@@ -107,7 +107,7 @@ const CameraPage = ({navigation}) => {
       {isFocused && (
         <Camera
           onCameraReady={setCameraReady}
-          style={([styles.camera], {width: realCameraWidth, height: height})}
+          style={[styles.camera, {width: realCameraWidth}]}
           type={type}
           ratio={ratio}
           ref={r => {
@@ -163,11 +163,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'black',
   },
   camera: {
     flex: 1,
     alignContent: 'center',
-    zIndex: 0,
+    backgroundColor: 'black',
   },
   buttonsPositioner: {
     flex: 1,
