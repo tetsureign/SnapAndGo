@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   Text,
   StyleSheet,
@@ -8,30 +8,66 @@ import {
   Dimensions,
   Platform,
   Image,
+  Animated,
 } from 'react-native';
 import {Camera, CameraType} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import ImageResizer from '@bam.tech/react-native-image-resizer';
 
 const CameraPage = ({navigation}) => {
   let camera = Camera;
+  const insets = useSafeAreaInsets();
+
+  const [resizedImage, setResizedImage] = useState(null);
 
   // Get permission
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [flashScreen, setFlashScreen] = useState(false);
 
   // Check Focused
   const isFocused = useIsFocused();
+
+  const resize = async image => {
+    try {
+      let result = await ImageResizer.createResizedImage(
+        image,
+        640,
+        640,
+        'JPEG',
+        100,
+        0,
+        undefined,
+        false,
+        {
+          mode: 'contain',
+        },
+      );
+      console.log(result);
+
+      const photoUri = Image.resolveAssetSource(result).uri;
+      const photoWidth = Image.resolveAssetSource(result).width;
+      const photoHeight = Image.resolveAssetSource(result).height;
+      navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const __takePicture = async () => {
     if (!camera) {
       return;
     }
+    setFlashScreen(true);
     const photo = await camera.takePictureAsync();
-    const photoUri = Image.resolveAssetSource(photo).uri;
-    const photoWidth = Image.resolveAssetSource(photo).width;
-    const photoHeight = Image.resolveAssetSource(photo).height;
-    navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
+    resize(photo.uri);
+    // const photoUri = Image.resolveAssetSource(photo).uri;
+    // const photoWidth = Image.resolveAssetSource(photo).width;
+    // const photoHeight = Image.resolveAssetSource(photo).height;
+    setFlashScreen(false);
+    // navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
   };
 
   const __pickImage = async () => {
@@ -39,10 +75,11 @@ const CameraPage = ({navigation}) => {
     if (photo.didCancel === true) {
       return;
     }
-    const photoUri = Image.resolveAssetSource(photo).assets[0].uri;
-    const photoWidth = Image.resolveAssetSource(photo).assets[0].width;
-    const photoHeight = Image.resolveAssetSource(photo).assets[0].height;
-    navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
+    resize(photo.assets[0].uri);
+    // const photoUri = Image.resolveAssetSource(photo).assets[0].uri;
+    // const photoWidth = Image.resolveAssetSource(photo).assets[0].width;
+    // const photoHeight = Image.resolveAssetSource(photo).assets[0].height;
+    // navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
   };
 
   // Screen Ratio and image padding
@@ -102,6 +139,28 @@ const CameraPage = ({navigation}) => {
     }
   };
 
+  const FlashScreen = props => {
+    const fadeAnim = useRef(new Animated.Value(1)).current; // Initial value for opacity: 0
+
+    useEffect(() => {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }, [fadeAnim]);
+
+    return (
+      <Animated.View // Special animatable View
+        style={{
+          ...props.style,
+          opacity: fadeAnim, // Bind opacity to animated value
+        }}>
+        {props.children}
+      </Animated.View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       {isFocused && (
@@ -113,6 +172,14 @@ const CameraPage = ({navigation}) => {
           ref={r => {
             camera = r;
           }}>
+          {flashScreen && (
+            <FlashScreen
+              style={{
+                flex: 1,
+                backgroundColor: 'black',
+              }}
+            />
+          )}
           <View style={styles.buttonsPositioner}>
             <View style={styles.buttonsContainer}>
               <View>
