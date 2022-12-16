@@ -9,13 +9,12 @@ import {
   Button,
   Linking,
   Image,
-  Touchable,
-  StatusBar,
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
 import axios from 'axios';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {FocusAwareStatusBar} from '../../FocusAwareStatusBar';
 
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;
@@ -204,6 +203,7 @@ const ImageDetectPage = ({route, navigation}) => {
 
   return (
     <View style={styles.container}>
+      <FocusAwareStatusBar barStyle={'light-content'} />
       <ImageBackground
         source={{uri: photoUri}}
         style={styles.background}

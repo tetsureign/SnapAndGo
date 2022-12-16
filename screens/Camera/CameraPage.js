@@ -16,6 +16,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
+import {FocusAwareStatusBar} from '../../FocusAwareStatusBar';
 
 const CameraPage = ({navigation}) => {
   let camera = Camera;
@@ -181,6 +182,7 @@ const CameraPage = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      <FocusAwareStatusBar barStyle={'light-content'} />
       {isFocused && (
         <Camera
           onCameraReady={setCameraReady}
