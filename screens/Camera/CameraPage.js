@@ -9,6 +9,7 @@ import {
   Platform,
   Image,
   Animated,
+  Button,
 } from 'react-native';
 import {Camera, CameraType} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
@@ -45,7 +46,6 @@ const CameraPage = ({navigation}) => {
           mode: 'contain',
         },
       );
-      console.log(result);
 
       const photoUri = Image.resolveAssetSource(result).uri;
       const photoWidth = Image.resolveAssetSource(result).width;
@@ -88,6 +88,24 @@ const CameraPage = ({navigation}) => {
   const {height, width} = Dimensions.get('window');
   const screenRatio = height / width;
   const [isRatioSet, setIsRatioSet] = useState(false);
+
+  if (!permission) {
+    // Camera permissions are still loading
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet
+    return (
+      <View style={styles.container}>
+        <Text
+          style={{textAlign: 'center', color: 'white', paddingVertical: 10}}>
+          App cần quyền của bạn để hiển thị camera
+        </Text>
+        <Button onPress={requestPermission} title="Cấp quyền" />
+      </View>
+    );
+  }
 
   // set the camera ratio and padding.
   // this code assumes a portrait mode screen
