@@ -10,6 +10,7 @@ import {
   Linking,
   Image,
   Touchable,
+  StatusBar,
 } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
 import axios from 'axios';
@@ -31,8 +32,7 @@ const ImageDetectPage = ({route, navigation}) => {
   const [selectedResult, setSelectedResult] = useState(null);
 
   // WIP
-  const [isSuccess, setSuccess] = useState(false);
-  const [isFetchComplete, setFetchComplete] = useState(false);
+  const [errorCode, setErrorCode] = useState(null);
 
   const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
     useState(false);
@@ -60,13 +60,12 @@ const ImageDetectPage = ({route, navigation}) => {
       .then(response => {
         console.log('From API: ', response.data);
         setResult(response.data);
-        setFetchComplete(true);
+        setErrorCode(200);
         setLoading(false);
       })
       .catch(err => {
         console.log(err);
-        setSuccess(false);
-        setFetchComplete(true);
+        setErrorCode(500);
         setLoading(false);
       });
   };
@@ -75,6 +74,10 @@ const ImageDetectPage = ({route, navigation}) => {
     setLoading(true);
     setDetectPressed(true);
     FetchAPI(photoUri);
+  };
+
+  const __goBack = () => {
+    navigation.navigate('Trang Camera');
   };
 
   const __unreliableResultsCollapse = () => {
@@ -147,53 +150,57 @@ const ImageDetectPage = ({route, navigation}) => {
     );
   };
 
-  if (result) {
-    result.forEach((element, index) => {
-      if (element.score >= 70) {
-        buttons.push(
-          <ItemsButtonRender
-            element={element}
-            index={index}
-            key={index}
-            isReliable={true}
-          />,
-        );
-        rectRegions.push(
-          <RectRender
-            element={element}
-            index={index}
-            key={index}
-            isReliable={true}
-          />,
-        );
-      } else {
-        itemsLowCount++;
-        buttonsLow.push(
-          <ItemsButtonRender
-            element={element}
-            index={index}
-            key={index}
-            isReliable={false}
-          />,
-        );
-        rectRegionsLow.push(
-          <RectRender
-            element={element}
-            index={index}
-            key={index}
-            isReliable={false}
-          />,
-        );
-      }
-      itemsCount++;
-    });
+  if (errorCode === 200) {
+    if (result && result.length >= 1) {
+      result.map((element, index) => {
+        if (element.score >= 70) {
+          buttons.push(
+            <ItemsButtonRender
+              element={element}
+              index={index}
+              key={index}
+              isReliable={true}
+            />,
+          );
+          rectRegions.push(
+            <RectRender
+              element={element}
+              index={index}
+              key={index}
+              isReliable={true}
+            />,
+          );
+        } else {
+          itemsLowCount++;
+          buttonsLow.push(
+            <ItemsButtonRender
+              element={element}
+              index={index}
+              key={index}
+              isReliable={false}
+            />,
+          );
+          rectRegionsLow.push(
+            <RectRender
+              element={element}
+              index={index}
+              key={index}
+              isReliable={false}
+            />,
+          );
+        }
+        itemsCount++;
+      });
+    } else if (result.length === 0) {
+      setErrorCode(400);
+    }
   }
 
   useEffect(() => {
-    if (!isLoading && isDetectPressed) {
+    if (!isLoading && isDetectPressed && errorCode === 200) {
       actionSheetRef.current?.show();
     }
-  }, [isLoading, isDetectPressed, photoUri, result, insets.bottom]);
+  }, [isLoading, isDetectPressed, photoUri, result, insets.bottom, errorCode]);
 
   return (
     <View style={styles.container}>
@@ -206,19 +213,32 @@ const ImageDetectPage = ({route, navigation}) => {
           setResizeRatio(width / photoWidth);
           setImageWidthDevice(width);
         }}>
-        {/* {isFetchComplete && isSuccess ? (
-          <View>
-            <Text>
-              Đã tìm thấy sản phẩm! Vui lòng chọn kết quả bạn muốn sử dụng.
-            </Text>
-          </View>
-        ) : (
-          isFetchComplete && (
-            <View>
-              <Text>Không tìm thấy sản phẩm! Vui lòng thử lại.</Text>
+        {errorCode && (
+          <View style={styles.errorContainer}>
+            <View
+              style={
+                errorCode === 200
+                  ? styles.errorBackgroundSuccess
+                  : styles.errorBackgroundError
+              }>
+              {errorCode === 200 ? (
+                <Text style={styles.errorMessage}>
+                  Đã tìm thấy sản phẩm! Vui lòng chọn kết quả bạn muốn sử dụng.
+                </Text>
+              ) : errorCode === 400 ? (
+                <Text style={styles.errorMessage}>
+                  Không tìm thấy sản phẩm! Vui lòng thử lại.
+                </Text>
+              ) : (
+                errorCode === 500 && (
+                  <Text style={styles.errorMessage}>
+                    Không thể kết nối đến server.
+                  </Text>
+                )
+              )}
             </View>
-          )
-        )} */}
+          </View>
+        )}
 
         {result && (
           <View style={styles.rectContainer}>
@@ -233,7 +253,7 @@ const ImageDetectPage = ({route, navigation}) => {
           </View>
         )}
 
-        {result === null && (
+        {result === null ? (
           <View style={styles.buttonContainer}>
             <Button
               onPress={__getResults}
@@ -241,6 +261,16 @@ const ImageDetectPage = ({route, navigation}) => {
               style={styles.button}
             />
           </View>
+        ) : (
+          errorCode === 400 && (
+            <View style={styles.buttonContainer}>
+              <Button
+                onPress={__goBack}
+                title="Thử chụp hình lại"
+                style={styles.button}
+              />
+            </View>
+          )
         )}
         {isLoading && <LoadingIndicator />}
       </ImageBackground>
@@ -315,6 +345,34 @@ const styles = StyleSheet.create({
     backgroundColor: '#212121',
   },
 
+  // Error messages area
+  errorContainer: {
+    position: 'absolute',
+    alignSelf: 'center',
+    left: 0,
+    right: 0,
+  },
+  errorBackgroundSuccess: {
+    backgroundColor: '#5FC314',
+    marginTop: 100,
+    marginHorizontal: 15,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+  },
+  errorBackgroundError: {
+    backgroundColor: '#FF6901',
+    marginTop: 100,
+    marginHorizontal: 15,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+  },
+  errorMessage: {
+    color: 'white',
+    textAlign: 'center',
+  },
+
   // Outside Actionsheet
   //   Rect region style
   rectContainer: {
@@ -339,7 +397,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',
     bottom: 75,
-    flex: 1,
+    // flex: 1,
     width: '100%',
     justifyContent: 'space-between',
   },
