@@ -18,6 +18,8 @@ import {FocusAwareStatusBar} from '../../FocusAwareStatusBar';
 
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;
+  const actionSheetRef = useRef(null);
+  // const insets = useSafeAreaInsets();
 
   const [result, setResult] = useState(null);
   const [isLoading, setLoading] = useState(false);
@@ -29,15 +31,13 @@ const ImageDetectPage = ({route, navigation}) => {
   const [isDetectPressed, setDetectPressed] = useState(false);
   const [selectedResultIndex, setSelectedResultIndex] = useState(null);
   const [selectedResult, setSelectedResult] = useState(null);
+  const [isActionsheetOpened, setActionsheetOpened] = useState(false);
 
   // WIP
   const [errorCode, setErrorCode] = useState(null);
 
   const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
     useState(false);
-
-  const actionSheetRef = useRef(null);
-  const insets = useSafeAreaInsets();
 
   const FetchAPI = source => {
     let photoUpload = {uri: source};
@@ -79,6 +79,11 @@ const ImageDetectPage = ({route, navigation}) => {
     navigation.navigate('Trang Camera');
   };
 
+  const __showResults = () => {
+    actionSheetRef.current?.show();
+    setActionsheetOpened(true);
+  };
+
   const __unreliableResultsCollapse = () => {
     if (isUnreliableResultsOpened === false) {
       setUnreliableResultsOpened(true);
@@ -91,7 +96,6 @@ const ImageDetectPage = ({route, navigation}) => {
   const buttonsLow = [];
   const rectRegions = [];
   const rectRegionsLow = [];
-  let itemsCount = 0;
   let itemsLowCount = 0;
 
   const ItemsButtonRender = ({element, index, isReliable}) => {
@@ -100,8 +104,13 @@ const ImageDetectPage = ({route, navigation}) => {
         style={styles.detectedItemsButton}
         key={index}
         onPress={() => {
-          setSelectedResultIndex(index);
-          setSelectedResult(element.object);
+          if (selectedResultIndex === index) {
+            setSelectedResultIndex(null);
+            setSelectedResult(null);
+          } else {
+            setSelectedResultIndex(index);
+            setSelectedResult(element.object);
+          }
         }}>
         {selectedResultIndex === index && (
           <View style={styles.selectedItemBackground} />
@@ -188,7 +197,6 @@ const ImageDetectPage = ({route, navigation}) => {
             />,
           );
         }
-        itemsCount++;
       });
     } else if (result.length === 0) {
       setErrorCode(400);
@@ -198,8 +206,9 @@ const ImageDetectPage = ({route, navigation}) => {
   useEffect(() => {
     if (!isLoading && isDetectPressed && errorCode === 200) {
       actionSheetRef.current?.show();
+      setActionsheetOpened(true);
     }
-  }, [isLoading, isDetectPressed, photoUri, result, insets.bottom, errorCode]);
+  }, [isLoading, isDetectPressed, errorCode]);
 
   return (
     <View style={styles.container}>
@@ -271,6 +280,16 @@ const ImageDetectPage = ({route, navigation}) => {
               />
             </View>
           )
+        )}
+
+        {isActionsheetOpened === false && errorCode === 200 && (
+          <View style={styles.buttonContainer}>
+            <Button
+              onPress={__showResults}
+              title="Danh sách kết quả"
+              style={styles.button}
+            />
+          </View>
         )}
         {isLoading && <LoadingIndicator />}
       </ImageBackground>

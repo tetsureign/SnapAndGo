@@ -1,7 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, Image, StyleSheet, Dimensions} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import MapPage from './screens/MapPage';
 import CameraStack from './screens/Camera/CameraPagesNavigator';
 import AccountPage from './screens/AccountPage';
@@ -9,6 +10,8 @@ import AccountPage from './screens/AccountPage';
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
+  const insets = useSafeAreaInsets();
+  console.log(insets.bottom);
   return (
     <Tab.Navigator
       initialRouteName="Camera"
@@ -17,7 +20,7 @@ const Tabs = () => {
         headerTitleAlign: 'center',
         tabBarInactiveTintColor: 'rgb(170, 170, 170)',
         tabBarShowLabel: false,
-        tabBarStyle: styles.darkTabBar,
+        tabBarStyle: [styles.darkTabBar, {height: 75 + insets.bottom}],
       })}>
       <Tab.Screen
         name="Bản đồ"
@@ -25,7 +28,7 @@ const Tabs = () => {
         options={{
           headerTransparent: true,
           headerBackground: () => <View style={styles.lightHeader} />,
-          tabBarStyle: styles.lightTabBar,
+          tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
           tabBarIcon: ({focused}) => (
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -73,7 +76,7 @@ const Tabs = () => {
         name="Tài khoản"
         component={AccountPage}
         options={{
-          tabBarStyle: styles.lightTabBar,
+          tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
           tabBarIcon: ({focused}) => (
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -105,7 +108,7 @@ const styles = StyleSheet.create({
   },
   lightTabBar: {
     position: 'absolute',
-    height: 75,
+    // height: 75,
     elevation: 0,
     backgroundColor: 'rgba(255, 255, 255, 0.75)',
   },
@@ -115,7 +118,7 @@ const styles = StyleSheet.create({
   },
   darkTabBar: {
     position: 'absolute',
-    height: 75,
+    // height: 75,
     elevation: 0,
     backgroundColor: 'rgba(38, 38, 38, 0.75)',
   },
