@@ -62,32 +62,6 @@ const CameraPage = ({navigation}) => {
     }
   };
 
-  const __takePicture = async () => {
-    if (!camera) {
-      return;
-    }
-    setFlashScreen(true);
-    const photo = await camera.takePictureAsync();
-    resize(photo.uri);
-    // const photoUri = Image.resolveAssetSource(photo).uri;
-    // const photoWidth = Image.resolveAssetSource(photo).width;
-    // const photoHeight = Image.resolveAssetSource(photo).height;
-    setFlashScreen(false);
-    // navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
-  };
-
-  const __pickImage = async () => {
-    const photo = await launchImageLibrary({mediaType: 'photo'});
-    if (photo.didCancel === true) {
-      return;
-    }
-    resize(photo.assets[0].uri);
-    // const photoUri = Image.resolveAssetSource(photo).assets[0].uri;
-    // const photoWidth = Image.resolveAssetSource(photo).assets[0].width;
-    // const photoHeight = Image.resolveAssetSource(photo).assets[0].height;
-    // navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
-  };
-
   // Screen Ratio and image padding
   const [realCameraWidth, setRealCameraWidth] = useState(0);
   const [ratio, setRatio] = useState('4:3'); // default is 4:3
@@ -185,6 +159,32 @@ const CameraPage = ({navigation}) => {
     );
   };
 
+  const __takePicture = async () => {
+    if (!camera) {
+      return;
+    }
+    setFlashScreen(true);
+    const photo = await camera.takePictureAsync();
+    resize(photo.uri);
+    // const photoUri = Image.resolveAssetSource(photo).uri;
+    // const photoWidth = Image.resolveAssetSource(photo).width;
+    // const photoHeight = Image.resolveAssetSource(photo).height;
+    setFlashScreen(false);
+    // navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
+  };
+
+  const __pickImage = async () => {
+    const photo = await launchImageLibrary({mediaType: 'photo'});
+    if (photo.didCancel === true) {
+      return;
+    }
+    resize(photo.assets[0].uri);
+    // const photoUri = Image.resolveAssetSource(photo).assets[0].uri;
+    // const photoWidth = Image.resolveAssetSource(photo).assets[0].width;
+    // const photoHeight = Image.resolveAssetSource(photo).assets[0].height;
+    // navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
+  };
+
   return (
     <View style={styles.container}>
       <FocusAwareStatusBar barStyle={'light-content'} />
@@ -205,7 +205,8 @@ const CameraPage = ({navigation}) => {
               }}
             />
           )}
-          <View style={styles.buttonsPositioner}>
+          <View
+            style={[styles.buttonsPositioner, {bottom: bottomTabHeight + 15}]}>
             <View style={styles.buttonsContainer}>
               <View>
                 <TouchableOpacity
@@ -265,7 +266,7 @@ const styles = StyleSheet.create({
   buttonsPositioner: {
     flex: 1,
     position: 'absolute',
-    bottom: 90,
+    // bottom: 90,
     width: '100%',
   },
   buttonsContainer: {

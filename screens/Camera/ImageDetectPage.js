@@ -16,6 +16,8 @@ import ActionSheet, {
   ActionSheetRef,
 } from 'react-native-actions-sheet';
 import axios from 'axios';
+import {useHeaderHeight} from '@react-navigation/elements';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
@@ -24,7 +26,10 @@ import {db} from '../../components/firebase';
 
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;
+
   const insets = useSafeAreaInsets();
+  const headerHeight = useHeaderHeight();
+  const bottomTabHeight = useBottomTabBarHeight();
 
   const resultsActionSheetRef = useRef(null);
   const infoActionSheetRef = useRef(null);
@@ -255,11 +260,12 @@ const ImageDetectPage = ({route, navigation}) => {
         {errorCode && (
           <View style={styles.errorContainer}>
             <View
-              style={
+              style={[
                 errorCode === 200
                   ? styles.errorBackgroundSuccess
-                  : styles.errorBackgroundError
-              }>
+                  : styles.errorBackgroundError,
+                {marginTop: headerHeight + 15},
+              ]}>
               {errorCode === 200 ? (
                 <Text style={styles.errorMessage}>
                   Đã tìm thấy sản phẩm! Vui lòng chọn kết quả bạn muốn sử dụng.
@@ -293,7 +299,7 @@ const ImageDetectPage = ({route, navigation}) => {
         )}
 
         {result === null ? (
-          <View style={styles.buttonContainer}>
+          <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
             <Button
               onPress={__getResults}
               title="Nhận diện"
@@ -302,7 +308,7 @@ const ImageDetectPage = ({route, navigation}) => {
           </View>
         ) : (
           errorCode === 400 && (
-            <View style={styles.buttonContainer}>
+            <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
               <Button
                 onPress={__goBack}
                 title="Thử chụp hình lại"
@@ -315,7 +321,7 @@ const ImageDetectPage = ({route, navigation}) => {
         {isResultsActionsheetOpened === false &&
           isInfoActionsheetOpened === false &&
           errorCode === 200 && (
-            <View style={styles.buttonContainer}>
+            <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
               <Button
                 onPress={__showResults}
                 title="Danh sách kết quả"
@@ -460,7 +466,6 @@ const styles = StyleSheet.create({
   },
   errorBackgroundSuccess: {
     backgroundColor: '#5FC314',
-    marginTop: 100,
     marginHorizontal: 15,
     paddingVertical: 6,
     paddingHorizontal: 12,
@@ -468,7 +473,6 @@ const styles = StyleSheet.create({
   },
   errorBackgroundError: {
     backgroundColor: '#FF6901',
-    marginTop: 100,
     marginHorizontal: 15,
     paddingVertical: 6,
     paddingHorizontal: 12,
@@ -502,7 +506,7 @@ const styles = StyleSheet.create({
   //   Detect button
   buttonContainer: {
     position: 'absolute',
-    bottom: 100,
+    // bottom: 100,
     // flex: 1,
     width: '100%',
     justifyContent: 'space-between',
