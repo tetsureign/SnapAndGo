@@ -1,7 +1,7 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import Tabs from './Tabs';
+import Tabs from './components/Tabs';
 import {StatusBar} from 'react-native';
 
 const App = () => {

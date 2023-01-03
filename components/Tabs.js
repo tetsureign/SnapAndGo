@@ -1,13 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View, Text, Image, StyleSheet, Dimensions} from 'react-native';
+import {View, Text, Image, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import MapPage from './screens/MapPage';
-import CameraStack from './screens/Camera/CameraPagesNavigator';
-import HomeScreen from './screens/HomeScreen';
-import AccountPage from './screens/AccountPage';
-import InfoPage from './screens/InfoPage';
+import MapPage from '../screens/MapPage';
+import CameraStack from '../screens/Camera/CameraPagesNavigator';
+import HomeScreen from '../screens/HomeScreen';
+import AccountPage from '../screens/AccountPage';
+import InfoPage from '../screens/InfoPage';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,7 +34,7 @@ const Tabs = () => {
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
               <Image
-                source={require('./assets/icons/map.png')}
+                source={require('../assets/icons/map.png')}
                 style={{
                   width: 40,
                   height: 40,
@@ -62,7 +62,7 @@ const Tabs = () => {
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
               <Image
-                source={require('./assets/icons/search.png')}
+                source={require('../assets/icons/search.png')}
                 style={{
                   width: 40,
                   height: 40,
@@ -82,7 +82,7 @@ const Tabs = () => {
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
               <Image
-                source={require('./assets/icons/user.png')}
+                source={require('../assets/icons/user.png')}
                 style={{
                   width: 40,
                   height: 40,
