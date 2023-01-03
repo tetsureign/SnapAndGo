@@ -9,17 +9,26 @@ import {
   Button,
   Linking,
   Image,
+  ScrollView,
 } from 'react-native';
-import ActionSheet from 'react-native-actions-sheet';
+import ActionSheet, {
+  useScrollHandlers,
+  ActionSheetRef,
+} from 'react-native-actions-sheet';
 import axios from 'axios';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
+import {ref, set, update, onValue, remove} from 'firebase/database';
+import {db} from '../../components/firebase';
 
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;
-  const actionSheetRef = useRef(null);
   const insets = useSafeAreaInsets();
+
+  const resultsActionSheetRef = useRef(null);
+  const infoActionSheetRef = useRef(null);
+  const scrollHandlers = useScrollHandlers('scrollview-1', infoActionSheetRef);
 
   const [result, setResult] = useState(null);
   const [isLoading, setLoading] = useState(false);
@@ -31,15 +40,17 @@ const ImageDetectPage = ({route, navigation}) => {
   const [isDetectPressed, setDetectPressed] = useState(false);
   const [selectedResultIndex, setSelectedResultIndex] = useState(null);
   const [selectedResult, setSelectedResult] = useState(null);
-  const [isActionsheetOpened, setActionsheetOpened] = useState(false);
-
-  // WIP
-  const [errorCode, setErrorCode] = useState(null);
-
+  const [isResultsActionsheetOpened, setResultsActionsheetOpened] =
+    useState(false);
+  const [isInfoActionsheetOpened, setInfoActionsheetOpened] = useState(false);
   const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
     useState(false);
 
-  const FetchAPI = source => {
+  const [description, setDescription] = useState('');
+
+  const [errorCode, setErrorCode] = useState(null);
+
+  const FetchAPI = async source => {
     let photoUpload = {uri: source};
     let formData = new FormData();
     formData.append('file', {
@@ -80,8 +91,8 @@ const ImageDetectPage = ({route, navigation}) => {
   };
 
   const __showResults = () => {
-    actionSheetRef.current?.show();
-    setActionsheetOpened(true);
+    resultsActionSheetRef.current?.show();
+    setResultsActionsheetOpened(true);
   };
 
   const __unreliableResultsCollapse = () => {
@@ -90,6 +101,25 @@ const ImageDetectPage = ({route, navigation}) => {
     } else {
       setUnreliableResultsOpened(false);
     }
+  };
+
+  const __showInfoData = () => {
+    const starCountRef = ref(db, 'Objects/' + selectedResult);
+    onValue(starCountRef, snapshot => {
+      const data = snapshot.val();
+      console.log(data);
+      setDescription(data.Description);
+    });
+    infoActionSheetRef.current?.show();
+    setInfoActionsheetOpened(true);
+    resultsActionSheetRef.current?.hide();
+  };
+
+  const __closeDesc = () => {
+    infoActionSheetRef.current?.hide();
+    setInfoActionsheetOpened(false);
+    resultsActionSheetRef.current?.show();
+    setResultsActionsheetOpened(true);
   };
 
   const buttons = [];
@@ -205,8 +235,8 @@ const ImageDetectPage = ({route, navigation}) => {
 
   useEffect(() => {
     if (!isLoading && isDetectPressed && errorCode === 200) {
-      actionSheetRef.current?.show();
-      setActionsheetOpened(true);
+      resultsActionSheetRef.current?.show();
+      setResultsActionsheetOpened(true);
     }
   }, [isLoading, isDetectPressed, errorCode]);
 
@@ -282,20 +312,22 @@ const ImageDetectPage = ({route, navigation}) => {
           )
         )}
 
-        {isActionsheetOpened === false && errorCode === 200 && (
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={__showResults}
-              title="Danh sách kết quả"
-              style={styles.button}
-            />
-          </View>
-        )}
+        {isResultsActionsheetOpened === false &&
+          isInfoActionsheetOpened === false &&
+          errorCode === 200 && (
+            <View style={styles.buttonContainer}>
+              <Button
+                onPress={__showResults}
+                title="Danh sách kết quả"
+                style={styles.button}
+              />
+            </View>
+          )}
         {isLoading && <LoadingIndicator />}
       </ImageBackground>
 
       <ActionSheet
-        ref={actionSheetRef}
+        ref={resultsActionSheetRef}
         backgroundInteractionEnabled={true}
         containerStyle={styles.actionSheet}
         useBottomSafeAreaPadding={true}
@@ -304,7 +336,7 @@ const ImageDetectPage = ({route, navigation}) => {
         closable={true}
         indicatorStyle={{marginTop: 15, width: 60}}
         onClose={() => {
-          setActionsheetOpened(false);
+          setResultsActionsheetOpened(false);
         }}>
         <View style={styles.actionSheetItems}>
           {buttons}
@@ -333,19 +365,17 @@ const ImageDetectPage = ({route, navigation}) => {
             <View>
               <TouchableOpacity
                 style={styles.searchButton}
-                onPress={() => {
-                  navigation.navigate('Thông tin', {selectedResult});
-                }}>
+                onPress={__showInfoData}>
                 <View style={styles.searchButtonViewInside}>
                   <Image
-                    source={require('../../assets/icons/search.png')}
+                    source={require('../../assets/icons/desc.png')}
                     style={{
                       width: 40,
                       height: 40,
-                      tintColor: '#00C5FF',
+                      tintColor: '#5FC314',
                     }}
                   />
-                  <Text style={styles.searchText}>Xem thông tin</Text>
+                  <Text style={styles.descButton}>Xem thông tin</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
@@ -369,6 +399,41 @@ const ImageDetectPage = ({route, navigation}) => {
               </TouchableOpacity>
             </View>
           )}
+        </View>
+      </ActionSheet>
+
+      <ActionSheet
+        ref={infoActionSheetRef}
+        backgroundInteractionEnabled={true}
+        containerStyle={styles.actionSheet}
+        useBottomSafeAreaPadding={true}
+        headerAlwaysVisible={true}
+        gestureEnabled={true}
+        closable={true}
+        indicatorStyle={{marginTop: 15, width: 60}}
+        onClose={() => {
+          setInfoActionsheetOpened(false);
+          setResultsActionsheetOpened(true);
+          resultsActionSheetRef.current?.show();
+        }}>
+        <View style={styles.actionSheetItems}>
+          <TouchableOpacity style={styles.searchButton} onPress={__closeDesc}>
+            <View style={styles.searchButtonViewInside}>
+              <Image
+                source={require('../../assets/icons/back.png')}
+                style={{
+                  width: 40,
+                  height: 40,
+                  tintColor: '#00C5FF',
+                }}
+              />
+              <Text style={styles.searchText}>Trở về danh sách</Text>
+            </View>
+          </TouchableOpacity>
+          <ScrollView {...scrollHandlers}>
+            <Text style={styles.descTitle}>{selectedResult}</Text>
+            <Text style={styles.desc}>{description}</Text>
+          </ScrollView>
         </View>
       </ActionSheet>
     </View>
@@ -509,6 +574,11 @@ const styles = StyleSheet.create({
     color: '#00C5FF',
     paddingLeft: 5,
   },
+  descButton: {
+    fontSize: 25,
+    color: '#5FC314',
+    paddingLeft: 5,
+  },
 
   //   Actionsheet styles
   actionSheet: {
@@ -526,6 +596,17 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 0,
     paddingBottom: 75,
+  },
+
+  //   Desc Actionsheet
+  descTitle: {
+    fontSize: 40,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  desc: {
+    fontSize: 20,
+    color: 'white',
   },
 });
 

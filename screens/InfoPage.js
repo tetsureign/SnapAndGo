@@ -1,52 +1,62 @@
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {TextInput, Button} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TextInput,
+  Button,
+} from 'react-native';
 import {FocusAwareStatusBar} from '../components/FocusAwareStatusBar';
-import {useState} from 'react/cjs/react.development';
 import {ref, set, update, onValue, remove} from 'firebase/database';
 import {db} from '../components/firebase';
 
 export default function InfoPage({route}) {
-  // const {selectedResult} = route.params;
+  const {selectedResult} = route.params;
   const [ObjectsName, setObjectsName] = useState('');
   const [Description, setDescription] = useState('');
 
-  function createData() {
-    // const newKey = push(child(ref(database), 'users')).key;
+  // function createData() {
+  //   // const newKey = push(child(ref(database), 'users')).key;
 
-    set(ref(db, 'Objects/' + ObjectsName), {
-      ObjectsName: ObjectsName,
-      Description: Description,
-    })
-      .then(() => {
-        // Data saved successfully!
-        alert('data updated!');
-      })
-      .catch(error => {
-        // The write failed...
-        alert(error);
-      });
-  }
+  //   set(ref(db, 'Objects/' + ObjectsName), {
+  //     ObjectsName: ObjectsName,
+  //     Description: Description,
+  //   })
+  //     .then(() => {
+  //       // Data saved successfully!
+  //       alert('data updated!');
+  //     })
+  //     .catch(error => {
+  //       // The write failed...
+  //       alert(error);
+  //     });
+  // }
 
-  function update() {
-    // const newKey = push(child(ref(database), 'users')).key;
+  // function update() {
+  //   // const newKey = push(child(ref(database), 'users')).key;
 
-    update(ref(db, 'users/' + username), {
-      username: username,
-      email: email,
-    })
-      .then(() => {
-        // Data saved successfully!
-        alert('data updated!');
-      })
-      .catch(error => {
-        // The write failed...
-        alert(error);
-      });
-  }
+  //   update(ref(db, 'users/' + username), {
+  //     username: username,
+  //     email: email,
+  //   })
+  //     .then(() => {
+  //       // Data saved successfully!
+  //       alert('data updated!');
+  //     })
+  //     .catch(error => {
+  //       // The write failed...
+  //       alert(error);
+  //     });
+  // }
+
+  // function deleteData() {
+  //   remove(ref(db, 'users/' + username));
+  //   alert('removed');
+  // }
 
   function readData() {
-    const starCountRef = ref(db, 'Objects/' + ObjectsName);
+    const starCountRef = ref(db, 'Objects/' + selectedResult);
     onValue(starCountRef, snapshot => {
       const data = snapshot.val();
 
@@ -54,37 +64,15 @@ export default function InfoPage({route}) {
     });
   }
 
-  function deleteData() {
-    remove(ref(db, 'users/' + username));
-    alert('removed');
-  }
+  useEffect(() => {
+    readData();
+  });
 
   return (
     <View style={styles.container}>
-      <FocusAwareStatusBar barStyle={'dark-content'} />
-      <TextInput
-        // defaultValue={selectedResult}
-        value={ObjectsName}
-        onChangeText={ObjectsName => {
-          setObjectsName(ObjectsName);
-        }}
-        placeholder="Objects"
-        style={styles.textBoxes}
-      />
-      <TextInput
-        value={Description}
-        onChangeText={Description => {
-          setDescription(Description);
-        }}
-        placeholder="Description"
-        style={styles.textBoxes}
-      />
-      <Button
-        onPress={readData}
-        title="Learn More"
-        color="#841584"
-        accessibilityLabel="Learn more about this purple button"
-      />
+      <FocusAwareStatusBar barStyle={'light-content'} />
+      <Text>{selectedResult}</Text>
+      <Text>{Description}</Text>
     </View>
   );
 }
