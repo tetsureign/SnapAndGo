@@ -4,7 +4,7 @@ import {TextInput, Button} from 'react-native';
 import {FocusAwareStatusBar} from '../components/FocusAwareStatusBar';
 import {useState} from 'react/cjs/react.development';
 import {ref, set, update, onValue, remove} from 'firebase/database';
-import {db} from '../firebase';
+import {db} from '../components/firebase';
 
 export default function InfoPage({route}) {
   // const {selectedResult} = route.params;
