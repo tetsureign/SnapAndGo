@@ -23,6 +23,7 @@ import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 const CameraPage = ({navigation}) => {
   let camera = Camera;
   const insets = useSafeAreaInsets();
+
   const headerHeight = useHeaderHeight();
   const bottomTabHeight = useBottomTabBarHeight();
 

@@ -6,7 +6,8 @@ import {useState} from 'react/cjs/react.development';
 import {ref, set, update, onValue, remove} from 'firebase/database';
 import {db} from '../firebase';
 
-export default function App() {
+export default function InfoPage({route}) {
+  // const {selectedResult} = route.params;
   const [ObjectsName, setObjectsName] = useState('');
   const [Description, setDescription] = useState('');
 
@@ -62,6 +63,7 @@ export default function App() {
     <View style={styles.container}>
       <FocusAwareStatusBar barStyle={'dark-content'} />
       <TextInput
+        // defaultValue={selectedResult}
         value={ObjectsName}
         onChangeText={ObjectsName => {
           setObjectsName(ObjectsName);

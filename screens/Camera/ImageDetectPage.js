@@ -19,7 +19,7 @@ import {FocusAwareStatusBar} from '../../FocusAwareStatusBar';
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;
   const actionSheetRef = useRef(null);
-  // const insets = useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
 
   const [result, setResult] = useState(null);
   const [isLoading, setLoading] = useState(false);
@@ -301,8 +301,11 @@ const ImageDetectPage = ({route, navigation}) => {
         useBottomSafeAreaPadding={true}
         headerAlwaysVisible={true}
         gestureEnabled={true}
-        closable={false}
-        indicatorStyle={{marginTop: 15, width: 60}}>
+        closable={true}
+        indicatorStyle={{marginTop: 15, width: 60}}
+        onClose={() => {
+          setActionsheetOpened(false);
+        }}>
         <View style={styles.actionSheetItems}>
           {buttons}
           {itemsLowCount >= 1 && (
@@ -327,25 +330,44 @@ const ImageDetectPage = ({route, navigation}) => {
           )}
           {isUnreliableResultsOpened && buttonsLow}
           {selectedResult && (
-            <TouchableOpacity
-              style={styles.searchButton}
-              onPress={() => {
-                Linking.openURL(
-                  'http://maps.google.com/?q=' + selectedResult + ' shop',
-                );
-              }}>
-              <View style={styles.searchButtonViewInside}>
-                <Image
-                  source={require('../../assets/icons/search.png')}
-                  style={{
-                    width: 40,
-                    height: 40,
-                    tintColor: '#00C5FF',
-                  }}
-                />
-                <Text style={styles.searchText}>Tìm kiếm</Text>
-              </View>
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity
+                style={styles.searchButton}
+                onPress={() => {
+                  navigation.navigate('Thông tin', {selectedResult});
+                }}>
+                <View style={styles.searchButtonViewInside}>
+                  <Image
+                    source={require('../../assets/icons/search.png')}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      tintColor: '#00C5FF',
+                    }}
+                  />
+                  <Text style={styles.searchText}>Xem thông tin</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.searchButton}
+                onPress={() => {
+                  Linking.openURL(
+                    'http://maps.google.com/?q=' + selectedResult + ' shop',
+                  );
+                }}>
+                <View style={styles.searchButtonViewInside}>
+                  <Image
+                    source={require('../../assets/icons/search.png')}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      tintColor: '#00C5FF',
+                    }}
+                  />
+                  <Text style={styles.searchText}>Tìm kiếm</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           )}
         </View>
       </ActionSheet>
@@ -415,7 +437,7 @@ const styles = StyleSheet.create({
   //   Detect button
   buttonContainer: {
     position: 'absolute',
-    bottom: 75,
+    bottom: 100,
     // flex: 1,
     width: '100%',
     justifyContent: 'space-between',

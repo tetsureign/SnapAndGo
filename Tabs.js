@@ -5,6 +5,7 @@ import {View, Text, Image, StyleSheet, Dimensions} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import MapPage from './screens/MapPage';
 import CameraStack from './screens/Camera/CameraPagesNavigator';
+import HomeScreen from './screens/HomeScreen';
 import AccountPage from './screens/AccountPage';
 import InfoPage from './screens/InfoPage';
 
@@ -12,7 +13,6 @@ const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
   const insets = useSafeAreaInsets();
-  console.log(insets.bottom);
   return (
     <Tab.Navigator
       initialRouteName="Camera"
@@ -75,7 +75,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name="Tài khoản"
-        component={InfoPage}
+        component={AccountPage}
         options={{
           tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
           tabBarIcon: ({focused}) => (
