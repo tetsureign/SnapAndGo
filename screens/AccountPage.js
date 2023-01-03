@@ -6,19 +6,20 @@ import LoginScreen from './LoginScreen';
 import HomeScreen from './HomeScreen';
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+export default function AccountPage() {
   return (
-    <NavigationContainer independent={true}>
-      <StatusBar barStyle={'dark-content'} />
-      <Stack.Navigator>
-        <Stack.Screen
-          options={{headerShown: false}}
-          name="Login"
-          component={LoginScreen}
-        />
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    // <NavigationContainer independent={true}>
+    //   <StatusBar barStyle={'dark-content'} />
+    //   <Stack.Navigator>
+    //     <Stack.Screen
+    //       options={{headerShown: false}}
+    //       name="Login"
+    //       component={LoginScreen}
+    //     />
+    //     <Stack.Screen name="Home" component={HomeScreen} />
+    //   </Stack.Navigator>
+    // </NavigationContainer>
+    <View></View>
   );
 }
 

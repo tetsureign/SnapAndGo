@@ -19,7 +19,6 @@ import axios from 'axios';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import LoadingIndicator from '../../components/LoadingIndicator';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 import {ref, set, update, onValue, remove} from 'firebase/database';
 import {db} from '../../components/firebase';
@@ -27,7 +26,6 @@ import {db} from '../../components/firebase';
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;
 
-  const insets = useSafeAreaInsets();
   const headerHeight = useHeaderHeight();
   const bottomTabHeight = useBottomTabBarHeight();
 
@@ -36,6 +34,7 @@ const ImageDetectPage = ({route, navigation}) => {
   const scrollHandlers = useScrollHandlers('scrollview-1', infoActionSheetRef);
 
   const [result, setResult] = useState(null);
+
   const [isLoading, setLoading] = useState(false);
 
   const [resizeRatio, setResizeRatio] = useState(null);
@@ -54,6 +53,12 @@ const ImageDetectPage = ({route, navigation}) => {
   const [description, setDescription] = useState('');
 
   const [errorCode, setErrorCode] = useState(null);
+
+  const buttons = [];
+  const buttonsLow = [];
+  const rectRegions = [];
+  const rectRegionsLow = [];
+  let itemsLowCount = 0;
 
   const FetchAPI = async source => {
     let photoUpload = {uri: source};
@@ -84,54 +89,6 @@ const ImageDetectPage = ({route, navigation}) => {
         setLoading(false);
       });
   };
-
-  const __getResults = () => {
-    setLoading(true);
-    setDetectPressed(true);
-    FetchAPI(photoUri);
-  };
-
-  const __goBack = () => {
-    navigation.navigate('Trang Camera');
-  };
-
-  const __showResults = () => {
-    resultsActionSheetRef.current?.show();
-    setResultsActionsheetOpened(true);
-  };
-
-  const __unreliableResultsCollapse = () => {
-    if (isUnreliableResultsOpened === false) {
-      setUnreliableResultsOpened(true);
-    } else {
-      setUnreliableResultsOpened(false);
-    }
-  };
-
-  const __showInfoData = () => {
-    const starCountRef = ref(db, 'Objects/' + selectedResult);
-    onValue(starCountRef, snapshot => {
-      const data = snapshot.val();
-      console.log(data);
-      setDescription(data.Description);
-    });
-    infoActionSheetRef.current?.show();
-    setInfoActionsheetOpened(true);
-    resultsActionSheetRef.current?.hide();
-  };
-
-  const __closeDesc = () => {
-    infoActionSheetRef.current?.hide();
-    setInfoActionsheetOpened(false);
-    resultsActionSheetRef.current?.show();
-    setResultsActionsheetOpened(true);
-  };
-
-  const buttons = [];
-  const buttonsLow = [];
-  const rectRegions = [];
-  const rectRegionsLow = [];
-  let itemsLowCount = 0;
 
   const ItemsButtonRender = ({element, index, isReliable}) => {
     return (
@@ -238,6 +195,71 @@ const ImageDetectPage = ({route, navigation}) => {
     }
   }
 
+  const errorSwitch = () => {
+    switch (errorCode) {
+      case 200:
+        return (
+          <Text style={styles.errorMessage}>
+            Đã tìm thấy sản phẩm! Vui lòng chọn kết quả bạn muốn sử dụng.
+          </Text>
+        );
+      case 400:
+        return (
+          <Text style={styles.errorMessage}>
+            Không tìm thấy sản phẩm! Vui lòng thử lại.
+          </Text>
+        );
+      case 500:
+        return (
+          <Text style={styles.errorMessage}>Không thể kết nối đến server.</Text>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const __getResults = () => {
+    setLoading(true);
+    setDetectPressed(true);
+    FetchAPI(photoUri);
+  };
+
+  const __goBack = () => {
+    navigation.navigate('Trang Camera');
+  };
+
+  const __showResults = () => {
+    resultsActionSheetRef.current?.show();
+    setResultsActionsheetOpened(true);
+  };
+
+  const __unreliableResultsCollapse = () => {
+    if (isUnreliableResultsOpened === false) {
+      setUnreliableResultsOpened(true);
+    } else {
+      setUnreliableResultsOpened(false);
+    }
+  };
+
+  const __showInfoData = () => {
+    const starCountRef = ref(db, 'Objects/' + selectedResult);
+    onValue(starCountRef, snapshot => {
+      const data = snapshot.val();
+      console.log(data);
+      setDescription(data.Description);
+    });
+    infoActionSheetRef.current?.show();
+    setInfoActionsheetOpened(true);
+    resultsActionSheetRef.current?.hide();
+  };
+
+  const __closeDesc = () => {
+    infoActionSheetRef.current?.hide();
+    setInfoActionsheetOpened(false);
+    resultsActionSheetRef.current?.show();
+    setResultsActionsheetOpened(true);
+  };
+
   useEffect(() => {
     if (!isLoading && isDetectPressed && errorCode === 200) {
       resultsActionSheetRef.current?.show();
@@ -266,21 +288,7 @@ const ImageDetectPage = ({route, navigation}) => {
                   : styles.errorBackgroundError,
                 {marginTop: headerHeight + 15},
               ]}>
-              {errorCode === 200 ? (
-                <Text style={styles.errorMessage}>
-                  Đã tìm thấy sản phẩm! Vui lòng chọn kết quả bạn muốn sử dụng.
-                </Text>
-              ) : errorCode === 400 ? (
-                <Text style={styles.errorMessage}>
-                  Không tìm thấy sản phẩm! Vui lòng thử lại.
-                </Text>
-              ) : (
-                errorCode === 500 && (
-                  <Text style={styles.errorMessage}>
-                    Không thể kết nối đến server.
-                  </Text>
-                )
-              )}
+              {errorSwitch()}
             </View>
           </View>
         )}
@@ -336,7 +344,7 @@ const ImageDetectPage = ({route, navigation}) => {
         ref={resultsActionSheetRef}
         backgroundInteractionEnabled={true}
         containerStyle={styles.actionSheet}
-        useBottomSafeAreaPadding={true}
+        // useBottomSafeAreaPadding={true}
         headerAlwaysVisible={true}
         gestureEnabled={true}
         closable={true}
@@ -344,7 +352,11 @@ const ImageDetectPage = ({route, navigation}) => {
         onClose={() => {
           setResultsActionsheetOpened(false);
         }}>
-        <View style={styles.actionSheetItems}>
+        <View
+          style={[
+            styles.actionSheetItems,
+            {paddingBottom: bottomTabHeight + 15},
+          ]}>
           {buttons}
           {itemsLowCount >= 1 && (
             <TouchableOpacity
@@ -368,7 +380,7 @@ const ImageDetectPage = ({route, navigation}) => {
           )}
           {isUnreliableResultsOpened && buttonsLow}
           {selectedResult && (
-            <View>
+            <View style={styles.actionButtons}>
               <TouchableOpacity
                 style={styles.searchButton}
                 onPress={__showInfoData}>
@@ -381,7 +393,7 @@ const ImageDetectPage = ({route, navigation}) => {
                       tintColor: '#5FC314',
                     }}
                   />
-                  <Text style={styles.descButton}>Xem thông tin</Text>
+                  <Text style={styles.descButton}>Thông tin</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
@@ -422,7 +434,8 @@ const ImageDetectPage = ({route, navigation}) => {
           setResultsActionsheetOpened(true);
           resultsActionSheetRef.current?.show();
         }}>
-        <View style={styles.actionSheetItems}>
+        <View
+          style={[styles.actionSheetItems, {paddingBottom: bottomTabHeight}]}>
           <TouchableOpacity style={styles.searchButton} onPress={__closeDesc}>
             <View style={styles.searchButtonViewInside}>
               <Image
@@ -506,13 +519,11 @@ const styles = StyleSheet.create({
   //   Detect button
   buttonContainer: {
     position: 'absolute',
-    // bottom: 100,
-    // flex: 1,
     width: '100%',
     justifyContent: 'space-between',
   },
   button: {
-    flex: 1,
+    // flex: 1,
     alignSelf: 'center',
     alignItems: 'center',
   },
@@ -562,13 +573,16 @@ const styles = StyleSheet.create({
   },
 
   //   Search button
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
   searchButton: {
     height: 40,
     marginTop: 5,
     marginBottom: 5,
   },
   searchButtonViewInside: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -599,7 +613,7 @@ const styles = StyleSheet.create({
   actionSheetItems: {
     padding: 20,
     paddingTop: 0,
-    paddingBottom: 75,
+    // paddingBottom: 75,
   },
 
   //   Desc Actionsheet

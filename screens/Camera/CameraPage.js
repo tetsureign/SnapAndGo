@@ -14,7 +14,6 @@ import {
 import {Camera, CameraType} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
 import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 import {useHeaderHeight} from '@react-navigation/elements';
@@ -22,9 +21,7 @@ import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 const CameraPage = ({navigation}) => {
   let camera = Camera;
-  const insets = useSafeAreaInsets();
 
-  const headerHeight = useHeaderHeight();
   const bottomTabHeight = useBottomTabBarHeight();
 
   const [resizedImage, setResizedImage] = useState(null);
