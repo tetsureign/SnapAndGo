@@ -16,7 +16,7 @@ import {useIsFocused} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
-import {FocusAwareStatusBar} from '../../FocusAwareStatusBar';
+import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 

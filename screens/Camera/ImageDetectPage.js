@@ -14,7 +14,7 @@ import ActionSheet from 'react-native-actions-sheet';
 import axios from 'axios';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {FocusAwareStatusBar} from '../../FocusAwareStatusBar';
+import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;

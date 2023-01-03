@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {TextInput, Button} from 'react-native';
-import {FocusAwareStatusBar} from '../FocusAwareStatusBar';
+import {FocusAwareStatusBar} from '../components/FocusAwareStatusBar';
 import {useState} from 'react/cjs/react.development';
 import {ref, set, update, onValue, remove} from 'firebase/database';
 import {db} from '../firebase';
