@@ -5,7 +5,8 @@ import {View, Text, Image, StyleSheet} from 'react-native';
 import MapPage from './screens/MapPage';
 import CameraStack from './screens/Camera/CameraPagesNavigator';
 import AccountPage from './screens/AccountPage';
-
+import InfoPage from './screens/InfoPage';
+import HistoryPage from './screens/HistoryPage';
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
@@ -71,7 +72,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name="Tài khoản"
-        component={AccountPage}
+        component={HistoryPage}
         options={{
           tabBarStyle: styles.lightTabBar,
           tabBarIcon: ({focused}) => (
