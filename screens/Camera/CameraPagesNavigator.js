@@ -3,6 +3,7 @@ import {StyleSheet} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CameraPage from './CameraPage';
 import ImageDetectPage from './ImageDetectPage';
+import InfoPage from '../InfoPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ const CameraStack = () => {
         component={CameraPage}
       />
       <Stack.Screen name="Nhận diện" component={ImageDetectPage} />
+      <Stack.Screen name="Thông tin" component={InfoPage} />
     </Stack.Navigator>
   );
 };

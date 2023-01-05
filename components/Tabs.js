@@ -2,14 +2,18 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View, Text, Image, StyleSheet} from 'react-native';
-import MapPage from './screens/MapPage';
-import CameraStack from './screens/Camera/CameraPagesNavigator';
-import AccountPage from './screens/AccountPage';
-import InfoPage from './screens/InfoPage';
-import HistoryPage from './screens/HistoryPage';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import MapPage from '../screens/MapPage';
+import CameraStack from '../screens/Camera/CameraPagesNavigator';
+import HomeScreen from '../screens/HomeScreen';
+import AccountPage from '../screens/AccountPage';
+import InfoPage from '../screens/InfoPage';
+import HistoryPage from '../screens/HistoryPage';
+
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
+  const insets = useSafeAreaInsets();
   return (
     <Tab.Navigator
       initialRouteName="Camera"
@@ -18,7 +22,7 @@ const Tabs = () => {
         headerTitleAlign: 'center',
         tabBarInactiveTintColor: 'rgb(170, 170, 170)',
         tabBarShowLabel: false,
-        tabBarStyle: styles.darkTabBar,
+        tabBarStyle: [styles.darkTabBar, {height: 75 + insets.bottom}],
       })}>
       <Tab.Screen
         name="Bản đồ"
@@ -26,12 +30,12 @@ const Tabs = () => {
         options={{
           headerTransparent: true,
           headerBackground: () => <View style={styles.lightHeader} />,
-          tabBarStyle: styles.lightTabBar,
+          tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
           tabBarIcon: ({focused}) => (
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
               <Image
-                source={require('./assets/icons/map.png')}
+                source={require('../assets/icons/map.png')}
                 style={{
                   width: 40,
                   height: 40,
@@ -59,7 +63,7 @@ const Tabs = () => {
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
               <Image
-                source={require('./assets/icons/search.png')}
+                source={require('../assets/icons/search.png')}
                 style={{
                   width: 40,
                   height: 40,
@@ -71,15 +75,15 @@ const Tabs = () => {
         }}
       />
       <Tab.Screen
-        name="Tài khoản"
+        name="Lịch sử"
         component={HistoryPage}
         options={{
-          tabBarStyle: styles.lightTabBar,
+          tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
           tabBarIcon: ({focused}) => (
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
               <Image
-                source={require('./assets/icons/user.png')}
+                source={require('../assets/icons/list.png')}
                 style={{
                   width: 40,
                   height: 40,
@@ -88,7 +92,7 @@ const Tabs = () => {
               />
               {focused && (
                 <Text style={{color: focused ? '#FF6901' : '#AAAAAA'}}>
-                  Tài khoản
+                  Lịch sử
                 </Text>
               )}
             </View>
@@ -106,7 +110,7 @@ const styles = StyleSheet.create({
   },
   lightTabBar: {
     position: 'absolute',
-    height: 75,
+    // height: 75,
     elevation: 0,
     backgroundColor: 'rgba(255, 255, 255, 0.75)',
   },
@@ -116,7 +120,7 @@ const styles = StyleSheet.create({
   },
   darkTabBar: {
     position: 'absolute',
-    height: 75,
+    // height: 75,
     elevation: 0,
     backgroundColor: 'rgba(38, 38, 38, 0.75)',
   },

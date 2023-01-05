@@ -9,17 +9,32 @@ import {
   Button,
   Linking,
   Image,
+  ScrollView,
 } from 'react-native';
-import ActionSheet from 'react-native-actions-sheet';
+import ActionSheet, {
+  useScrollHandlers,
+  ActionSheetRef,
+} from 'react-native-actions-sheet';
 import axios from 'axios';
+import {useHeaderHeight} from '@react-navigation/elements';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import LoadingIndicator from '../../components/LoadingIndicator';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {FocusAwareStatusBar} from '../../FocusAwareStatusBar';
+import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
+import {ref, set, update, onValue, remove} from 'firebase/database';
+import {db} from '../../components/firebase';
 
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;
 
+  const headerHeight = useHeaderHeight();
+  const bottomTabHeight = useBottomTabBarHeight();
+
+  const resultsActionSheetRef = useRef(null);
+  const infoActionSheetRef = useRef(null);
+  const scrollHandlers = useScrollHandlers('scrollview-1', infoActionSheetRef);
+
   const [result, setResult] = useState(null);
+
   const [isLoading, setLoading] = useState(false);
 
   const [resizeRatio, setResizeRatio] = useState(null);
@@ -29,17 +44,23 @@ const ImageDetectPage = ({route, navigation}) => {
   const [isDetectPressed, setDetectPressed] = useState(false);
   const [selectedResultIndex, setSelectedResultIndex] = useState(null);
   const [selectedResult, setSelectedResult] = useState(null);
-
-  // WIP
-  const [errorCode, setErrorCode] = useState(null);
-
+  const [isResultsActionsheetOpened, setResultsActionsheetOpened] =
+    useState(false);
+  const [isInfoActionsheetOpened, setInfoActionsheetOpened] = useState(false);
   const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
     useState(false);
 
-  const actionSheetRef = useRef(null);
-  const insets = useSafeAreaInsets();
+  const [description, setDescription] = useState('');
 
-  const FetchAPI = source => {
+  const [errorCode, setErrorCode] = useState(null);
+
+  const buttons = [];
+  const buttonsLow = [];
+  const rectRegions = [];
+  const rectRegionsLow = [];
+  let itemsLowCount = 0;
+
+  const FetchAPI = async source => {
     let photoUpload = {uri: source};
     let formData = new FormData();
     formData.append('file', {
@@ -69,39 +90,19 @@ const ImageDetectPage = ({route, navigation}) => {
       });
   };
 
-  const __getResults = () => {
-    setLoading(true);
-    setDetectPressed(true);
-    FetchAPI(photoUri);
-  };
-
-  const __goBack = () => {
-    navigation.navigate('Trang Camera');
-  };
-
-  const __unreliableResultsCollapse = () => {
-    if (isUnreliableResultsOpened === false) {
-      setUnreliableResultsOpened(true);
-    } else {
-      setUnreliableResultsOpened(false);
-    }
-  };
-
-  const buttons = [];
-  const buttonsLow = [];
-  const rectRegions = [];
-  const rectRegionsLow = [];
-  let itemsCount = 0;
-  let itemsLowCount = 0;
-
   const ItemsButtonRender = ({element, index, isReliable}) => {
     return (
       <TouchableOpacity
         style={styles.detectedItemsButton}
         key={index}
         onPress={() => {
-          setSelectedResultIndex(index);
-          setSelectedResult(element.object);
+          if (selectedResultIndex === index) {
+            setSelectedResultIndex(null);
+            setSelectedResult(null);
+          } else {
+            setSelectedResultIndex(index);
+            setSelectedResult(element.object);
+          }
         }}>
         {selectedResultIndex === index && (
           <View style={styles.selectedItemBackground} />
@@ -188,18 +189,83 @@ const ImageDetectPage = ({route, navigation}) => {
             />,
           );
         }
-        itemsCount++;
       });
     } else if (result.length === 0) {
       setErrorCode(400);
     }
   }
 
+  const errorSwitch = () => {
+    switch (errorCode) {
+      case 200:
+        return (
+          <Text style={styles.errorMessage}>
+            Đã tìm thấy sản phẩm! Vui lòng chọn kết quả bạn muốn sử dụng.
+          </Text>
+        );
+      case 400:
+        return (
+          <Text style={styles.errorMessage}>
+            Không tìm thấy sản phẩm! Vui lòng thử lại.
+          </Text>
+        );
+      case 500:
+        return (
+          <Text style={styles.errorMessage}>Không thể kết nối đến server.</Text>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const __getResults = () => {
+    setLoading(true);
+    setDetectPressed(true);
+    FetchAPI(photoUri);
+  };
+
+  const __goBack = () => {
+    navigation.navigate('Trang Camera');
+  };
+
+  const __showResults = () => {
+    resultsActionSheetRef.current?.show();
+    setResultsActionsheetOpened(true);
+  };
+
+  const __unreliableResultsCollapse = () => {
+    if (isUnreliableResultsOpened === false) {
+      setUnreliableResultsOpened(true);
+    } else {
+      setUnreliableResultsOpened(false);
+    }
+  };
+
+  const __showInfoData = () => {
+    const starCountRef = ref(db, 'Objects/' + selectedResult);
+    onValue(starCountRef, snapshot => {
+      const data = snapshot.val();
+      console.log(data);
+      setDescription(data.Description);
+    });
+    infoActionSheetRef.current?.show();
+    setInfoActionsheetOpened(true);
+    resultsActionSheetRef.current?.hide();
+  };
+
+  const __closeDesc = () => {
+    infoActionSheetRef.current?.hide();
+    setInfoActionsheetOpened(false);
+    resultsActionSheetRef.current?.show();
+    setResultsActionsheetOpened(true);
+  };
+
   useEffect(() => {
     if (!isLoading && isDetectPressed && errorCode === 200) {
-      actionSheetRef.current?.show();
+      resultsActionSheetRef.current?.show();
+      setResultsActionsheetOpened(true);
     }
-  }, [isLoading, isDetectPressed, photoUri, result, insets.bottom, errorCode]);
+  }, [isLoading, isDetectPressed, errorCode]);
 
   return (
     <View style={styles.container}>
@@ -216,26 +282,13 @@ const ImageDetectPage = ({route, navigation}) => {
         {errorCode && (
           <View style={styles.errorContainer}>
             <View
-              style={
+              style={[
                 errorCode === 200
                   ? styles.errorBackgroundSuccess
-                  : styles.errorBackgroundError
-              }>
-              {errorCode === 200 ? (
-                <Text style={styles.errorMessage}>
-                  Đã tìm thấy sản phẩm! Vui lòng chọn kết quả bạn muốn sử dụng.
-                </Text>
-              ) : errorCode === 400 ? (
-                <Text style={styles.errorMessage}>
-                  Không tìm thấy sản phẩm! Vui lòng thử lại.
-                </Text>
-              ) : (
-                errorCode === 500 && (
-                  <Text style={styles.errorMessage}>
-                    Không thể kết nối đến server.
-                  </Text>
-                )
-              )}
+                  : styles.errorBackgroundError,
+                {marginTop: headerHeight + 15},
+              ]}>
+              {errorSwitch()}
             </View>
           </View>
         )}
@@ -254,7 +307,7 @@ const ImageDetectPage = ({route, navigation}) => {
         )}
 
         {result === null ? (
-          <View style={styles.buttonContainer}>
+          <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
             <Button
               onPress={__getResults}
               title="Nhận diện"
@@ -263,7 +316,7 @@ const ImageDetectPage = ({route, navigation}) => {
           </View>
         ) : (
           errorCode === 400 && (
-            <View style={styles.buttonContainer}>
+            <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
               <Button
                 onPress={__goBack}
                 title="Thử chụp hình lại"
@@ -272,19 +325,38 @@ const ImageDetectPage = ({route, navigation}) => {
             </View>
           )
         )}
+
+        {isResultsActionsheetOpened === false &&
+          isInfoActionsheetOpened === false &&
+          errorCode === 200 && (
+            <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
+              <Button
+                onPress={__showResults}
+                title="Danh sách kết quả"
+                style={styles.button}
+              />
+            </View>
+          )}
         {isLoading && <LoadingIndicator />}
       </ImageBackground>
 
       <ActionSheet
-        ref={actionSheetRef}
+        ref={resultsActionSheetRef}
         backgroundInteractionEnabled={true}
         containerStyle={styles.actionSheet}
-        useBottomSafeAreaPadding={true}
+        // useBottomSafeAreaPadding={true}
         headerAlwaysVisible={true}
         gestureEnabled={true}
-        closable={false}
-        indicatorStyle={{marginTop: 15, width: 60}}>
-        <View style={styles.actionSheetItems}>
+        closable={true}
+        indicatorStyle={{marginTop: 15, width: 60}}
+        onClose={() => {
+          setResultsActionsheetOpened(false);
+        }}>
+        <View
+          style={[
+            styles.actionSheetItems,
+            {paddingBottom: bottomTabHeight + 15},
+          ]}>
           {buttons}
           {itemsLowCount >= 1 && (
             <TouchableOpacity
@@ -308,26 +380,79 @@ const ImageDetectPage = ({route, navigation}) => {
           )}
           {isUnreliableResultsOpened && buttonsLow}
           {selectedResult && (
-            <TouchableOpacity
-              style={styles.searchButton}
-              onPress={() => {
-                Linking.openURL(
-                  'http://maps.google.com/?q=' + selectedResult + ' shop',
-                );
-              }}>
-              <View style={styles.searchButtonViewInside}>
-                <Image
-                  source={require('../../assets/icons/search.png')}
-                  style={{
-                    width: 40,
-                    height: 40,
-                    tintColor: '#00C5FF',
-                  }}
-                />
-                <Text style={styles.searchText}>Tìm kiếm</Text>
-              </View>
-            </TouchableOpacity>
+            <View style={styles.actionButtons}>
+              <TouchableOpacity
+                style={styles.searchButton}
+                onPress={__showInfoData}>
+                <View style={styles.searchButtonViewInside}>
+                  <Image
+                    source={require('../../assets/icons/desc.png')}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      tintColor: '#5FC314',
+                    }}
+                  />
+                  <Text style={styles.descButton}>Thông tin</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.searchButton}
+                onPress={() => {
+                  Linking.openURL(
+                    'http://maps.google.com/?q=' + selectedResult + ' shop',
+                  );
+                }}>
+                <View style={styles.searchButtonViewInside}>
+                  <Image
+                    source={require('../../assets/icons/search.png')}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      tintColor: '#00C5FF',
+                    }}
+                  />
+                  <Text style={styles.searchText}>Tìm kiếm</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           )}
+        </View>
+      </ActionSheet>
+
+      <ActionSheet
+        ref={infoActionSheetRef}
+        backgroundInteractionEnabled={true}
+        containerStyle={styles.actionSheet}
+        useBottomSafeAreaPadding={true}
+        headerAlwaysVisible={true}
+        gestureEnabled={true}
+        closable={true}
+        indicatorStyle={{marginTop: 15, width: 60}}
+        onClose={() => {
+          setInfoActionsheetOpened(false);
+          setResultsActionsheetOpened(true);
+          resultsActionSheetRef.current?.show();
+        }}>
+        <View
+          style={[styles.actionSheetItems, {paddingBottom: bottomTabHeight}]}>
+          <TouchableOpacity style={styles.searchButton} onPress={__closeDesc}>
+            <View style={styles.searchButtonViewInside}>
+              <Image
+                source={require('../../assets/icons/back.png')}
+                style={{
+                  width: 40,
+                  height: 40,
+                  tintColor: '#00C5FF',
+                }}
+              />
+              <Text style={styles.searchText}>Trở về danh sách</Text>
+            </View>
+          </TouchableOpacity>
+          <ScrollView {...scrollHandlers}>
+            <Text style={styles.descTitle}>{selectedResult}</Text>
+            <Text style={styles.desc}>{description}</Text>
+          </ScrollView>
         </View>
       </ActionSheet>
     </View>
@@ -354,7 +479,6 @@ const styles = StyleSheet.create({
   },
   errorBackgroundSuccess: {
     backgroundColor: '#5FC314',
-    marginTop: 100,
     marginHorizontal: 15,
     paddingVertical: 6,
     paddingHorizontal: 12,
@@ -362,7 +486,6 @@ const styles = StyleSheet.create({
   },
   errorBackgroundError: {
     backgroundColor: '#FF6901',
-    marginTop: 100,
     marginHorizontal: 15,
     paddingVertical: 6,
     paddingHorizontal: 12,
@@ -396,13 +519,11 @@ const styles = StyleSheet.create({
   //   Detect button
   buttonContainer: {
     position: 'absolute',
-    bottom: 75,
-    // flex: 1,
     width: '100%',
     justifyContent: 'space-between',
   },
   button: {
-    flex: 1,
+    // flex: 1,
     alignSelf: 'center',
     alignItems: 'center',
   },
@@ -452,13 +573,16 @@ const styles = StyleSheet.create({
   },
 
   //   Search button
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
   searchButton: {
     height: 40,
     marginTop: 5,
     marginBottom: 5,
   },
   searchButtonViewInside: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -466,6 +590,11 @@ const styles = StyleSheet.create({
   searchText: {
     fontSize: 25,
     color: '#00C5FF',
+    paddingLeft: 5,
+  },
+  descButton: {
+    fontSize: 25,
+    color: '#5FC314',
     paddingLeft: 5,
   },
 
@@ -484,7 +613,18 @@ const styles = StyleSheet.create({
   actionSheetItems: {
     padding: 20,
     paddingTop: 0,
-    paddingBottom: 75,
+    // paddingBottom: 75,
+  },
+
+  //   Desc Actionsheet
+  descTitle: {
+    fontSize: 40,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  desc: {
+    fontSize: 20,
+    color: 'white',
   },
 });
 

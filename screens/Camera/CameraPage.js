@@ -14,13 +14,15 @@ import {
 import {Camera, CameraType} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
-import {FocusAwareStatusBar} from '../../FocusAwareStatusBar';
+import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
+import {useHeaderHeight} from '@react-navigation/elements';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 const CameraPage = ({navigation}) => {
   let camera = Camera;
-  const insets = useSafeAreaInsets();
+
+  const bottomTabHeight = useBottomTabBarHeight();
 
   const [resizedImage, setResizedImage] = useState(null);
 
@@ -55,32 +57,6 @@ const CameraPage = ({navigation}) => {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const __takePicture = async () => {
-    if (!camera) {
-      return;
-    }
-    setFlashScreen(true);
-    const photo = await camera.takePictureAsync();
-    resize(photo.uri);
-    // const photoUri = Image.resolveAssetSource(photo).uri;
-    // const photoWidth = Image.resolveAssetSource(photo).width;
-    // const photoHeight = Image.resolveAssetSource(photo).height;
-    setFlashScreen(false);
-    // navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
-  };
-
-  const __pickImage = async () => {
-    const photo = await launchImageLibrary({mediaType: 'photo'});
-    if (photo.didCancel === true) {
-      return;
-    }
-    resize(photo.assets[0].uri);
-    // const photoUri = Image.resolveAssetSource(photo).assets[0].uri;
-    // const photoWidth = Image.resolveAssetSource(photo).assets[0].width;
-    // const photoHeight = Image.resolveAssetSource(photo).assets[0].height;
-    // navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
   };
 
   // Screen Ratio and image padding
@@ -180,6 +156,32 @@ const CameraPage = ({navigation}) => {
     );
   };
 
+  const __takePicture = async () => {
+    if (!camera) {
+      return;
+    }
+    setFlashScreen(true);
+    const photo = await camera.takePictureAsync();
+    resize(photo.uri);
+    // const photoUri = Image.resolveAssetSource(photo).uri;
+    // const photoWidth = Image.resolveAssetSource(photo).width;
+    // const photoHeight = Image.resolveAssetSource(photo).height;
+    setFlashScreen(false);
+    // navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
+  };
+
+  const __pickImage = async () => {
+    const photo = await launchImageLibrary({mediaType: 'photo'});
+    if (photo.didCancel === true) {
+      return;
+    }
+    resize(photo.assets[0].uri);
+    // const photoUri = Image.resolveAssetSource(photo).assets[0].uri;
+    // const photoWidth = Image.resolveAssetSource(photo).assets[0].width;
+    // const photoHeight = Image.resolveAssetSource(photo).assets[0].height;
+    // navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
+  };
+
   return (
     <View style={styles.container}>
       <FocusAwareStatusBar barStyle={'light-content'} />
@@ -200,7 +202,8 @@ const CameraPage = ({navigation}) => {
               }}
             />
           )}
-          <View style={styles.buttonsPositioner}>
+          <View
+            style={[styles.buttonsPositioner, {bottom: bottomTabHeight + 15}]}>
             <View style={styles.buttonsContainer}>
               <View>
                 <TouchableOpacity
@@ -260,7 +263,7 @@ const styles = StyleSheet.create({
   buttonsPositioner: {
     flex: 1,
     position: 'absolute',
-    bottom: 90,
+    // bottom: 90,
     width: '100%',
   },
   buttonsContainer: {
