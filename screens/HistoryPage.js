@@ -1,113 +1,96 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  TextInput,
-  Button,
-  StatusBar,
+  ScrollView,
+  RefreshControl,
+  Linking,
+  TouchableOpacity,
 } from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
+import {FocusAwareStatusBar} from '../components/FocusAwareStatusBar';
 import {ref, set, update, onValue, remove} from 'firebase/database';
 import {db} from '../components/firebase';
-import moment from 'moment';
+
 export default function HistoryPage() {
-  const [ObjectsName, setObjectsName] = useState('');
-  const [currentDate, setCurrentDate] = useState('');
+  const isFocused = useIsFocused();
 
-  useEffect(() => {
-    var date = moment().utcOffset('+07:00').format(' hh:mm:ss a');
-    setCurrentDate(date);
-  }, []);
+  const [results, setResults] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
-  function createData() {
-    // const newKey = push(child(ref(database), 'users')).key;
+  let items = [];
 
-    set(ref(db, 'HistorySearch/' + ObjectsName), {
-      ObjectsName: ObjectsName,
-      currentDate: currentDate,
-    })
-      .then(() => {
-        // Data saved successfully!
-        alert('data updated!');
-      })
-      .catch(error => {
-        // The write failed...
-        alert(error);
-      });
-  }
-
-  // function update() {
-  //   // const newKey = push(child(ref(database), 'users')).key;
-
-  //   update(ref(db, 'users/' + username), {
-  //     username: username,
-  //     email: email,
-  //   })
-  //     .then(() => {
-  //       // Data saved successfully!
-  //       alert('data updated!');
-  //     })
-  //     .catch(error => {
-  //       // The write failed...
-  //       alert(error);
-  //     });
-  // }
-
-  function readData() {
-    const starCountRef = ref(db, 'HistorySearch/' + ObjectsName);
-    onValue(starCountRef, snapshot => {
-      const data = snapshot.val();
-      for (keys in data) {
-        console.log(keys);
-      }
-      snapshot.forEach(grandchildSnapshot => {
-        let item = grandchildSnapshot.val();
-        console.log(item.currentDate);
-      });
-
-      // setCurrentDate(data.currentDate);
+  if (results) {
+    let index = 1;
+    results.forEach(element => {
+      let item = element.val();
+      items.push(
+        <TouchableOpacity
+          style={styles.historyItemsContainer}
+          key={index}
+          onPress={() => {
+            Linking.openURL(
+              'http://maps.google.com/?q=' + item.ObjectsName + ' shop',
+            );
+          }}>
+          <Text style={styles.historyItemsName}>{item.ObjectsName}</Text>
+          <Text style={styles.historyItemsDate}>{item.currentDate}</Text>
+        </TouchableOpacity>,
+      );
+      index++;
     });
   }
 
-  function deleteData() {
-    remove(ref(db, 'users/' + username));
-    alert('removed');
+  function readData() {
+    const starCountRef = ref(db, 'HistorySearch/');
+    onValue(starCountRef, snapshot => {
+      setRefreshing(false);
+      console.log(snapshot);
+      setResults(snapshot);
+    });
   }
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    readData();
+  }, []);
+
+  useEffect(() => {
+    setRefreshing(true);
+    readData();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={'dark-content'} />
-      <TextInput
-        value={ObjectsName}
-        onChangeText={ObjectsName => {
-          setObjectsName(ObjectsName);
-        }}
-        placeholder="Objects"
-        style={styles.textBoxes}></TextInput>
-      {/* <TextInput value={currentDate} onChangeText={(currentDate) => { setCurrentDate(currentDate) }} type style={styles.textBoxes}></TextInput> */}
-      <Button
-        onPress={createData}
-        title="Learn More"
-        color="#841584"
-        accessibilityLabel="Learn more about this purple button"
-      />
-    </View>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
+      <FocusAwareStatusBar barStyle={'dark-content'} />
+      {items}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  textBoxes: {
-    width: '90%',
-    fontSize: 18,
-    padding: 12,
-    borderColor: 'gray',
-    borderWidth: 0.2,
+  historyItemsContainer: {
+    backgroundColor: 'white',
     borderRadius: 10,
+    padding: 12,
+    margin: 6,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    elevation: 2,
+  },
+  historyItemsName: {
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  historyItemsDate: {
+    color: '#BFBFBF',
   },
 });

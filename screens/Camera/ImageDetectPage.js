@@ -18,6 +18,7 @@ import ActionSheet, {
 import axios from 'axios';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import moment from 'moment';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 import {ref, set, update, onValue, remove} from 'firebase/database';
@@ -31,7 +32,10 @@ const ImageDetectPage = ({route, navigation}) => {
 
   const resultsActionSheetRef = useRef(null);
   const infoActionSheetRef = useRef(null);
-  const scrollHandlers = useScrollHandlers('scrollview-1', infoActionSheetRef);
+  const scrollHandlers = useScrollHandlers(
+    'scrollview-1',
+    infoActionSheetRef.current,
+  );
 
   const [result, setResult] = useState(null);
 
@@ -51,6 +55,7 @@ const ImageDetectPage = ({route, navigation}) => {
     useState(false);
 
   const [description, setDescription] = useState('');
+  const [currentDate, setCurrentDate] = useState('');
 
   const [errorCode, setErrorCode] = useState(null);
 
@@ -59,6 +64,11 @@ const ImageDetectPage = ({route, navigation}) => {
   const rectRegions = [];
   const rectRegionsLow = [];
   let itemsLowCount = 0;
+
+  useEffect(() => {
+    var date = moment().utcOffset('+07:00').format('HH:mm, DD/MM/YYYY');
+    setCurrentDate(date);
+  }, []);
 
   const FetchAPI = async source => {
     let photoUpload = {uri: source};
@@ -148,6 +158,21 @@ const ImageDetectPage = ({route, navigation}) => {
         ]}
       />
     );
+  };
+
+  const createHistoryData = () => {
+    set(ref(db, 'HistorySearch/' + selectedResult), {
+      ObjectsName: selectedResult,
+      currentDate: currentDate,
+    })
+      .then(() => {
+        // Data saved successfully!
+        console.log('Data updated!');
+      })
+      .catch(error => {
+        // The write failed...
+        console.log(error);
+      });
   };
 
   if (errorCode === 200) {
@@ -258,6 +283,11 @@ const ImageDetectPage = ({route, navigation}) => {
     setInfoActionsheetOpened(false);
     resultsActionSheetRef.current?.show();
     setResultsActionsheetOpened(true);
+  };
+
+  const __searchMap = () => {
+    createHistoryData();
+    Linking.openURL('http://maps.google.com/?q=' + selectedResult + ' shop');
   };
 
   useEffect(() => {
@@ -398,11 +428,7 @@ const ImageDetectPage = ({route, navigation}) => {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.searchButton}
-                onPress={() => {
-                  Linking.openURL(
-                    'http://maps.google.com/?q=' + selectedResult + ' shop',
-                  );
-                }}>
+                onPress={__searchMap}>
                 <View style={styles.searchButtonViewInside}>
                   <Image
                     source={require('../../assets/icons/search.png')}
