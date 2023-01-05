@@ -11,10 +11,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import ActionSheet, {
-  useScrollHandlers,
-  ActionSheetRef,
-} from 'react-native-actions-sheet';
+import ActionSheet, {useScrollHandlers} from 'react-native-actions-sheet';
 import axios from 'axios';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
@@ -32,10 +29,7 @@ const ImageDetectPage = ({route, navigation}) => {
 
   const resultsActionSheetRef = useRef(null);
   const infoActionSheetRef = useRef(null);
-  const scrollHandlers = useScrollHandlers(
-    'scrollview-1',
-    infoActionSheetRef.current,
-  );
+  const scrollHandlers = useScrollHandlers('scrollview-1', infoActionSheetRef);
 
   const [result, setResult] = useState(null);
 
@@ -387,6 +381,7 @@ const ImageDetectPage = ({route, navigation}) => {
         headerAlwaysVisible={true}
         gestureEnabled={true}
         closable={true}
+        drawUnderStatusBar={false}
         indicatorStyle={{marginTop: 15, width: 60}}
         onClose={() => {
           setResultsActionsheetOpened(false);
@@ -463,6 +458,7 @@ const ImageDetectPage = ({route, navigation}) => {
         headerAlwaysVisible={true}
         gestureEnabled={true}
         closable={true}
+        drawUnderStatusBar={false}
         indicatorStyle={{marginTop: 15, width: 60}}
         onClose={() => {
           setInfoActionsheetOpened(false);
