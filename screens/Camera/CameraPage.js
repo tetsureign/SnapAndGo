@@ -227,12 +227,6 @@ const CameraPage = ({navigation}) => {
                     height: 70,
                     borderRadius: 50,
                     backgroundColor: '#fff',
-                    shadowOffset: {
-                      width: 0,
-                      height: 4,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 4,
                     elevation: 5,
                   }}
                 />
@@ -281,12 +275,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: 'white',
     borderWidth: 5,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
     elevation: 5,
   },
 });

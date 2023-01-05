@@ -141,7 +141,16 @@ const ImageDetectPage = ({route, navigation}) => {
 
   const RectRender = ({element, index, isReliable}) => {
     return (
-      <View
+      <TouchableOpacity
+        onPress={() => {
+          if (selectedResultIndex === index) {
+            setSelectedResultIndex(null);
+            setSelectedResult(null);
+          } else {
+            setSelectedResultIndex(index);
+            setSelectedResult(element.object);
+          }
+        }}
         key={index}
         style={[
           isReliable && styles.rectFade,
@@ -536,7 +545,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   rectFade: {
-    borderColor: 'rgba(255, 255, 255, 0.5)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
     borderWidth: 5,
     borderRadius: 10,
     shadowRadius: 4,
@@ -628,13 +637,6 @@ const styles = StyleSheet.create({
   actionSheet: {
     backgroundColor: '#434343',
     borderRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
   },
   actionSheetItems: {
     padding: 20,
