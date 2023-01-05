@@ -8,6 +8,7 @@ import CameraStack from '../screens/Camera/CameraPagesNavigator';
 import HomeScreen from '../screens/HomeScreen';
 import AccountPage from '../screens/AccountPage';
 import InfoPage from '../screens/InfoPage';
+import HistoryPage from '../screens/HistoryPage';
 
 const Tab = createBottomTabNavigator();
 
@@ -74,15 +75,15 @@ const Tabs = () => {
         }}
       />
       <Tab.Screen
-        name="Tài khoản"
-        component={AccountPage}
+        name="Lịch sử"
+        component={HistoryPage}
         options={{
           tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
           tabBarIcon: ({focused}) => (
             <View
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
               <Image
-                source={require('../assets/icons/user.png')}
+                source={require('../assets/icons/list.png')}
                 style={{
                   width: 40,
                   height: 40,
@@ -91,7 +92,7 @@ const Tabs = () => {
               />
               {focused && (
                 <Text style={{color: focused ? '#FF6901' : '#AAAAAA'}}>
-                  Tài khoản
+                  Lịch sử
                 </Text>
               )}
             </View>
