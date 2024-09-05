@@ -16,6 +16,7 @@ import axios from 'axios';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import moment from 'moment';
+import Config from 'react-native-config';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 import {ref, set, update, onValue, remove} from 'firebase/database';
@@ -67,16 +68,17 @@ const ImageDetectPage = ({route, navigation}) => {
   const FetchAPI = async source => {
     let photoUpload = {uri: source};
     let formData = new FormData();
-    formData.append('file', {
+    formData.append('image', {
       uri: photoUpload.uri,
       name: 'image.jpg',
       type: 'image/jpeg',
     });
 
-    const baseUrl = 'http://35.78.235.36';
+    const baseUrl = Config.SERVER_URI;
+    const apiRoute = Config.SERVER_API_ROUTE;
 
     return axios
-      .post(`${baseUrl}/api/v1/yolo-obj-detect/images/detect`, formData, {
+      .post(`${baseUrl}${apiRoute}/detect`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -181,7 +183,7 @@ const ImageDetectPage = ({route, navigation}) => {
   if (errorCode === 200) {
     if (result && result.length >= 1) {
       result.map((element, index) => {
-        if (element.score >= 70) {
+        if (element.score >= 0.7) {
           buttons.push(
             <ItemsButtonRender
               element={element}

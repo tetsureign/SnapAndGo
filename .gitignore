@@ -65,3 +65,6 @@ buck-out/
 
 # VSCode
 .vscode
+
+# dotenv
+.env
