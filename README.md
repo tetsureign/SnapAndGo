@@ -6,35 +6,35 @@
 
 ## Chạy ứng dụng
 
-### __Lấy repo từ GitHub__
+### **Lấy repo từ GitHub**
 
 ```bash
 git clone https://github.com/shortthu/SnapAndGo.git
 cd SnapAndGo
 ```
 
-### __Cài đặt các node_modules__
+### **Cài đặt các node_modules**
 
 ```bash
 npm i
 ```
 
-### __Chạy trên Android__
+### **Chạy trên Android**
 
-*Kết nối điện thoại ở chế độ debug trước nếu muốn dùng điện thoại thay cho emulator*
+_Kết nối điện thoại ở chế độ debug trước nếu muốn dùng điện thoại thay cho emulator_
 
 ```bash
-npx react-native run-android
+npm run android
 ```
 
 ## Các command khác
 
 ### Bắt đầu server Metro để chạy file js sau khi build app và app đã chạy trên máy
 
-*(Trong trường hợp lỡ tắt cửa sổ Metro hay làm sao đó mà nó mất tiêu)*
+_(Trong trường hợp lỡ tắt cửa sổ Metro hay làm sao đó mà nó mất tiêu)_
 
 ```bash
-npx react-native start
+npm start
 ```
 
 ### Sửa lỗi Metro không thấy thiết bị sau khi rút USB, hoặc vì lý do nào đó bị disconnect
