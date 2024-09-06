@@ -25,6 +25,7 @@ import {
 } from '../../contexts/DetectionResultContext';
 import {RectRender} from './ImageDetectRectDraw';
 import {ItemsButtonRender} from './ImageDetectResultList';
+import {ErrorChip} from '../../components/ErrorMessage/ErrorChip';
 
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;
@@ -155,29 +156,6 @@ const ImageDetectPage = ({route, navigation}) => {
     }
   }
 
-  const errorSwitch = () => {
-    switch (errorCode) {
-      case 200:
-        return (
-          <Text style={styles.errorMessage}>
-            Đã tìm thấy sản phẩm! Vui lòng chọn kết quả bạn muốn sử dụng.
-          </Text>
-        );
-      case 400:
-        return (
-          <Text style={styles.errorMessage}>
-            Không tìm thấy sản phẩm! Vui lòng thử lại.
-          </Text>
-        );
-      case 500:
-        return (
-          <Text style={styles.errorMessage}>Không thể kết nối đến server.</Text>
-        );
-      default:
-        return null;
-    }
-  };
-
   const __getResults = () => {
     setLoading(true);
     setDetectPressed(true);
@@ -246,15 +224,8 @@ const ImageDetectPage = ({route, navigation}) => {
         }}>
         {errorCode && (
           <View style={styles.errorContainer}>
-            <View
-              style={[
-                errorCode === 200
-                  ? styles.errorBackgroundSuccess
-                  : styles.errorBackgroundError,
-                {marginTop: headerHeight + 15},
-              ]}>
-              {errorSwitch()}
-            </View>
+            <View style={{marginTop: headerHeight + 15}} />
+            <ErrorChip errorCode={errorCode} />
           </View>
         )}
 
