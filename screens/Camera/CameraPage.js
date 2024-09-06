@@ -14,17 +14,15 @@ import {
 import {Camera, CameraType} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
-import ImageResizer from '@bam.tech/react-native-image-resizer';
 import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import ResizeImage from '../../utils/ResizeImage';
 
 const CameraPage = ({navigation}) => {
   let camera = Camera;
 
   const bottomTabHeight = useBottomTabBarHeight();
-
-  const [resizedImage, setResizedImage] = useState(null);
 
   // Get permission
   const [type, setType] = useState(CameraType.back);
@@ -34,29 +32,11 @@ const CameraPage = ({navigation}) => {
   // Check Focused
   const isFocused = useIsFocused();
 
-  const resize = async image => {
-    try {
-      let result = await ImageResizer.createResizedImage(
-        image,
-        640,
-        640,
-        'JPEG',
-        100,
-        0,
-        undefined,
-        false,
-        {
-          mode: 'contain',
-        },
-      );
-
-      const photoUri = Image.resolveAssetSource(result).uri;
-      const photoWidth = Image.resolveAssetSource(result).width;
-      const photoHeight = Image.resolveAssetSource(result).height;
-      navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
-    } catch (error) {
-      console.log(error);
-    }
+  const navigateToDetect = photo => {
+    const photoUri = Image.resolveAssetSource(photo).uri;
+    const photoWidth = Image.resolveAssetSource(photo).width;
+    const photoHeight = Image.resolveAssetSource(photo).height;
+    navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
   };
 
   // Screen Ratio and image padding
@@ -162,12 +142,9 @@ const CameraPage = ({navigation}) => {
     }
     setFlashScreen(true);
     const photo = await camera.takePictureAsync();
-    resize(photo.uri);
-    // const photoUri = Image.resolveAssetSource(photo).uri;
-    // const photoWidth = Image.resolveAssetSource(photo).width;
-    // const photoHeight = Image.resolveAssetSource(photo).height;
+    const resizedPhoto = await ResizeImage(photo.uri);
     setFlashScreen(false);
-    // navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
+    navigateToDetect(resizedPhoto);
   };
 
   const __pickImage = async () => {
@@ -175,11 +152,8 @@ const CameraPage = ({navigation}) => {
     if (photo.didCancel === true) {
       return;
     }
-    resize(photo.assets[0].uri);
-    // const photoUri = Image.resolveAssetSource(photo).assets[0].uri;
-    // const photoWidth = Image.resolveAssetSource(photo).assets[0].width;
-    // const photoHeight = Image.resolveAssetSource(photo).assets[0].height;
-    // navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
+    const resizedPhoto = await ResizeImage(photo.assets[0].uri);
+    navigateToDetect(resizedPhoto);
   };
 
   return (
