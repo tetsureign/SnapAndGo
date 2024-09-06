@@ -5,6 +5,7 @@ import {SelectedResultContext} from '../../contexts/DetectionResultContext';
 export const ItemsButtonRender = ({element, index, isReliable}) => {
   const {selectedResultIndex, setSelectedResultIndex, setSelectedResult} =
     useContext(SelectedResultContext);
+
   return (
     <TouchableOpacity
       style={styles.detectedItemsButton}

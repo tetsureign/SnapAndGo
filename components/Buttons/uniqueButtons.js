@@ -2,16 +2,16 @@ import React from 'react';
 import {TouchableOpacity, Image, View} from 'react-native';
 import {cameraButtonStyles} from './styles';
 
-export function TakePictureButton({onPress}) {
+export const TakePictureButton = ({onPress}) => {
   return (
     <TouchableOpacity
       style={cameraButtonStyles.captureButton}
       onPress={onPress}
     />
   );
-}
+};
 
-export function ImagePickerButton({onPress}) {
+export const ImagePickerButton = ({onPress}) => {
   return (
     <View>
       <TouchableOpacity
@@ -24,4 +24,4 @@ export function ImagePickerButton({onPress}) {
       </TouchableOpacity>
     </View>
   );
-}
+};

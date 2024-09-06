@@ -12,7 +12,6 @@ const handleResponse = res => {
       ///2xx
       case 200:
         return res.data;
-      /// 3xx
       case 201:
         return res.data;
       /// 4xx

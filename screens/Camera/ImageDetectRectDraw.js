@@ -10,6 +10,7 @@ export const RectRender = ({element, index, isReliable}) => {
     setSelectedResult,
     resizeRatio,
   } = useContext(SelectedResultContext);
+
   return (
     <TouchableOpacity
       onPress={() => {
