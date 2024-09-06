@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useRef, useEffect, useState, useContext} from 'react';
 import {
   Text,
   StyleSheet,
@@ -19,6 +19,12 @@ import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 import {ref, set, update, onValue, remove} from 'firebase/database';
 import {db} from '../../components/firebase';
 import * as api from '../../api/api';
+import {
+  DetectionResultContext,
+  SelectedResultContext,
+} from '../../contexts/DetectionResultContext';
+import {RectRender} from './ImageDetectRectDraw';
+import {ItemsButtonRender} from './ImageDetectResultList';
 
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;
@@ -78,6 +84,7 @@ const ImageDetectPage = ({route, navigation}) => {
           'Content-Type': 'multipart/form-data',
         },
       });
+      console.log('Result: ', responseData);
       setResult(responseData);
       setErrorCode(200);
       setLoading(false);
@@ -86,75 +93,6 @@ const ImageDetectPage = ({route, navigation}) => {
       setErrorCode(500);
       setLoading(false);
     }
-  };
-
-  const ItemsButtonRender = ({element, index, isReliable}) => {
-    return (
-      <TouchableOpacity
-        style={styles.detectedItemsButton}
-        key={index}
-        onPress={() => {
-          if (selectedResultIndex === index) {
-            setSelectedResultIndex(null);
-            setSelectedResult(null);
-          } else {
-            setSelectedResultIndex(index);
-            setSelectedResult(element.object);
-          }
-        }}>
-        {selectedResultIndex === index && (
-          <View style={styles.selectedItemBackground} />
-        )}
-        <View style={styles.itemsTextContainer}>
-          <Text
-            style={[
-              styles.itemsText,
-              isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
-              selectedResultIndex === index && styles.itemsTextWhite,
-            ]}>
-            {element.object}
-          </Text>
-          <Text
-            style={[
-              styles.itemsText,
-              isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
-              selectedResultIndex === index && styles.itemsTextWhite,
-            ]}>
-            {element.score}%
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
-  const RectRender = ({element, index, isReliable}) => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          if (selectedResultIndex === index) {
-            setSelectedResultIndex(null);
-            setSelectedResult(null);
-          } else {
-            setSelectedResultIndex(index);
-            setSelectedResult(element.object);
-          }
-        }}
-        key={index}
-        style={[
-          isReliable && styles.rectFade,
-          selectedResultIndex === index && styles.rectWhite,
-          {
-            position: 'absolute',
-            width:
-              (element.coordinate.x1 - element.coordinate.x0) * resizeRatio,
-            height:
-              (element.coordinate.y1 - element.coordinate.y0) * resizeRatio,
-            left: element.coordinate.x0 * resizeRatio,
-            top: element.coordinate.y0 * resizeRatio,
-          },
-        ]}
-      />
-    );
   };
 
   const createHistoryData = () => {
@@ -327,8 +265,16 @@ const ImageDetectPage = ({route, navigation}) => {
                 width: imageWidthDevice,
                 height: photoHeight * resizeRatio,
               }}>
-              {rectRegions}
-              {rectRegionsLow}
+              <SelectedResultContext.Provider
+                value={{
+                  selectedResultIndex,
+                  setSelectedResultIndex,
+                  setSelectedResult,
+                  resizeRatio,
+                }}>
+                {rectRegions}
+                {rectRegionsLow}
+              </SelectedResultContext.Provider>
             </View>
           </View>
         )}
@@ -385,7 +331,15 @@ const ImageDetectPage = ({route, navigation}) => {
             styles.actionSheetItems,
             {paddingBottom: bottomTabHeight + 15},
           ]}>
-          {buttons}
+          <SelectedResultContext.Provider
+            value={{
+              selectedResultIndex,
+              setSelectedResultIndex,
+              setSelectedResult,
+            }}>
+            {buttons}
+          </SelectedResultContext.Provider>
+
           {itemsLowCount >= 1 && (
             <TouchableOpacity
               style={styles.unreliableResultsButton}
@@ -406,7 +360,14 @@ const ImageDetectPage = ({route, navigation}) => {
               )}
             </TouchableOpacity>
           )}
-          {isUnreliableResultsOpened && buttonsLow}
+          <SelectedResultContext.Provider
+            value={{
+              selectedResultIndex,
+              setSelectedResultIndex,
+              setSelectedResult,
+            }}>
+            {isUnreliableResultsOpened && buttonsLow}
+          </SelectedResultContext.Provider>
           {selectedResult && (
             <View style={styles.actionButtons}>
               <TouchableOpacity
@@ -528,18 +489,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
-  rectWhite: {
-    borderColor: 'white',
-    borderWidth: 5,
-    borderRadius: 10,
-    shadowRadius: 4,
-  },
-  rectFade: {
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-    borderWidth: 5,
-    borderRadius: 10,
-    shadowRadius: 4,
-  },
 
   //   Detect button
   buttonContainer: {
@@ -551,34 +500,6 @@ const styles = StyleSheet.create({
     // flex: 1,
     alignSelf: 'center',
     alignItems: 'center',
-  },
-
-  // Actionsheet area
-  //   Results
-  selectedItemBackground: {
-    backgroundColor: '#646464',
-    borderWidth: 1,
-    borderColor: '#858585',
-    borderRadius: 10,
-    height: 40,
-    marginBottom: -40,
-  },
-  itemsTextContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  itemsText: {
-    fontSize: 25,
-    paddingHorizontal: 5,
-  },
-  itemsTextWhite: {
-    color: 'white',
-  },
-  itemsTextFade: {
-    color: 'rgba(255, 255, 255, 0.25)',
-  },
-  detectedItemsButton: {
-    paddingVertical: 5,
   },
 
   //   Unreliable results
