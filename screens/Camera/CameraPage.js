@@ -1,9 +1,7 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect, useRef} from 'react';
 import {
   Text,
   StyleSheet,
-  TouchableOpacity,
   View,
   Dimensions,
   Platform,
@@ -18,6 +16,10 @@ import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import ResizeImage from '../../utils/ResizeImage';
+import {
+  TakePictureButton,
+  ImagePickerButton,
+} from '../../components/Buttons/uniqueButtons';
 
 const CameraPage = ({navigation}) => {
   let camera = Camera;
@@ -41,7 +43,7 @@ const CameraPage = ({navigation}) => {
 
   // Screen Ratio and image padding
   const [realCameraWidth, setRealCameraWidth] = useState(0);
-  const [ratio, setRatio] = useState('4:3'); // default is 4:3
+  const [cameraRatio, setRatio] = useState('4:3'); // default is 4:3
   const {height, width} = Dimensions.get('window');
   const screenRatio = height / width;
   const [isRatioSet, setIsRatioSet] = useState(false);
@@ -55,8 +57,7 @@ const CameraPage = ({navigation}) => {
     // Camera permissions are not granted yet
     return (
       <View style={styles.container}>
-        <Text
-          style={{textAlign: 'center', color: 'white', paddingVertical: 10}}>
+        <Text style={styles.permissionText}>
           App cần quyền của bạn để hiển thị camera
         </Text>
         <Button onPress={requestPermission} title="Cấp quyền" />
@@ -164,48 +165,18 @@ const CameraPage = ({navigation}) => {
           onCameraReady={setCameraReady}
           style={[styles.camera, {width: realCameraWidth}]}
           type={type}
-          ratio={ratio}
+          ratio={cameraRatio}
           ref={r => {
             camera = r;
           }}>
-          {flashScreen && (
-            <FlashScreen
-              style={{
-                flex: 1,
-                backgroundColor: 'black',
-              }}
-            />
-          )}
+          {flashScreen && <FlashScreen style={styles.flashScreen} />}
           <View
             style={[styles.buttonsPositioner, {bottom: bottomTabHeight + 15}]}>
             <View style={styles.buttonsContainer}>
-              <View>
-                <TouchableOpacity
-                  style={styles.imgPicker}
-                  onPress={__pickImage}>
-                  <Image
-                    source={require('../../assets/icons/media-image.png')}
-                    style={{
-                      width: 30,
-                      height: 30,
-                    }}
-                  />
-                </TouchableOpacity>
-              </View>
+              <ImagePickerButton onPress={__pickImage} />
 
-              <View>
-                <TouchableOpacity
-                  onPress={__takePicture}
-                  style={{
-                    width: 70,
-                    height: 70,
-                    borderRadius: 50,
-                    backgroundColor: '#fff',
-                    elevation: 5,
-                  }}
-                />
-              </View>
-
+              <TakePictureButton onPress={__takePicture} />
+              {/* TODO: Switch camera button here */}
               <View style={{width: 60}} />
             </View>
           </View>
@@ -240,16 +211,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  imgPicker: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 60,
-    height: 60,
-    backgroundColor: 'rgba(33, 33, 33, 0.85)',
-    borderRadius: 10,
-    borderColor: 'white',
-    borderWidth: 5,
-    elevation: 5,
+  flashScreen: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  permissionText: {
+    textAlign: 'center',
+    color: 'white',
+    paddingVertical: 10,
   },
 });
 
