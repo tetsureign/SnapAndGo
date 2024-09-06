@@ -12,15 +12,14 @@ import {
   ScrollView,
 } from 'react-native';
 import ActionSheet, {useScrollHandlers} from 'react-native-actions-sheet';
-import axios from 'axios';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import moment from 'moment';
-import Config from 'react-native-config';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 import {ref, set, update, onValue, remove} from 'firebase/database';
 import {db} from '../../components/firebase';
+import * as api from '../../api/api';
 
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;
@@ -74,26 +73,20 @@ const ImageDetectPage = ({route, navigation}) => {
       type: 'image/jpeg',
     });
 
-    const baseUrl = Config.SERVER_URI;
-    const apiRoute = Config.SERVER_API_ROUTE;
-
-    return axios
-      .post(`${baseUrl}${apiRoute}/detect`, formData, {
+    try {
+      const responseData = await api.Post('/detect', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      })
-      .then(response => {
-        console.log('From API: ', response.data);
-        setResult(response.data);
-        setErrorCode(200);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.log(err);
-        setErrorCode(500);
-        setLoading(false);
       });
+      setResult(responseData);
+      setErrorCode(200);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setErrorCode(500);
+      setLoading(false);
+    }
   };
 
   const ItemsButtonRender = ({element, index, isReliable}) => {
