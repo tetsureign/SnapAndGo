@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useState, useContext} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -13,19 +13,15 @@ import {
 import ActionSheet, {useScrollHandlers} from 'react-native-actions-sheet';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import moment from 'moment';
+
 import LoadingIndicator from '../../components/LoadingIndicator';
 import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
-import {ref, set, update, onValue, remove} from 'firebase/database';
-import {db} from '../../components/firebase';
+import {ErrorChip} from '../../components/ErrorMessage/ErrorChip';
 import * as api from '../../api/api';
-import {
-  DetectionResultContext,
-  SelectedResultContext,
-} from '../../contexts/DetectionResultContext';
+import {SelectedResultContext} from '../../contexts/DetectionResultContext';
 import {RectRender} from './ImageDetectRectDraw';
 import {ItemsButtonRender} from './ImageDetectResultList';
-import {ErrorChip} from '../../components/ErrorMessage/ErrorChip';
+import {styles} from './ImageDetectStyles';
 
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;
@@ -34,8 +30,6 @@ const ImageDetectPage = ({route, navigation}) => {
   const bottomTabHeight = useBottomTabBarHeight();
 
   const resultsActionSheetRef = useRef(null);
-  const infoActionSheetRef = useRef(null);
-  const scrollHandlers = useScrollHandlers('scrollview-1', infoActionSheetRef);
 
   const [result, setResult] = useState(null);
 
@@ -43,19 +37,14 @@ const ImageDetectPage = ({route, navigation}) => {
 
   const [resizeRatio, setResizeRatio] = useState(null);
   const [imageWidthDevice, setImageWidthDevice] = useState(null);
-  // const [imageHeightDevice, setImageHeightDevice] = useState(null);
 
   const [isDetectPressed, setDetectPressed] = useState(false);
   const [selectedResultIndex, setSelectedResultIndex] = useState(null);
   const [selectedResult, setSelectedResult] = useState(null);
   const [isResultsActionsheetOpened, setResultsActionsheetOpened] =
     useState(false);
-  const [isInfoActionsheetOpened, setInfoActionsheetOpened] = useState(false);
   const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
     useState(false);
-
-  const [description, setDescription] = useState('');
-  const [currentDate, setCurrentDate] = useState('');
 
   const [errorCode, setErrorCode] = useState(null);
 
@@ -64,11 +53,6 @@ const ImageDetectPage = ({route, navigation}) => {
   const rectRegions = [];
   const rectRegionsLow = [];
   let itemsLowCount = 0;
-
-  useEffect(() => {
-    var date = moment().utcOffset('+07:00').format('HH:mm, DD/MM/YYYY');
-    setCurrentDate(date);
-  }, []);
 
   const FetchAPI = async source => {
     let photoUpload = {uri: source};
@@ -79,36 +63,21 @@ const ImageDetectPage = ({route, navigation}) => {
       type: 'image/jpeg',
     });
 
-    try {
-      const responseData = await api.Post('/detect', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+    const responseData = await api.Post('/detect', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    if (responseData) {
       console.log('Result: ', responseData);
       setResult(responseData);
       setErrorCode(200);
       setLoading(false);
-    } catch (err) {
-      console.log(err);
+    } else {
       setErrorCode(500);
       setLoading(false);
     }
-  };
-
-  const createHistoryData = () => {
-    set(ref(db, 'HistorySearch/' + selectedResult), {
-      ObjectsName: selectedResult,
-      currentDate: currentDate,
-    })
-      .then(() => {
-        // Data saved successfully!
-        console.log('Data updated!');
-      })
-      .catch(error => {
-        // The write failed...
-        console.log(error);
-      });
   };
 
   if (errorCode === 200) {
@@ -156,6 +125,12 @@ const ImageDetectPage = ({route, navigation}) => {
     }
   }
 
+  // useEffect(() => {
+  //   setLoading(true);
+  //   setDetectPressed(true);
+  //   FetchAPI(photoUri);
+  // }, [photoUri]);
+
   const __getResults = () => {
     setLoading(true);
     setDetectPressed(true);
@@ -179,27 +154,7 @@ const ImageDetectPage = ({route, navigation}) => {
     }
   };
 
-  const __showInfoData = () => {
-    const starCountRef = ref(db, 'Objects/' + selectedResult);
-    onValue(starCountRef, snapshot => {
-      const data = snapshot.val();
-      console.log(data);
-      setDescription(data.Description);
-    });
-    infoActionSheetRef.current?.show();
-    setInfoActionsheetOpened(true);
-    resultsActionSheetRef.current?.hide();
-  };
-
-  const __closeDesc = () => {
-    infoActionSheetRef.current?.hide();
-    setInfoActionsheetOpened(false);
-    resultsActionSheetRef.current?.show();
-    setResultsActionsheetOpened(true);
-  };
-
   const __searchMap = () => {
-    createHistoryData();
     Linking.openURL('http://maps.google.com/?q=' + selectedResult + ' shop');
   };
 
@@ -270,17 +225,15 @@ const ImageDetectPage = ({route, navigation}) => {
           )
         )}
 
-        {isResultsActionsheetOpened === false &&
-          isInfoActionsheetOpened === false &&
-          errorCode === 200 && (
-            <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
-              <Button
-                onPress={__showResults}
-                title="Danh sách kết quả"
-                style={styles.button}
-              />
-            </View>
-          )}
+        {isResultsActionsheetOpened === false && errorCode === 200 && (
+          <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
+            <Button
+              onPress={__showResults}
+              title="Danh sách kết quả"
+              style={styles.button}
+            />
+          </View>
+        )}
         {isLoading && <LoadingIndicator />}
       </ImageBackground>
 
@@ -343,21 +296,6 @@ const ImageDetectPage = ({route, navigation}) => {
             <View style={styles.actionButtons}>
               <TouchableOpacity
                 style={styles.searchButton}
-                onPress={__showInfoData}>
-                <View style={styles.searchButtonViewInside}>
-                  <Image
-                    source={require('../../assets/icons/desc.png')}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      tintColor: '#5FC314',
-                    }}
-                  />
-                  <Text style={styles.descButton}>Thông tin</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.searchButton}
                 onPress={__searchMap}>
                 <View style={styles.searchButtonViewInside}>
                   <Image
@@ -375,167 +313,8 @@ const ImageDetectPage = ({route, navigation}) => {
           )}
         </View>
       </ActionSheet>
-
-      <ActionSheet
-        ref={infoActionSheetRef}
-        backgroundInteractionEnabled={true}
-        containerStyle={styles.actionSheet}
-        useBottomSafeAreaPadding={true}
-        headerAlwaysVisible={true}
-        gestureEnabled={true}
-        closable={true}
-        drawUnderStatusBar={false}
-        indicatorStyle={{marginTop: 15, width: 60}}
-        onClose={() => {
-          setInfoActionsheetOpened(false);
-          setResultsActionsheetOpened(true);
-          resultsActionSheetRef.current?.show();
-        }}>
-        <View
-          style={[styles.actionSheetItems, {paddingBottom: bottomTabHeight}]}>
-          <TouchableOpacity style={styles.searchButton} onPress={__closeDesc}>
-            <View style={styles.searchButtonViewInside}>
-              <Image
-                source={require('../../assets/icons/back.png')}
-                style={{
-                  width: 40,
-                  height: 40,
-                  tintColor: '#00C5FF',
-                }}
-              />
-              <Text style={styles.searchText}>Trở về danh sách</Text>
-            </View>
-          </TouchableOpacity>
-          <ScrollView {...scrollHandlers}>
-            <Text style={styles.descTitle}>{selectedResult}</Text>
-            <Text style={styles.desc}>{description}</Text>
-          </ScrollView>
-        </View>
-      </ActionSheet>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  // General
-  container: {
-    justifyContent: 'center',
-    flex: 1,
-  },
-  background: {
-    flex: 1,
-    backgroundColor: '#212121',
-  },
-
-  // Error messages area
-  errorContainer: {
-    position: 'absolute',
-    alignSelf: 'center',
-    left: 0,
-    right: 0,
-  },
-  errorBackgroundSuccess: {
-    backgroundColor: '#5FC314',
-    marginHorizontal: 15,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-  },
-  errorBackgroundError: {
-    backgroundColor: '#FF6901',
-    marginHorizontal: 15,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-  },
-  errorMessage: {
-    color: 'white',
-    textAlign: 'center',
-  },
-
-  // Outside Actionsheet
-  //   Rect region style
-  rectContainer: {
-    flex: 1,
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-
-  //   Detect button
-  buttonContainer: {
-    position: 'absolute',
-    width: '100%',
-    justifyContent: 'space-between',
-  },
-  button: {
-    // flex: 1,
-    alignSelf: 'center',
-    alignItems: 'center',
-  },
-
-  //   Unreliable results
-  unreliableResultsButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  unreliableResultsButtonText: {
-    color: '#C7C7C7',
-    fontSize: 15,
-  },
-  unreliableResultsArrow: {
-    width: 18,
-    height: 18,
-    tintColor: '#C7C7C7',
-    marginHorizontal: 5,
-  },
-
-  //   Search button
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  searchButton: {
-    height: 40,
-    marginTop: 5,
-    marginBottom: 5,
-  },
-  searchButtonViewInside: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  searchText: {
-    fontSize: 25,
-    color: '#00C5FF',
-    paddingLeft: 5,
-  },
-  descButton: {
-    fontSize: 25,
-    color: '#5FC314',
-    paddingLeft: 5,
-  },
-
-  //   Actionsheet styles
-  actionSheet: {
-    backgroundColor: '#434343',
-    borderRadius: 10,
-  },
-  actionSheetItems: {
-    padding: 20,
-    paddingTop: 0,
-    // paddingBottom: 75,
-  },
-
-  //   Desc Actionsheet
-  descTitle: {
-    fontSize: 40,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  desc: {
-    fontSize: 20,
-    color: 'white',
-  },
-});
 
 export default ImageDetectPage;

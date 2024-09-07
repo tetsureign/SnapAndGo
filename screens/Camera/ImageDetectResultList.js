@@ -29,7 +29,7 @@ export const ItemsButtonRender = ({element, index, isReliable}) => {
             isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
             selectedResultIndex === index && styles.itemsTextWhite,
           ]}>
-          {element.object}
+          {element.class}
         </Text>
         <Text
           style={[
@@ -37,7 +37,7 @@ export const ItemsButtonRender = ({element, index, isReliable}) => {
             isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
             selectedResultIndex === index && styles.itemsTextWhite,
           ]}>
-          {element.score}%
+          {Math.round(element.score * 100)}%
         </Text>
       </View>
     </TouchableOpacity>
