@@ -73,8 +73,10 @@ const ImageDetectPage = ({route, navigation}) => {
   const [imageWidthDevice, setImageWidthDevice] = useState(null);
 
   const [isDetectPressed, setDetectPressed] = useState(false);
+
   const [selectedResultIndex, setSelectedResultIndex] = useState(null);
   const [selectedResult, setSelectedResult] = useState(null);
+
   const [isResultsActionsheetOpened, setResultsActionsheetOpened] =
     useState(false);
   // const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
@@ -82,7 +84,7 @@ const ImageDetectPage = ({route, navigation}) => {
 
   const [status, setStatus] = useState(null);
 
-  const FetchAPI = async source => {
+  const getData = async source => {
     let photoUpload = {uri: source};
     let formData = new FormData();
     formData.append('image', {
@@ -115,7 +117,7 @@ const ImageDetectPage = ({route, navigation}) => {
   const __getResults = () => {
     setLoading(true);
     setDetectPressed(true);
-    FetchAPI(photoUri);
+    getData(photoUri);
   };
 
   const __goBack = () => {
