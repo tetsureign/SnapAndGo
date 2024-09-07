@@ -4,10 +4,10 @@ export default async function ResizeImage(image) {
   try {
     let result = await ImageResizer.createResizedImage(
       image,
-      720,
-      720,
+      1280,
+      1280,
       'JPEG',
-      100,
+      95,
       0,
       undefined,
       false,

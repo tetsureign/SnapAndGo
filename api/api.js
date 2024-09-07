@@ -7,6 +7,7 @@ const req = axios.create({
 });
 
 const handleResponse = res => {
+  // console.log(res);
   if (res) {
     switch (res.status) {
       ///2xx
@@ -37,6 +38,7 @@ export async function Post(path, data, option = {}) {
     const res = await req.post(path, data, option);
     return handleResponse(res);
   } catch (error) {
+    console.error(error);
     if (error.response) return handleResponse(error.response);
   }
 }
