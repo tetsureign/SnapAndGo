@@ -31,7 +31,7 @@ const ImageDetectPage = ({route, navigation}) => {
 
   const resultsActionSheetRef = useRef(null);
 
-  const [result, setResult] = useState(null);
+  const [fetchResult, setFetchResult] = useState(null);
 
   const [isLoading, setLoading] = useState(false);
 
@@ -46,10 +46,10 @@ const ImageDetectPage = ({route, navigation}) => {
   const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
     useState(false);
 
-  const [errorCode, setErrorCode] = useState(null);
+  const [status, setStatus] = useState(null);
 
-  const buttons = [];
-  const buttonsLow = [];
+  const resultButtons = [];
+  const resultButtonsLow = [];
   const rectRegions = [];
   const rectRegionsLow = [];
   let itemsLowCount = 0;
@@ -71,20 +71,20 @@ const ImageDetectPage = ({route, navigation}) => {
 
     if (responseData) {
       console.log('Result: ', responseData);
-      setResult(responseData);
-      setErrorCode(200);
+      setFetchResult(responseData);
+      setStatus('success');
       setLoading(false);
     } else {
-      setErrorCode(500);
+      setStatus('failed');
       setLoading(false);
     }
   };
 
-  if (errorCode === 200) {
-    if (result && result.length >= 1) {
-      result.map((element, index) => {
+  if (status === 'success') {
+    if (fetchResult && fetchResult.length >= 1) {
+      fetchResult.map((element, index) => {
         if (element.score >= 0.7) {
-          buttons.push(
+          resultButtons.push(
             <ItemsButtonRender
               element={element}
               index={index}
@@ -102,7 +102,7 @@ const ImageDetectPage = ({route, navigation}) => {
           );
         } else {
           itemsLowCount++;
-          buttonsLow.push(
+          resultButtonsLow.push(
             <ItemsButtonRender
               element={element}
               index={index}
@@ -120,8 +120,8 @@ const ImageDetectPage = ({route, navigation}) => {
           );
         }
       });
-    } else if (result.length === 0) {
-      setErrorCode(400);
+    } else if (fetchResult.length === 0) {
+      setStatus('empty');
     }
   }
 
@@ -159,11 +159,11 @@ const ImageDetectPage = ({route, navigation}) => {
   };
 
   useEffect(() => {
-    if (!isLoading && isDetectPressed && errorCode === 200) {
+    if (!isLoading && isDetectPressed && status === 'success') {
       resultsActionSheetRef.current?.show();
       setResultsActionsheetOpened(true);
     }
-  }, [isLoading, isDetectPressed, errorCode]);
+  }, [isLoading, isDetectPressed, status]);
 
   return (
     <View style={styles.container}>
@@ -177,14 +177,14 @@ const ImageDetectPage = ({route, navigation}) => {
           setResizeRatio(width / photoWidth);
           setImageWidthDevice(width);
         }}>
-        {errorCode && (
+        {status && (
           <View style={styles.errorContainer}>
             <View style={{marginTop: headerHeight + 15}} />
-            <ErrorChip errorCode={errorCode} />
+            <ErrorChip status={status} />
           </View>
         )}
 
-        {result && (
+        {fetchResult && (
           <View style={styles.rectContainer}>
             <View
               style={{
@@ -205,7 +205,7 @@ const ImageDetectPage = ({route, navigation}) => {
           </View>
         )}
 
-        {result === null ? (
+        {fetchResult === null ? (
           <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
             <Button
               onPress={__getResults}
@@ -214,7 +214,7 @@ const ImageDetectPage = ({route, navigation}) => {
             />
           </View>
         ) : (
-          errorCode === 400 && (
+          status === 'empty' && (
             <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
               <Button
                 onPress={__goBack}
@@ -225,7 +225,7 @@ const ImageDetectPage = ({route, navigation}) => {
           )
         )}
 
-        {isResultsActionsheetOpened === false && errorCode === 200 && (
+        {isResultsActionsheetOpened === false && status === 'success' && (
           <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
             <Button
               onPress={__showResults}
@@ -261,7 +261,7 @@ const ImageDetectPage = ({route, navigation}) => {
               setSelectedResultIndex,
               setSelectedResult,
             }}>
-            {buttons}
+            {resultButtons}
           </SelectedResultContext.Provider>
 
           {itemsLowCount >= 1 && (
@@ -290,10 +290,10 @@ const ImageDetectPage = ({route, navigation}) => {
               setSelectedResultIndex,
               setSelectedResult,
             }}>
-            {isUnreliableResultsOpened && buttonsLow}
+            {isUnreliableResultsOpened && resultButtonsLow}
           </SelectedResultContext.Provider>
           {selectedResult && (
-            <View style={styles.actionButtons}>
+            <View style={styles.actionresultButtons}>
               <TouchableOpacity
                 style={styles.searchButton}
                 onPress={__searchMap}>

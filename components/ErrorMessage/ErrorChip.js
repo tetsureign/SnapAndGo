@@ -1,9 +1,9 @@
 import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
 
-export const ErrorChip = ({errorCode}) => {
-  switch (errorCode) {
-    case 200:
+export const ErrorChip = ({status}) => {
+  switch (status) {
+    case 'success':
       return (
         <View style={styles.errorBackgroundSuccess}>
           <Text style={styles.errorMessage}>
@@ -11,7 +11,7 @@ export const ErrorChip = ({errorCode}) => {
           </Text>
         </View>
       );
-    case 400:
+    case 'empty':
       return (
         <View style={styles.errorBackgroundError}>
           <Text style={styles.errorMessage}>
@@ -19,7 +19,7 @@ export const ErrorChip = ({errorCode}) => {
           </Text>
         </View>
       );
-    case 500:
+    case 'failed':
       return (
         <View style={styles.errorBackgroundError}>
           <Text style={styles.errorMessage}>Không thể kết nối đến server.</Text>
