@@ -23,6 +23,40 @@ import {RectRender} from './ImageDetectRectDraw';
 import {ItemsButtonRender} from './ImageDetectResultList';
 import {styles} from './ImageDetectStyles';
 
+const ResultButtonsRender = ({fetchResult}) => {
+  return fetchResult.map((element, index) => {
+    let isReliable = false;
+    if (element.score >= 0.7) {
+      isReliable = true;
+    }
+    return (
+      <ItemsButtonRender
+        element={element}
+        index={index}
+        key={index}
+        isReliable={isReliable}
+      />
+    );
+  });
+};
+
+const RectanglesRender = ({fetchResult}) => {
+  return fetchResult.map((element, index) => {
+    let isReliable = false;
+    if (element.score >= 0.7) {
+      isReliable = true;
+    }
+    return (
+      <RectRender
+        element={element}
+        index={index}
+        key={index}
+        isReliable={isReliable}
+      />
+    );
+  });
+};
+
 const ImageDetectPage = ({route, navigation}) => {
   const {photoUri, photoWidth, photoHeight} = route.params;
 
@@ -43,16 +77,10 @@ const ImageDetectPage = ({route, navigation}) => {
   const [selectedResult, setSelectedResult] = useState(null);
   const [isResultsActionsheetOpened, setResultsActionsheetOpened] =
     useState(false);
-  const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
-    useState(false);
+  // const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
+  //   useState(false);
 
   const [status, setStatus] = useState(null);
-
-  const resultButtons = [];
-  const resultButtonsLow = [];
-  const rectRegions = [];
-  const rectRegionsLow = [];
-  let itemsLowCount = 0;
 
   const FetchAPI = async source => {
     let photoUpload = {uri: source};
@@ -71,65 +99,18 @@ const ImageDetectPage = ({route, navigation}) => {
 
     if (responseData) {
       console.log('Result: ', responseData);
-      setFetchResult(responseData);
-      setStatus('success');
+      if (responseData.length > 0) {
+        setFetchResult(responseData);
+        setStatus('success');
+      } else {
+        setStatus('empty');
+      }
       setLoading(false);
     } else {
       setStatus('failed');
       setLoading(false);
     }
   };
-
-  if (status === 'success') {
-    if (fetchResult && fetchResult.length >= 1) {
-      fetchResult.map((element, index) => {
-        if (element.score >= 0.7) {
-          resultButtons.push(
-            <ItemsButtonRender
-              element={element}
-              index={index}
-              key={index}
-              isReliable={true}
-            />,
-          );
-          rectRegions.push(
-            <RectRender
-              element={element}
-              index={index}
-              key={index}
-              isReliable={true}
-            />,
-          );
-        } else {
-          itemsLowCount++;
-          resultButtonsLow.push(
-            <ItemsButtonRender
-              element={element}
-              index={index}
-              key={index}
-              isReliable={false}
-            />,
-          );
-          rectRegionsLow.push(
-            <RectRender
-              element={element}
-              index={index}
-              key={index}
-              isReliable={false}
-            />,
-          );
-        }
-      });
-    } else if (fetchResult.length === 0) {
-      setStatus('empty');
-    }
-  }
-
-  // useEffect(() => {
-  //   setLoading(true);
-  //   setDetectPressed(true);
-  //   FetchAPI(photoUri);
-  // }, [photoUri]);
 
   const __getResults = () => {
     setLoading(true);
@@ -146,13 +127,13 @@ const ImageDetectPage = ({route, navigation}) => {
     setResultsActionsheetOpened(true);
   };
 
-  const __unreliableResultsCollapse = () => {
-    if (isUnreliableResultsOpened === false) {
-      setUnreliableResultsOpened(true);
-    } else {
-      setUnreliableResultsOpened(false);
-    }
-  };
+  // const __unreliableResultsCollapse = () => {
+  //   if (isUnreliableResultsOpened === false) {
+  //     setUnreliableResultsOpened(true);
+  //   } else {
+  //     setUnreliableResultsOpened(false);
+  //   }
+  // };
 
   const __searchMap = () => {
     Linking.openURL('http://maps.google.com/?q=' + selectedResult + ' shop');
@@ -177,6 +158,7 @@ const ImageDetectPage = ({route, navigation}) => {
           setResizeRatio(width / photoWidth);
           setImageWidthDevice(width);
         }}>
+        {/* Error chip */}
         {status && (
           <View style={styles.errorContainer}>
             <View style={{marginTop: headerHeight + 15}} />
@@ -184,6 +166,7 @@ const ImageDetectPage = ({route, navigation}) => {
           </View>
         )}
 
+        {/* Detection rectangles */}
         {fetchResult && (
           <View style={styles.rectContainer}>
             <View
@@ -198,13 +181,13 @@ const ImageDetectPage = ({route, navigation}) => {
                   setSelectedResult,
                   resizeRatio,
                 }}>
-                {rectRegions}
-                {rectRegionsLow}
+                <RectanglesRender fetchResult={fetchResult} />
               </SelectedResultContext.Provider>
             </View>
           </View>
         )}
 
+        {/* The blue buttons (Will have to change later) */}
         {fetchResult === null ? (
           <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
             <Button
@@ -224,7 +207,6 @@ const ImageDetectPage = ({route, navigation}) => {
             </View>
           )
         )}
-
         {isResultsActionsheetOpened === false && status === 'success' && (
           <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
             <Button
@@ -255,16 +237,18 @@ const ImageDetectPage = ({route, navigation}) => {
             styles.actionSheetItems,
             {paddingBottom: bottomTabHeight + 15},
           ]}>
+          {/* The main buttons */}
           <SelectedResultContext.Provider
             value={{
               selectedResultIndex,
               setSelectedResultIndex,
               setSelectedResult,
             }}>
-            {resultButtons}
+            <ResultButtonsRender fetchResult={fetchResult} />
           </SelectedResultContext.Provider>
 
-          {itemsLowCount >= 1 && (
+          {/* The "Unreliable results" button. TODO: change this into a component */}
+          {/* {itemsLowCount >= 1 && (
             <TouchableOpacity
               style={styles.unreliableResultsButton}
               onPress={__unreliableResultsCollapse}>
@@ -283,15 +267,19 @@ const ImageDetectPage = ({route, navigation}) => {
                 />
               )}
             </TouchableOpacity>
-          )}
-          <SelectedResultContext.Provider
+          )} */}
+
+          {/* The unreliable results */}
+          {/* <SelectedResultContext.Provider
             value={{
               selectedResultIndex,
               setSelectedResultIndex,
               setSelectedResult,
             }}>
             {isUnreliableResultsOpened && resultButtonsLow}
-          </SelectedResultContext.Provider>
+          </SelectedResultContext.Provider> */}
+
+          {/* The search button (doesn't work now). TODO: component this shit */}
           {selectedResult && (
             <View style={styles.actionresultButtons}>
               <TouchableOpacity
