@@ -3,23 +3,26 @@ import {TouchableOpacity, StyleSheet, View, Text} from 'react-native';
 import {SelectedResultContext} from '../../contexts/DetectionResultContext';
 
 export const ItemsButtonRender = ({element, index, isReliable}) => {
-  const {selectedResultIndex, setSelectedResultIndex, setSelectedResult} =
-    useContext(SelectedResultContext);
+  const {selectedResult, setSelectedResult} = useContext(SelectedResultContext);
 
   return (
     <TouchableOpacity
       style={styles.detectedItemsButton}
       key={index}
       onPress={() => {
-        if (selectedResultIndex === index) {
-          setSelectedResultIndex(null);
-          setSelectedResult(null);
+        if (selectedResult.index === index) {
+          setSelectedResult({
+            result: null,
+            index: null,
+          });
         } else {
-          setSelectedResultIndex(index);
-          setSelectedResult(element.object);
+          setSelectedResult({
+            result: element.object,
+            index: index,
+          });
         }
       }}>
-      {selectedResultIndex === index && (
+      {selectedResult.index === index && (
         <View style={styles.selectedItemBackground} />
       )}
       <View style={styles.itemsTextContainer}>
@@ -27,7 +30,7 @@ export const ItemsButtonRender = ({element, index, isReliable}) => {
           style={[
             styles.itemsText,
             isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
-            selectedResultIndex === index && styles.itemsTextWhite,
+            selectedResult.index === index && styles.itemsTextWhite,
           ]}>
           {element.class}
         </Text>
@@ -35,7 +38,7 @@ export const ItemsButtonRender = ({element, index, isReliable}) => {
           style={[
             styles.itemsText,
             isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
-            selectedResultIndex === index && styles.itemsTextWhite,
+            selectedResult.index === index && styles.itemsTextWhite,
           ]}>
           {Math.round(element.score * 100)}%
         </Text>

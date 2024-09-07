@@ -74,8 +74,10 @@ const ImageDetectPage = ({route, navigation}) => {
 
   const [isDetectPressed, setDetectPressed] = useState(false);
 
-  const [selectedResultIndex, setSelectedResultIndex] = useState(null);
-  const [selectedResult, setSelectedResult] = useState(null);
+  const [selectedResult, setSelectedResult] = useState({
+    result: null,
+    index: null,
+  });
 
   const [isResultsActionsheetOpened, setResultsActionsheetOpened] =
     useState(false);
@@ -138,7 +140,9 @@ const ImageDetectPage = ({route, navigation}) => {
   // };
 
   const __searchMap = () => {
-    Linking.openURL('http://maps.google.com/?q=' + selectedResult + ' shop');
+    Linking.openURL(
+      'http://maps.google.com/?q=' + selectedResult.result + ' shop',
+    );
   };
 
   useEffect(() => {
@@ -178,8 +182,7 @@ const ImageDetectPage = ({route, navigation}) => {
               }}>
               <SelectedResultContext.Provider
                 value={{
-                  selectedResultIndex,
-                  setSelectedResultIndex,
+                  selectedResult,
                   setSelectedResult,
                   resizeRatio,
                 }}>
@@ -242,8 +245,7 @@ const ImageDetectPage = ({route, navigation}) => {
           {/* The main buttons */}
           <SelectedResultContext.Provider
             value={{
-              selectedResultIndex,
-              setSelectedResultIndex,
+              selectedResult,
               setSelectedResult,
             }}>
             <ResultButtonsRender fetchResult={fetchResult} />

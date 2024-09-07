@@ -5,28 +5,29 @@ import {TouchableOpacity} from 'react-native';
 import {SelectedResultContext} from '../../contexts/DetectionResultContext';
 
 export const RectRender = ({element, index, isReliable}) => {
-  const {
-    selectedResultIndex,
-    setSelectedResultIndex,
-    setSelectedResult,
-    resizeRatio,
-  } = useContext(SelectedResultContext);
+  const {selectedResult, setSelectedResult, resizeRatio} = useContext(
+    SelectedResultContext,
+  );
 
   return (
     <TouchableOpacity
       onPress={() => {
-        if (selectedResultIndex === index) {
-          setSelectedResultIndex(null);
-          setSelectedResult(null);
+        if (selectedResult.index === index) {
+          setSelectedResult({
+            result: null,
+            index: null,
+          });
         } else {
-          setSelectedResultIndex(index);
-          setSelectedResult(element.object);
+          setSelectedResult({
+            result: element.object,
+            index: index,
+          });
         }
       }}
       key={index}
       style={[
         isReliable && styles.rectFade,
-        selectedResultIndex === index && styles.rectWhite,
+        selectedResult.index === index && styles.rectWhite,
         // {
         //   position: 'absolute',
         //   width: (element.coordinate.x1 - element.coordinate.x0) * resizeRatio,
