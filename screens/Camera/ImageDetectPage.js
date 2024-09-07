@@ -21,6 +21,7 @@ import * as api from '../../api/api';
 import {SelectedResultContext} from '../../contexts/DetectionResultContext';
 import {RectRender} from './ImageDetectRectDraw';
 import {ItemsButtonRender} from './ImageDetectResultList';
+import {GoButton} from '../../components/Buttons/buttons';
 import {styles} from './ImageDetectStyles';
 
 const ResultButtonsRender = ({fetchResult}) => {
@@ -81,8 +82,6 @@ const ImageDetectPage = ({route, navigation}) => {
 
   const [isResultsActionsheetOpened, setResultsActionsheetOpened] =
     useState(false);
-  // const [isUnreliableResultsOpened, setUnreliableResultsOpened] =
-  //   useState(false);
 
   const [status, setStatus] = useState(null);
 
@@ -130,14 +129,6 @@ const ImageDetectPage = ({route, navigation}) => {
     resultsActionSheetRef.current?.show();
     setResultsActionsheetOpened(true);
   };
-
-  // const __unreliableResultsCollapse = () => {
-  //   if (isUnreliableResultsOpened === false) {
-  //     setUnreliableResultsOpened(true);
-  //   } else {
-  //     setUnreliableResultsOpened(false);
-  //   }
-  // };
 
   const __searchMap = () => {
     Linking.openURL(
@@ -251,56 +242,15 @@ const ImageDetectPage = ({route, navigation}) => {
             <ResultButtonsRender fetchResult={fetchResult} />
           </SelectedResultContext.Provider>
 
-          {/* The "Unreliable results" button. TODO: change this into a component */}
-          {/* {itemsLowCount >= 1 && (
-            <TouchableOpacity
-              style={styles.unreliableResultsButton}
-              onPress={__unreliableResultsCollapse}>
-              <Text style={styles.unreliableResultsButtonText}>
-                Kết quả có độ chính xác thấp
-              </Text>
-              {isUnreliableResultsOpened ? (
-                <Image
-                  source={require('../../assets/icons/nav-arrow-up.png')}
-                  style={styles.unreliableResultsArrow}
-                />
-              ) : (
-                <Image
-                  source={require('../../assets/icons/nav-arrow-down.png')}
-                  style={styles.unreliableResultsArrow}
-                />
-              )}
-            </TouchableOpacity>
-          )} */}
-
-          {/* The unreliable results */}
-          {/* <SelectedResultContext.Provider
-            value={{
-              selectedResultIndex,
-              setSelectedResultIndex,
-              setSelectedResult,
-            }}>
-            {isUnreliableResultsOpened && resultButtonsLow}
-          </SelectedResultContext.Provider> */}
-
-          {/* The search button (doesn't work now). TODO: component this shit */}
+          {/* The search button.*/}
           {selectedResult && (
-            <View style={styles.actionresultButtons}>
-              <TouchableOpacity
-                style={styles.searchButton}
-                onPress={__searchMap}>
-                <View style={styles.searchButtonViewInside}>
-                  <Image
-                    source={require('../../assets/icons/search.png')}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      tintColor: '#00C5FF',
-                    }}
-                  />
-                  <Text style={styles.searchText}>Tìm kiếm</Text>
-                </View>
-              </TouchableOpacity>
+            <View style={styles.actionButtons}>
+              <GoButton
+                onPress={__searchMap}
+                icon={require('../../assets/icons/search.png')}
+                text={'Tìm kiếm'}
+                color={'#00C5FF'}
+              />
             </View>
           )}
         </View>

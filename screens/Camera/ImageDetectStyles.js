@@ -39,46 +39,10 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  //   Unreliable results
-  unreliableResultsButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  unreliableResultsButtonText: {
-    color: '#C7C7C7',
-    fontSize: 15,
-  },
-  unreliableResultsArrow: {
-    width: 18,
-    height: 18,
-    tintColor: '#C7C7C7',
-    marginHorizontal: 5,
-  },
-
   //   Search button
   actionButtons: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-  },
-  searchButton: {
-    height: 40,
-    marginTop: 5,
-    marginBottom: 5,
-  },
-  searchButtonViewInside: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  searchText: {
-    fontSize: 25,
-    color: '#00C5FF',
-    paddingLeft: 5,
-  },
-  descButton: {
-    fontSize: 25,
-    color: '#5FC314',
-    paddingLeft: 5,
   },
 
   //   Actionsheet styles

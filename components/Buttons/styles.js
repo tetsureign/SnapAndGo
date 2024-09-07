@@ -24,3 +24,41 @@ export const cameraButtonStyles = StyleSheet.create({
     height: 30,
   },
 });
+
+export const goButtonStyles = StyleSheet.create({
+  goButton: {
+    height: 40,
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  goButtonViewInside: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  goButtonImage: {
+    width: 40,
+    height: 40,
+  },
+  goButtonText: {
+    fontSize: 25,
+    paddingLeft: 5,
+  },
+});
+
+export const showHideButtonStyle = StyleSheet.create({
+  showHideButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  showHideButtonText: {
+    // color: '#C7C7C7',
+    fontSize: 15,
+  },
+  showHideButtonArrow: {
+    width: 18,
+    height: 18,
+    // tintColor: '#C7C7C7',
+    marginHorizontal: 5,
+  },
+});
