@@ -10,7 +10,6 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import ActionSheet, {useScrollHandlers} from 'react-native-actions-sheet';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
@@ -23,6 +22,7 @@ import {RectRender} from './ImageDetectRectDraw';
 import {ItemsButtonRender} from './ImageDetectResultList';
 import {GoButton} from '../../components/Buttons/buttons';
 import {styles} from './ImageDetectStyles';
+import {DarkPersistentActionSheet} from '../../components/ActionSheet/actionsheet';
 
 const ResultButtonsRender = ({fetchResult}) => {
   return fetchResult.map((element, index) => {
@@ -128,9 +128,13 @@ const ImageDetectPage = ({route, navigation}) => {
     );
   };
 
+  function __openActionSheet() {
+    resultsActionSheetRef.current?.show();
+  }
+
   useEffect(() => {
     if (!isLoading && isDetectPressed && status === 'success') {
-      resultsActionSheetRef.current?.show();
+      __openActionSheet();
     }
   }, [isLoading, isDetectPressed, status]);
 
@@ -194,21 +198,11 @@ const ImageDetectPage = ({route, navigation}) => {
             </View>
           )
         )}
+        {/* Loading indicator */}
         {isLoading && <LoadingIndicator />}
       </ImageBackground>
 
-      <ActionSheet
-        ref={resultsActionSheetRef}
-        backgroundInteractionEnabled={true}
-        containerStyle={styles.actionSheet}
-        // useBottomSafeAreaPadding={true}
-        headerAlwaysVisible={true}
-        gestureEnabled={true}
-        closable={false}
-        drawUnderStatusBar={false}
-        indicatorStyle={styles.actionSheetIndicator}
-        snapPoints={[20, 50, 100]}
-        initialSnapIndex={1}>
+      <DarkPersistentActionSheet innerRef={resultsActionSheetRef}>
         <View
           style={[
             styles.actionSheetItems,
@@ -235,7 +229,7 @@ const ImageDetectPage = ({route, navigation}) => {
             </View>
           )}
         </View>
-      </ActionSheet>
+      </DarkPersistentActionSheet>
     </View>
   );
 };

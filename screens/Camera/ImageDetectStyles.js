@@ -46,19 +46,10 @@ export const styles = StyleSheet.create({
   },
 
   //   Actionsheet styles
-  actionSheet: {
-    height: '85%',
-    backgroundColor: '#434343',
-    borderRadius: 10,
-  },
   actionSheetItems: {
     padding: 20,
     paddingTop: 0,
     // paddingBottom: 75,
-  },
-  actionSheetIndicator: {
-    marginTop: 15,
-    width: 60,
   },
 
   //   Desc Actionsheet
