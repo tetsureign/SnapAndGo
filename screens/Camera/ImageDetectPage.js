@@ -57,8 +57,7 @@ const ImageDetectPage = ({route, navigation}) => {
   const bottomTabHeight = useBottomTabBarHeight();
 
   // UI elements
-  const [isLoading, setLoading] = useState(false);
-  const [isDetectPressed, setDetectPressed] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const [selectedResult, setSelectedResult] = useState({
     result: null,
     index: null,
@@ -74,6 +73,8 @@ const ImageDetectPage = ({route, navigation}) => {
   const [fetchResult, setFetchResult] = useState(null);
 
   async function getData(source) {
+    setLoading(true);
+
     let photoUpload = {uri: source};
     let formData = new FormData();
     formData.append('image', {
@@ -105,7 +106,6 @@ const ImageDetectPage = ({route, navigation}) => {
 
   function __getResults() {
     setLoading(true);
-    setDetectPressed(true);
     getData(photoUri);
   }
 
@@ -117,10 +117,14 @@ const ImageDetectPage = ({route, navigation}) => {
   }
 
   useEffect(() => {
-    if (!isLoading && isDetectPressed && status === 'success') {
+    getData(photoUri);
+  }, [photoUri]);
+
+  useEffect(() => {
+    if (!isLoading) {
       __openActionSheet();
     }
-  }, [isLoading, isDetectPressed, status]);
+  }, [isLoading]);
 
   // Navigation
   function __goBack() {
@@ -173,26 +177,6 @@ const ImageDetectPage = ({route, navigation}) => {
           </View>
         )}
 
-        {/* The blue buttons */}
-        {fetchResult === null ? (
-          <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
-            <Button
-              onPress={__getResults}
-              title="Nhận diện"
-              style={styles.button}
-            />
-          </View>
-        ) : (
-          status === 'empty' && (
-            <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
-              <Button
-                onPress={__goBack}
-                title="Thử chụp hình lại"
-                style={styles.button}
-              />
-            </View>
-          )
-        )}
         {/* Loading indicator */}
         {isLoading && <LoadingIndicator />}
       </ImageBackground>
@@ -204,16 +188,30 @@ const ImageDetectPage = ({route, navigation}) => {
             {paddingBottom: bottomTabHeight + 15},
           ]}>
           {/* The main buttons */}
-          <SelectedResultContext.Provider
-            value={{
-              selectedResult,
-              setSelectedResult,
-            }}>
-            <ResultButtonsRender fetchResult={fetchResult} />
-          </SelectedResultContext.Provider>
+          {fetchResult ? (
+            <SelectedResultContext.Provider
+              value={{
+                selectedResult,
+                setSelectedResult,
+              }}>
+              <ResultButtonsRender fetchResult={fetchResult} />
+            </SelectedResultContext.Provider>
+          ) : status === 'empty' ? (
+            <Button
+              onPress={__goBack}
+              title="Thử chụp hình lại"
+              style={styles.button}
+            />
+          ) : (
+            <Button
+              onPress={__getResults}
+              title="Thử lại"
+              style={styles.button}
+            />
+          )}
 
           {/* The search button.*/}
-          {selectedResult && (
+          {selectedResult.result && (
             <View style={styles.actionButtons}>
               <GoButton
                 onPress={__searchMap}

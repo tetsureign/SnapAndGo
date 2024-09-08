@@ -27,19 +27,14 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 
-  //   Detect button
-  buttonContainer: {
-    position: 'absolute',
-    width: '100%',
-    justifyContent: 'space-between',
-  },
+  //   Retry buttons TODO use a proper one after doing global style
   button: {
     // flex: 1,
     alignSelf: 'center',
     alignItems: 'center',
   },
 
-  //   Search button
+  //   Action buttons
   actionButtons: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -50,16 +45,5 @@ export const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 0,
     // paddingBottom: 75,
-  },
-
-  //   Desc Actionsheet
-  descTitle: {
-    fontSize: 40,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  desc: {
-    fontSize: 20,
-    color: 'white',
   },
 });
