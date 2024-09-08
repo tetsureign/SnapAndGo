@@ -27,7 +27,7 @@ export const ItemsButtonRender = ({element, index, isReliable}) => {
             });
           } else {
             setSelectedResult({
-              result: element.object,
+              result: element.class,
               index: index,
             });
           }
