@@ -80,9 +80,6 @@ const ImageDetectPage = ({route, navigation}) => {
     index: null,
   });
 
-  const [isResultsActionsheetOpened, setResultsActionsheetOpened] =
-    useState(false);
-
   const [status, setStatus] = useState(null);
 
   const getData = async source => {
@@ -125,11 +122,6 @@ const ImageDetectPage = ({route, navigation}) => {
     navigation.navigate('Trang Camera');
   };
 
-  const __showResults = () => {
-    resultsActionSheetRef.current?.show();
-    setResultsActionsheetOpened(true);
-  };
-
   const __searchMap = () => {
     Linking.openURL(
       'http://maps.google.com/?q=' + selectedResult.result + ' shop',
@@ -139,7 +131,6 @@ const ImageDetectPage = ({route, navigation}) => {
   useEffect(() => {
     if (!isLoading && isDetectPressed && status === 'success') {
       resultsActionSheetRef.current?.show();
-      setResultsActionsheetOpened(true);
     }
   }, [isLoading, isDetectPressed, status]);
 
@@ -155,14 +146,6 @@ const ImageDetectPage = ({route, navigation}) => {
           setResizeRatio(width / photoWidth);
           setImageWidthDevice(width);
         }}>
-        {/* Error chip */}
-        {status && (
-          <View style={styles.errorContainer}>
-            <View style={{marginTop: headerHeight + 15}} />
-            <ErrorChip status={status} />
-          </View>
-        )}
-
         {/* Detection rectangles */}
         {fetchResult && (
           <View style={styles.rectContainer}>
@@ -183,7 +166,15 @@ const ImageDetectPage = ({route, navigation}) => {
           </View>
         )}
 
-        {/* The blue buttons (Will have to change later) */}
+        {/* Error chip */}
+        {status && (
+          <View style={styles.errorContainer}>
+            <View style={{marginTop: headerHeight + 15}} />
+            <ErrorChip status={status} />
+          </View>
+        )}
+
+        {/* The blue buttons */}
         {fetchResult === null ? (
           <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
             <Button
@@ -203,15 +194,6 @@ const ImageDetectPage = ({route, navigation}) => {
             </View>
           )
         )}
-        {isResultsActionsheetOpened === false && status === 'success' && (
-          <View style={[styles.buttonContainer, {bottom: bottomTabHeight}]}>
-            <Button
-              onPress={__showResults}
-              title="Danh sách kết quả"
-              style={styles.button}
-            />
-          </View>
-        )}
         {isLoading && <LoadingIndicator />}
       </ImageBackground>
 
@@ -222,12 +204,11 @@ const ImageDetectPage = ({route, navigation}) => {
         // useBottomSafeAreaPadding={true}
         headerAlwaysVisible={true}
         gestureEnabled={true}
-        closable={true}
+        closable={false}
         drawUnderStatusBar={false}
-        indicatorStyle={{marginTop: 15, width: 60}}
-        onClose={() => {
-          setResultsActionsheetOpened(false);
-        }}>
+        indicatorStyle={styles.actionSheetIndicator}
+        snapPoints={[20, 50, 100]}
+        initialSnapIndex={1}>
         <View
           style={[
             styles.actionSheetItems,
