@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useContext} from 'react';
 import {StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native';
@@ -26,17 +25,17 @@ export const RectRender = ({element, index, isReliable}) => {
       }}
       key={index}
       style={[
+        styles.rect,
         isReliable && styles.rectFade,
         selectedResult.index === index && styles.rectWhite,
+        // YOLOv5
         // {
-        //   position: 'absolute',
         //   width: (element.coordinate.x1 - element.coordinate.x0) * resizeRatio,
         //   height: (element.coordinate.y1 - element.coordinate.y0) * resizeRatio,
         //   left: element.coordinate.x0 * resizeRatio,
         //   top: element.coordinate.y0 * resizeRatio,
         // },
         {
-          position: 'absolute',
           left: element.bbox[0] * resizeRatio,
           top: element.bbox[1] * resizeRatio,
           width: element.bbox[2] * resizeRatio,
@@ -48,6 +47,9 @@ export const RectRender = ({element, index, isReliable}) => {
 };
 
 const styles = StyleSheet.create({
+  rect: {
+    position: 'absolute',
+  },
   rectFade: {
     borderColor: 'rgba(255, 255, 255, 0.3)',
     borderWidth: 5,

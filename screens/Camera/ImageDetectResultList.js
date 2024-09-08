@@ -4,46 +4,40 @@ import {SelectedResultContext} from '../../contexts/DetectionResultContext';
 
 export const ItemsButtonRender = ({element, index, isReliable}) => {
   const {selectedResult, setSelectedResult} = useContext(SelectedResultContext);
+  const textStyles = [
+    styles.itemsText,
+    isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
+    selectedResult.index === index && styles.itemsTextWhite,
+  ];
 
   return (
-    <TouchableOpacity
-      style={styles.detectedItemsButton}
-      key={index}
-      onPress={() => {
-        if (selectedResult.index === index) {
-          setSelectedResult({
-            result: null,
-            index: null,
-          });
-        } else {
-          setSelectedResult({
-            result: element.object,
-            index: index,
-          });
+    <View style={styles.detectedItemsButton}>
+      <TouchableOpacity
+        style={
+          selectedResult.index === index
+            ? styles.selectedItemBackground
+            : styles.itemBackground
         }
-      }}>
-      {selectedResult.index === index && (
-        <View style={styles.selectedItemBackground} />
-      )}
-      <View style={styles.itemsTextContainer}>
-        <Text
-          style={[
-            styles.itemsText,
-            isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
-            selectedResult.index === index && styles.itemsTextWhite,
-          ]}>
-          {element.class}
-        </Text>
-        <Text
-          style={[
-            styles.itemsText,
-            isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
-            selectedResult.index === index && styles.itemsTextWhite,
-          ]}>
-          {Math.round(element.score * 100)}%
-        </Text>
-      </View>
-    </TouchableOpacity>
+        key={index}
+        onPress={() => {
+          if (selectedResult.index === index) {
+            setSelectedResult({
+              result: null,
+              index: null,
+            });
+          } else {
+            setSelectedResult({
+              result: element.object,
+              index: index,
+            });
+          }
+        }}>
+        <View style={styles.itemsTextContainer}>
+          <Text style={textStyles}>{element.class}</Text>
+          <Text style={textStyles}>{Math.round(element.score * 100)}%</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -57,7 +51,11 @@ const styles = StyleSheet.create({
     borderColor: '#858585',
     borderRadius: 10,
     height: 40,
-    marginBottom: -40,
+  },
+  itemBackground: {
+    borderWidth: 1,
+    borderColor: 'transparent',
+    height: 40,
   },
   itemsTextContainer: {
     flexDirection: 'row',
