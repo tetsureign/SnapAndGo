@@ -1,15 +1,5 @@
 import React, {useRef, useEffect, useState} from 'react';
-import {
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ImageBackground,
-  Button,
-  Linking,
-  Image,
-  ScrollView,
-} from 'react-native';
+import {View, ImageBackground, Button, Linking} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
@@ -59,30 +49,31 @@ const RectanglesRender = ({fetchResult}) => {
 };
 
 const ImageDetectPage = ({route, navigation}) => {
+  // Get passed photo from routes
   const {photoUri, photoWidth, photoHeight} = route.params;
 
+  // RN navigation
   const headerHeight = useHeaderHeight();
   const bottomTabHeight = useBottomTabBarHeight();
 
-  const resultsActionSheetRef = useRef(null);
-
-  const [fetchResult, setFetchResult] = useState(null);
-
+  // UI elements
   const [isLoading, setLoading] = useState(false);
-
-  const [resizeRatio, setResizeRatio] = useState(null);
-  const [imageWidthDevice, setImageWidthDevice] = useState(null);
-
   const [isDetectPressed, setDetectPressed] = useState(false);
-
   const [selectedResult, setSelectedResult] = useState({
     result: null,
     index: null,
   });
 
+  // Image resizing
+  const [resizeRatio, setResizeRatio] = useState(null);
+  const [imageWidthDevice, setImageWidthDevice] = useState(null);
+
   const [status, setStatus] = useState(null);
 
-  const getData = async source => {
+  // Get data from API
+  const [fetchResult, setFetchResult] = useState(null);
+
+  async function getData(source) {
     let photoUpload = {uri: source};
     let formData = new FormData();
     formData.append('image', {
@@ -110,23 +101,16 @@ const ImageDetectPage = ({route, navigation}) => {
       setStatus('failed');
       setLoading(false);
     }
-  };
+  }
 
-  const __getResults = () => {
+  function __getResults() {
     setLoading(true);
     setDetectPressed(true);
     getData(photoUri);
-  };
+  }
 
-  const __goBack = () => {
-    navigation.navigate('Trang Camera');
-  };
-
-  const __searchMap = () => {
-    Linking.openURL(
-      'http://maps.google.com/?q=' + selectedResult.result + ' shop',
-    );
-  };
+  // Action sheet
+  const resultsActionSheetRef = useRef(null);
 
   function __openActionSheet() {
     resultsActionSheetRef.current?.show();
@@ -137,6 +121,17 @@ const ImageDetectPage = ({route, navigation}) => {
       __openActionSheet();
     }
   }, [isLoading, isDetectPressed, status]);
+
+  // Navigation
+  function __goBack() {
+    navigation.navigate('Trang Camera');
+  }
+
+  function __searchMap() {
+    Linking.openURL(
+      'http://maps.google.com/?q=' + selectedResult.result + ' shop',
+    );
+  }
 
   return (
     <View style={styles.container}>
