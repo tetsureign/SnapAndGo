@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import {TouchableOpacity, StyleSheet, View, Text} from 'react-native';
-import {SelectedResultContext} from '../../contexts/DetectionResultContext';
+import {SelectedResultContext} from '../../../contexts/DetectionResultContext';
 
 export const ItemsButtonRender = ({element, index, isReliable}) => {
   const {selectedResult, setSelectedResult} = useContext(SelectedResultContext);

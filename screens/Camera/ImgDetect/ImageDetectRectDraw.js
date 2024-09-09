@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native';
-import {SelectedResultContext} from '../../contexts/DetectionResultContext';
+import {SelectedResultContext} from '../../../contexts/DetectionResultContext';
 
 export const RectRender = ({element, index, isReliable}) => {
   const {selectedResult, setSelectedResult, resizeRatio} = useContext(

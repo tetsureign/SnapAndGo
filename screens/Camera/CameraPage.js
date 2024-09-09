@@ -38,7 +38,7 @@ const CameraPage = ({navigation}) => {
     const photoUri = Image.resolveAssetSource(photo).uri;
     const photoWidth = Image.resolveAssetSource(photo).width;
     const photoHeight = Image.resolveAssetSource(photo).height;
-    navigation.navigate('Nhận diện', {photoUri, photoWidth, photoHeight});
+    navigation.navigate('detect-page', {photoUri, photoWidth, photoHeight});
   };
 
   // Screen Ratio and image padding

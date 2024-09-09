@@ -24,7 +24,7 @@ const Tabs = () => {
 
   return (
     <Tab.Navigator
-      initialRouteName="Camera"
+      initialRouteName="camera-screen"
       shifting={true}
       screenOptions={({route}) => ({
         headerTitleAlign: 'center',

@@ -3,16 +3,16 @@ import {View, ImageBackground, Button, Linking} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
-import LoadingIndicator from '../../components/LoadingIndicator';
-import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
-import {ErrorChip} from '../../components/ErrorMessage/ErrorChip';
-import * as api from '../../api/api';
-import {SelectedResultContext} from '../../contexts/DetectionResultContext';
+import LoadingIndicator from '../../../components/LoadingIndicator';
+import {FocusAwareStatusBar} from '../../../components/FocusAwareStatusBar';
+import {ErrorChip} from '../../../components/ErrorMessage/ErrorChip';
+import * as api from '../../../api/api';
+import {SelectedResultContext} from '../../../contexts/DetectionResultContext';
 import {RectRender} from './ImageDetectRectDraw';
 import {ItemsButtonRender} from './ImageDetectResultList';
-import {GoButton} from '../../components/Buttons/buttons';
+import {GoButton} from '../../../components/Buttons/buttons';
 import {styles} from './ImageDetectStyles';
-import {DarkPersistentActionSheet} from '../../components/ActionSheet/actionsheet';
+import {DarkPersistentActionSheet} from '../../../components/ActionSheet/actionsheet';
 
 const ResultButtonsRender = ({fetchResult}) => {
   return fetchResult.map((element, index) => {
@@ -128,7 +128,7 @@ const ImageDetectPage = ({route, navigation}) => {
 
   // Navigation
   function __goBack() {
-    navigation.navigate('Trang Camera');
+    navigation.navigate('main-camera');
   }
 
   function __searchMap() {
@@ -215,7 +215,7 @@ const ImageDetectPage = ({route, navigation}) => {
             <View style={styles.actionButtons}>
               <GoButton
                 onPress={__searchMap}
-                icon={require('../../assets/icons/search.png')}
+                icon={require('../../../assets/icons/search.png')}
                 text={'Tìm kiếm'}
                 color={'#00C5FF'}
               />
