@@ -15,7 +15,7 @@ export const DarkPersistentActionSheet = ({innerRef, children}) => {
       closable={false}
       drawUnderStatusBar={false}
       indicatorStyle={actionSheetStyle.actionSheetIndicator}
-      snapPoints={[20, 50, 100]}
+      snapPoints={[20, 60, 100]}
       initialSnapIndex={1}>
       {children}
     </ActionSheet>
