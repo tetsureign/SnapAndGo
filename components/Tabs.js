@@ -2,6 +2,7 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View, Text, Image, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
 import MapPage from '../screens/MapPage';
 import CameraStack from '../screens/Camera/CameraPagesNavigator';
 import HomeScreen from '../screens/HomeScreen';
@@ -10,6 +11,14 @@ import InfoPage from '../screens/InfoPage';
 import HistoryPage from '../screens/HistoryPage';
 
 const Tab = createBottomTabNavigator();
+
+const RenderTabsIcon = (color, iconSource) => (
+  <Image source={iconSource} style={[styles.iconSize, {tintColor: color}]} />
+);
+
+const RenderTabsLabel = (focused, color, text) => {
+  return focused && <Text style={{color: color}}>{text}</Text>;
+};
 
 const Tabs = () => {
   const insets = useSafeAreaInsets();
@@ -22,6 +31,56 @@ const Tabs = () => {
     orange: '#FF6901',
   };
 
+  const TabScreens = [
+    {
+      name: 'map-screen',
+      component: MapPage,
+      options: {
+        title: 'Bản đồ',
+        headerTransparent: true,
+        headerBackground: () => <View style={styles.lightHeader} />,
+        tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
+        tabBarActiveTintColor: colors.green,
+        tabBarIcon: ({focused, color}) => {
+          return RenderTabsIcon(color, require('../assets/icons/map.png'));
+        },
+        tabBarLabel: ({focused, color}) => {
+          return RenderTabsLabel(focused, color, 'Bản đồ');
+        },
+      },
+    },
+    {
+      name: 'camera-screen',
+      component: CameraStack,
+      options: {
+        title: 'Tìm kiếm',
+        headerShown: false,
+        tabBarActiveTintColor: colors.blue,
+        tabBarIcon: ({focused, color}) => {
+          return RenderTabsIcon(color, require('../assets/icons/search.png'));
+        },
+        tabBarLabel: ({focused, color}) => {
+          return RenderTabsLabel(focused, color, 'Tìm kiếm');
+        },
+      },
+    },
+    {
+      name: 'history-page',
+      component: HistoryPage,
+      options: {
+        title: 'Lịch sử',
+        tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
+        tabBarActiveTintColor: colors.orange,
+        tabBarIcon: ({focused, color}) => {
+          return RenderTabsIcon(color, require('../assets/icons/list.png'));
+        },
+        tabBarLabel: ({focused, color}) => {
+          return RenderTabsLabel(focused, color, 'Lịch sử');
+        },
+      },
+    },
+  ];
+
   return (
     <Tab.Navigator
       initialRouteName="camera-screen"
@@ -29,81 +88,18 @@ const Tabs = () => {
       screenOptions={({route}) => ({
         headerTitleAlign: 'center',
         tabBarInactiveTintColor: 'rgb(170, 170, 170)',
-        tabBarShowLabel: false,
         tabBarStyle: [styles.darkTabBar, {height: 75 + insets.bottom}],
       })}>
-      <Tab.Screen
-        name="map-screen"
-        component={MapPage}
-        options={{
-          title: 'Bản đồ',
-          headerTransparent: true,
-          headerBackground: () => <View style={styles.lightHeader} />,
-          tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
-          tabBarIcon: ({focused}) => (
-            <View style={styles.iconContainer}>
-              <Image
-                source={require('../assets/icons/map.png')}
-                style={[
-                  styles.iconSize,
-                  {tintColor: focused ? colors.green : colors.gray},
-                ]}
-              />
-              {focused && (
-                <Text
-                  style={{
-                    color: focused ? colors.green : colors.gray,
-                  }}>
-                  Bản đồ
-                </Text>
-              )}
-            </View>
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="camera-screen"
-        component={CameraStack}
-        options={{
-          title: 'Camera',
-          headerShown: false,
-          tabBarIcon: ({focused}) => (
-            <View style={styles.iconContainer}>
-              <Image
-                source={require('../assets/icons/search.png')}
-                style={[
-                  styles.iconSize,
-                  {tintColor: focused ? colors.blue : colors.gray},
-                ]}
-              />
-            </View>
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="history-page"
-        component={HistoryPage}
-        options={{
-          name: 'Lịch sử',
-          tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
-          tabBarIcon: ({focused}) => (
-            <View style={styles.iconContainer}>
-              <Image
-                source={require('../assets/icons/list.png')}
-                style={[
-                  styles.iconSize,
-                  {tintColor: focused ? colors.orange : colors.gray},
-                ]}
-              />
-              {focused && (
-                <Text style={{color: focused ? colors.orange : colors.gray}}>
-                  Lịch sử
-                </Text>
-              )}
-            </View>
-          ),
-        }}
-      />
+      {TabScreens.map((element, index) => {
+        return (
+          <Tab.Screen
+            name={element.name}
+            component={element.component}
+            options={element.options}
+            key={index}
+          />
+        );
+      })}
     </Tab.Navigator>
   );
 };
@@ -134,11 +130,6 @@ const styles = StyleSheet.create({
   },
 
   // Icon
-  iconContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   iconSize: {
     width: 40,
     height: 40,
