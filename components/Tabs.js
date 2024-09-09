@@ -2,6 +2,7 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View, Text, Image, StyleSheet} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Map, Search, List} from 'iconoir-react-native';
 
 import MapPage from '../screens/MapPage';
 import CameraStack from '../screens/Camera/CameraPagesNavigator';
@@ -11,10 +12,6 @@ import InfoPage from '../screens/InfoPage';
 import HistoryPage from '../screens/HistoryPage';
 
 const Tab = createBottomTabNavigator();
-
-const RenderTabsIcon = (color, iconSource) => (
-  <Image source={iconSource} style={[styles.iconSize, {tintColor: color}]} />
-);
 
 const RenderTabsLabel = (focused, color, text) => {
   return focused && <Text style={{color: color}}>{text}</Text>;
@@ -41,9 +38,9 @@ const Tabs = () => {
         headerBackground: () => <View style={styles.lightHeader} />,
         tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
         tabBarActiveTintColor: colors.green,
-        tabBarIcon: ({focused, color}) => {
-          return RenderTabsIcon(color, require('../assets/icons/map.png'));
-        },
+        tabBarIcon: ({focused, color, size}) => (
+          <Map color={color} height={size * 1.5} width={size * 1.5} />
+        ),
         tabBarLabel: ({focused, color}) => {
           return RenderTabsLabel(focused, color, 'Bản đồ');
         },
@@ -56,9 +53,9 @@ const Tabs = () => {
         title: 'Tìm kiếm',
         headerShown: false,
         tabBarActiveTintColor: colors.blue,
-        tabBarIcon: ({focused, color}) => {
-          return RenderTabsIcon(color, require('../assets/icons/search.png'));
-        },
+        tabBarIcon: ({focused, color, size}) => (
+          <Search color={color} width={size * 1.5} height={size * 1.5} />
+        ),
         tabBarLabel: ({focused, color}) => {
           return RenderTabsLabel(focused, color, 'Tìm kiếm');
         },
@@ -71,9 +68,9 @@ const Tabs = () => {
         title: 'Lịch sử',
         tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
         tabBarActiveTintColor: colors.orange,
-        tabBarIcon: ({focused, color}) => {
-          return RenderTabsIcon(color, require('../assets/icons/list.png'));
-        },
+        tabBarIcon: ({focused, color, size}) => (
+          <List color={color} width={size * 1.5} height={size * 1.5} />
+        ),
         tabBarLabel: ({focused, color}) => {
           return RenderTabsLabel(focused, color, 'Lịch sử');
         },

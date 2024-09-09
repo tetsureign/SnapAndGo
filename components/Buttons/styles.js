@@ -2,6 +2,8 @@ import {StyleSheet} from 'react-native';
 
 export const cameraButtonStyles = StyleSheet.create({
   captureButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
     width: 70,
     height: 70,
     borderRadius: 50,
@@ -19,10 +21,6 @@ export const cameraButtonStyles = StyleSheet.create({
     borderWidth: 5,
     elevation: 5,
   },
-  imgPickerButtonIcon: {
-    width: 30,
-    height: 30,
-  },
 });
 
 export const goButtonStyles = StyleSheet.create({
@@ -35,10 +33,6 @@ export const goButtonStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  goButtonImage: {
-    width: 40,
-    height: 40,
   },
   goButtonText: {
     fontSize: 25,
@@ -55,10 +49,10 @@ export const showHideButtonStyle = StyleSheet.create({
     // color: '#C7C7C7',
     fontSize: 15,
   },
-  showHideButtonArrow: {
-    width: 18,
-    height: 18,
-    // tintColor: '#C7C7C7',
-    marginHorizontal: 5,
-  },
+  // showHideButtonArrow: {
+  //   width: 18,
+  //   height: 18,
+  //   // tintColor: '#C7C7C7',
+  //   marginHorizontal: 5,
+  // },
 });

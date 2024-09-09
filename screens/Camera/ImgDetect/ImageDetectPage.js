@@ -2,6 +2,7 @@ import React, {useRef, useEffect, useState} from 'react';
 import {View, ImageBackground, Button, Linking} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import {Search} from 'iconoir-react-native';
 
 import LoadingIndicator from '../../../components/LoadingIndicator';
 import {FocusAwareStatusBar} from '../../../components/FocusAwareStatusBar';
@@ -215,7 +216,7 @@ const ImageDetectPage = ({route, navigation}) => {
             <View style={styles.actionButtons}>
               <GoButton
                 onPress={__searchMap}
-                icon={require('../../../assets/icons/search.png')}
+                icon={<Search color="#00C5FF" width={30} height={30} />}
                 text={'Tìm kiếm'}
                 color={'#00C5FF'}
               />

@@ -12,8 +12,9 @@ import {
 import {Camera, CameraType} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 import {useHeaderHeight} from '@react-navigation/elements';
+
+import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import ResizeImage from '../../utils/ResizeImage';
 import {

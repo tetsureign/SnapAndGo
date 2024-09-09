@@ -1,13 +1,16 @@
 import React from 'react';
-import {TouchableOpacity, Image, View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
+import {MediaImage, Search} from 'iconoir-react-native';
+
 import {cameraButtonStyles} from './styles';
 
 export const TakePictureButton = ({onPress}) => {
   return (
     <TouchableOpacity
       style={cameraButtonStyles.captureButton}
-      onPress={onPress}
-    />
+      onPress={onPress}>
+      <Search color="#00C5FF" width={30} height={30} />
+    </TouchableOpacity>
   );
 };
 
@@ -17,10 +20,7 @@ export const ImagePickerButton = ({onPress}) => {
       <TouchableOpacity
         style={cameraButtonStyles.imgPickerButton}
         onPress={onPress}>
-        <Image
-          source={require('../../assets/icons/media-image.png')}
-          style={cameraButtonStyles.imgPickerButtonIcon}
-        />
+        <MediaImage color="white" width={30} height={30} />
       </TouchableOpacity>
     </View>
   );
