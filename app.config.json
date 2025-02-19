@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "SnapAndGo",
+    "slug": "snap-and-go",
+    "version": "1.2.0",
+    "orientation": "portrait",
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
+        }
+      ]
+    ],
+    "android": {
+      "package": "com.snapandgo",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.INTERNET"
+      ]
+    }
+  }
+}
