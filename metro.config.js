@@ -6,9 +6,11 @@
  */
 const {getDefaultConfig} = require('@expo/metro-config');
 
-const defaultConfig = getDefaultConfig(__dirname);
-defaultConfig.resolver.assetExts.push('ort');
-module.exports = defaultConfig;
+const config = getDefaultConfig(__dirname);
+
+config.resolver.assetExts.push('ort');
+
+module.exports = config;
 // module.exports = {
 //   transformer: {
 //     getTransformOptions: async () => ({

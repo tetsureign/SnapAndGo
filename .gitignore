@@ -68,3 +68,6 @@ buck-out/
 
 # dotenv
 .env
+
+# Expo
+.expo
