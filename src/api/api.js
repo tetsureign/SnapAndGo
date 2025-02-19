@@ -1,8 +1,7 @@
 import axios from 'axios';
-import Config from 'react-native-config';
 
 const req = axios.create({
-  baseURL: Config.API_URL,
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
   timeout: 1000,
 });
 
