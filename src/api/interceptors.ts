@@ -17,7 +17,7 @@ export const setupInterceptors = (axiosInstance: AxiosInstance) => {
   axiosInstance.interceptors.response.use(
     response => response,
     error => {
-      console.error('API Error:', error);
+      console.error('API Error:', error.response);
       return Promise.reject(error);
     },
   );
