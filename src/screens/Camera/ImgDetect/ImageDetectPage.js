@@ -7,13 +7,14 @@ import {Search} from 'iconoir-react-native';
 import LoadingIndicator from '../../../components/LoadingIndicator';
 import {FocusAwareStatusBar} from '../../../components/FocusAwareStatusBar';
 import {ErrorChip} from '../../../components/ErrorMessage/ErrorChip';
-import * as api from '../../../api/api';
 import {SelectedResultContext} from '../../../contexts/DetectionResultContext';
 import {RectRender} from './ImageDetectRectDraw';
 import {ItemsButtonRender} from './ImageDetectResultList';
 import {GoButton} from '../../../components/Buttons/buttons';
 import {styles} from './ImageDetectStyles';
 import {DarkPersistentActionSheet} from '../../../components/ActionSheet/actionsheet';
+
+import {imageDetect} from '../../../api/endpoints/imageDetectApi';
 
 const ResultButtonsRender = ({fetchResult}) => {
   return fetchResult.map((element, index) => {
@@ -73,34 +74,23 @@ const ImageDetectPage = ({route, navigation}) => {
   // Get data from API
   const [fetchResult, setFetchResult] = useState(null);
 
-  async function getData(source) {
+  async function getData(sourceUri) {
     setLoading(true);
 
-    let photoUpload = {uri: source};
-    let formData = new FormData();
-    formData.append('image', {
-      uri: photoUpload.uri,
-      name: 'image.jpg',
-      type: 'image/jpeg',
-    });
-
-    const responseData = await api.Post('/detect', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    if (responseData) {
+    try {
+      const responseData = await imageDetect(sourceUri);
       console.log('Result: ', responseData);
+
       if (responseData.length > 0) {
         setFetchResult(responseData);
         setStatus('success');
       } else {
         setStatus('empty');
       }
-      setLoading(false);
-    } else {
+    } catch (error) {
+      console.error(error);
       setStatus('failed');
+    } finally {
       setLoading(false);
     }
   }
