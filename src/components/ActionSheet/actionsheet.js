@@ -1,6 +1,6 @@
 import React from 'react';
 import ActionSheet from 'react-native-actions-sheet';
-import {actionSheetStyle} from './styles';
+import {actionSheetStyle} from './ActionSheet.styles';
 
 // This one isn't meant to use with SheetManager.
 export const DarkPersistentActionSheet = ({innerRef, children}) => {

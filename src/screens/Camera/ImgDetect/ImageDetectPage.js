@@ -12,7 +12,7 @@ import {RectRender} from './ImageDetectRectDraw';
 import {ItemsButtonRender} from './ImageDetectResultList';
 import {GoButton} from '../../../components/Buttons/buttons';
 import {styles} from './ImageDetectStyles';
-import {DarkPersistentActionSheet} from '../../../components/ActionSheet/actionsheet';
+import {DarkPersistentActionSheet} from '../../../components/ActionSheet/ActionSheet';
 
 import {imageDetect} from '../../../api/endpoints/imageDetectApi';
 
@@ -81,10 +81,10 @@ const ImageDetectPage = ({route, navigation}) => {
       const responseData = await imageDetect(sourceUri);
       console.log('Result: ', responseData);
 
-      if (responseData.length > 0) {
-        setFetchResult(responseData);
+      if (responseData.success && responseData.data.length > 0) {
+        setFetchResult(responseData.data);
         setStatus('success');
-      } else {
+      } else if (responseData.success && responseData.data.length === 0) {
         setStatus('empty');
       }
     } catch (error) {
