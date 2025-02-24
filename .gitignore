@@ -63,9 +63,6 @@ buck-out/
 /ios/Pods/
 /vendor/bundle/
 
-# VSCode
-.vscode
-
 # dotenv
 .env
 
