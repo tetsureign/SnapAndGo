@@ -3,7 +3,6 @@ import {StyleSheet} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CameraPage from './CameraPage';
 import ImageDetectPage from './ImgDetect/ImageDetectPage';
-import InfoPage from '../InfoPage';
 
 const Stack = createNativeStackNavigator();
 
