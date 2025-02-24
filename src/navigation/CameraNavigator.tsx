@@ -1,8 +1,10 @@
+//TODO: TypeScript types
+
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import CameraPage from './CameraPage';
-import ImageDetectPage from './ImgDetect/ImageDetectPage';
+import CameraPage from '../screens/Camera/CameraPage';
+import ImageDetectPage from '../screens/Camera/ImgDetect/ImageDetectPage';
 
 const Stack = createNativeStackNavigator();
 

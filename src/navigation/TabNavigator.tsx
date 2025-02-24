@@ -1,20 +1,24 @@
+// TODO: TypeScript types
+
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Map, Search, List} from 'iconoir-react-native';
 
+import tabNavigatorStyles from './TabNavigator.styles';
+
 import MapPage from '../screens/MapPage';
-import CameraStack from '../screens/Camera/CameraPagesNavigator';
+import CameraStack from './CameraNavigator';
 import HistoryPage from '../screens/HistoryPage';
 
 const Tab = createBottomTabNavigator();
 
-const RenderTabsLabel = (focused, color, text) => {
+const RenderTabsLabel = (focused: boolean, color: string, text: string) => {
   return focused && <Text style={{color: color}}>{text}</Text>;
 };
 
-const Tabs = () => {
+const TabsNavigator = () => {
   const insets = useSafeAreaInsets();
 
   // TODO: global style this
@@ -32,8 +36,11 @@ const Tabs = () => {
       options: {
         title: 'Bản đồ',
         headerTransparent: true,
-        headerBackground: () => <View style={styles.lightHeader} />,
-        tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
+        headerBackground: () => <View style={tabNavigatorStyles.lightHeader} />,
+        tabBarStyle: [
+          tabNavigatorStyles.lightTabBar,
+          {height: 75 + insets.bottom},
+        ],
         tabBarActiveTintColor: colors.green,
         tabBarIcon: ({focused, color, size}) => (
           <Map color={color} height={size * 1.5} width={size * 1.5} />
@@ -63,7 +70,10 @@ const Tabs = () => {
       component: HistoryPage,
       options: {
         title: 'Lịch sử',
-        tabBarStyle: [styles.lightTabBar, {height: 75 + insets.bottom}],
+        tabBarStyle: [
+          tabNavigatorStyles.lightTabBar,
+          {height: 75 + insets.bottom},
+        ],
         tabBarActiveTintColor: colors.orange,
         tabBarIcon: ({focused, color, size}) => (
           <List color={color} width={size * 1.5} height={size * 1.5} />
@@ -78,11 +88,13 @@ const Tabs = () => {
   return (
     <Tab.Navigator
       initialRouteName="camera-screen"
-      shifting={true}
       screenOptions={({route}) => ({
         headerTitleAlign: 'center',
         tabBarInactiveTintColor: 'rgb(170, 170, 170)',
-        tabBarStyle: [styles.darkTabBar, {height: 75 + insets.bottom}],
+        tabBarStyle: [
+          tabNavigatorStyles.darkTabBar,
+          {height: 75 + insets.bottom},
+        ],
       })}>
       {TabScreens.map((element, index) => {
         return (
@@ -98,36 +110,4 @@ const Tabs = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  // Header
-  lightHeader: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.75)',
-  },
-  darkHeader: {
-    flex: 1,
-    backgroundColor: 'rgba(38, 38, 38, 0.75)',
-  },
-
-  // Tab bar
-  lightTabBar: {
-    position: 'absolute',
-    // height: 75,
-    elevation: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.75)',
-  },
-  darkTabBar: {
-    position: 'absolute',
-    // height: 75,
-    elevation: 0,
-    backgroundColor: 'rgba(38, 38, 38, 0.75)',
-  },
-
-  // Icon
-  iconSize: {
-    width: 40,
-    height: 40,
-  },
-});
-
-export default Tabs;
+export default TabsNavigator;
