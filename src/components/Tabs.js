@@ -6,9 +6,6 @@ import {Map, Search, List} from 'iconoir-react-native';
 
 import MapPage from '../screens/MapPage';
 import CameraStack from '../screens/Camera/CameraPagesNavigator';
-import HomeScreen from '../screens/HomeScreen';
-import AccountPage from '../screens/AccountPage';
-import InfoPage from '../screens/InfoPage';
 import HistoryPage from '../screens/HistoryPage';
 
 const Tab = createBottomTabNavigator();
