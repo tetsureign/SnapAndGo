@@ -1,9 +1,17 @@
 import React from 'react';
-import ActionSheet from 'react-native-actions-sheet';
+import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
 import {actionSheetStyle} from './ActionSheet.styles';
 
+type ActionSheetProps = {
+  innerRef: React.RefObject<ActionSheetRef>;
+  children: React.ReactNode;
+};
+
 // This one isn't meant to use with SheetManager.
-export const DarkPersistentActionSheet = ({innerRef, children}) => {
+export const DarkPersistentActionSheet = ({
+  innerRef,
+  children,
+}: ActionSheetProps) => {
   return (
     <ActionSheet
       ref={innerRef}
