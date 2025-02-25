@@ -4,15 +4,13 @@ import {Search} from 'iconoir-react-native';
 
 import {styles} from './Button.styles';
 
-interface TakePictureButtonProps {
+type TakePictureButtonProps = {
   onPress: () => void;
-}
+};
 
 // TODO: Global styleeeee
 
-export const TakePictureButton: React.FC<TakePictureButtonProps> = ({
-  onPress,
-}) => {
+export const TakePictureButton = ({onPress}: TakePictureButtonProps) => {
   return (
     <TouchableOpacity style={styles.captureButton} onPress={onPress}>
       <Search color="#00C5FF" width={30} height={30} />

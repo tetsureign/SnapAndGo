@@ -4,13 +4,11 @@ import {MediaImage} from 'iconoir-react-native';
 
 import {styles} from './Button.styles';
 
-interface ImagePickerButtonProps {
+type ImagePickerButtonProps = {
   onPress: () => void;
-}
+};
 
-export const ImagePickerButton: React.FC<ImagePickerButtonProps> = ({
-  onPress,
-}) => {
+export const ImagePickerButton = ({onPress}: ImagePickerButtonProps) => {
   return (
     <View>
       <TouchableOpacity style={styles.imgPickerButton} onPress={onPress}>

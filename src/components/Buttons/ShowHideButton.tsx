@@ -4,19 +4,19 @@ import {NavArrowUp, NavArrowDown} from 'iconoir-react-native';
 
 import {styles} from './Button.styles';
 
-interface ShowHideButtonProps {
+type ShowHideButtonProps = {
   onPress: () => void;
   isOpened: boolean;
   text: string;
   color: string;
-}
+};
 
-export const ShowHideButton: React.FC<ShowHideButtonProps> = ({
+export const ShowHideButton = ({
   onPress,
   isOpened,
   text,
   color,
-}) => {
+}: ShowHideButtonProps) => {
   let buttonSource: React.ReactElement | string = null;
   const buttonSize = 18;
   if (isOpened) {
