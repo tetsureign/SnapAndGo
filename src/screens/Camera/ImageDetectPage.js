@@ -11,7 +11,7 @@ import {Search} from 'iconoir-react-native';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
 import {ErrorChip} from '../../components/ErrorMessage/ErrorChip';
-import {GoButton} from '../../components/Buttons/buttons';
+import {GoButton} from '../../components/Buttons';
 import {DarkPersistentActionSheet} from '../../components/ActionSheet/ActionSheet';
 
 // Helper component imports
@@ -211,16 +211,17 @@ const ImageDetectPage = ({route, navigation}) => {
           )}
 
           {/* The search button.*/}
-          {selectedResult.result && (
-            <View style={styles.actionButtons}>
-              <GoButton
-                onPress={__searchMap}
-                icon={<Search color="#00C5FF" width={30} height={30} />}
-                text={'Tìm kiếm'}
-                color={'#00C5FF'}
-              />
-            </View>
-          )}
+          {/* TODO: Not showing rn with checks on. Temporarily turned check off for debugging*/}
+          {/* {selectedResult.result && ( */}
+          <View style={styles.actionButtons}>
+            <GoButton
+              onPress={__searchMap}
+              icon={<Search color="#00C5FF" width={30} height={30} />}
+              text={'Tìm kiếm'}
+              color={'#00C5FF'}
+            />
+          </View>
+          {/* )} */}
         </View>
       </DarkPersistentActionSheet>
     </View>
