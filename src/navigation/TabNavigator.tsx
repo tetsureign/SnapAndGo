@@ -17,7 +17,7 @@ const Tab = createBottomTabNavigator();
 
 interface TabScreenOptions {
   name: string;
-  component: React.FC;
+  component: React.ComponentType;
   options: BottomTabNavigationOptions;
 }
 

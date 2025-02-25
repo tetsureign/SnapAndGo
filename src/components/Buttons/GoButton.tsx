@@ -3,19 +3,14 @@ import {TouchableOpacity, View, Text} from 'react-native';
 
 import {styles} from './Button.styles';
 
-interface GoButtonProps {
+type GoButtonProps = {
   onPress: () => void;
   icon: React.ReactElement;
   text: string;
   color: string;
-}
+};
 
-export const GoButton: React.FC<GoButtonProps> = ({
-  onPress,
-  icon,
-  text,
-  color,
-}) => {
+export const GoButton = ({onPress, icon, text, color}: GoButtonProps) => {
   return (
     <TouchableOpacity style={styles.goButton} onPress={onPress}>
       <View style={styles.goButtonViewInside}>
