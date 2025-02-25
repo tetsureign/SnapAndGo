@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 
-export const cameraButtonStyles = StyleSheet.create({
+export const styles = StyleSheet.create({
+  // Image capture button
   captureButton: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -21,9 +22,8 @@ export const cameraButtonStyles = StyleSheet.create({
     borderWidth: 5,
     elevation: 5,
   },
-});
 
-export const goButtonStyles = StyleSheet.create({
+  // Go button
   goButton: {
     height: 40,
     marginTop: 5,
@@ -38,9 +38,8 @@ export const goButtonStyles = StyleSheet.create({
     fontSize: 25,
     paddingLeft: 5,
   },
-});
 
-export const showHideButtonStyle = StyleSheet.create({
+  // Show hide button
   showHideButton: {
     flexDirection: 'row',
     alignItems: 'center',
