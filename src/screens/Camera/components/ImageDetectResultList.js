@@ -33,8 +33,8 @@ export const ItemsButtonRender = ({element, index, isReliable}) => {
           }
         }}>
         <View style={styles.itemsTextContainer}>
-          <Text style={textStyles}>{element.class}</Text>
-          <Text style={textStyles}>{Math.round(element.score * 100)}%</Text>
+          <Text style={textStyles}>{element.object}</Text>
+          <Text style={textStyles}>{Math.round(element.score)}%</Text>
         </View>
       </TouchableOpacity>
     </View>

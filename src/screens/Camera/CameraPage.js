@@ -66,7 +66,7 @@ const CameraPage = ({navigation}) => {
     );
   }
 
-  // set the camera ratio and padding.
+  // set the camera ratio and padding. Only needed for Android
   // this code assumes a portrait mode screen
   const prepareRatio = async () => {
     let desiredRatio = '4:3'; // Start with the system default

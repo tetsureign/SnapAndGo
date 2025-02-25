@@ -1,20 +1,29 @@
+// Lib imports
 import React, {useRef, useEffect, useState} from 'react';
 import {View, ImageBackground, Button, Linking} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+
+// Icon imports
 import {Search} from 'iconoir-react-native';
 
-import LoadingIndicator from '../../../components/LoadingIndicator';
-import {FocusAwareStatusBar} from '../../../components/FocusAwareStatusBar';
-import {ErrorChip} from '../../../components/ErrorMessage/ErrorChip';
-import {SelectedResultContext} from '../../../contexts/DetectionResultContext';
-import {RectRender} from './ImageDetectRectDraw';
-import {ItemsButtonRender} from './ImageDetectResultList';
-import {GoButton} from '../../../components/Buttons/buttons';
-import {styles} from './ImageDetectStyles';
-import {DarkPersistentActionSheet} from '../../../components/ActionSheet/ActionSheet';
+// Component imports
+import LoadingIndicator from '../../components/LoadingIndicator';
+import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
+import {ErrorChip} from '../../components/ErrorMessage/ErrorChip';
+import {GoButton} from '../../components/Buttons/buttons';
+import {DarkPersistentActionSheet} from '../../components/ActionSheet/ActionSheet';
 
-import {imageDetect} from '../../../api/endpoints/imageDetectApi';
+// Helper component imports
+import {SelectedResultContext} from '../../contexts/DetectionResultContext';
+import {RectRender} from './components/ImageDetectRectDraw';
+import {ItemsButtonRender} from './components/ImageDetectResultList';
+
+// API imports
+import {imageDetect} from '../../api/endpoints/imageDetectApi';
+
+// Style imports
+import {styles} from './ImageDetectPage.styles';
 
 const ResultButtonsRender = ({fetchResult}) => {
   return fetchResult.map((element, index) => {
