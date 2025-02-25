@@ -29,18 +29,19 @@ export const RectRender = ({element, index, isReliable}) => {
         isReliable && styles.rectFade,
         selectedResult.index === index && styles.rectWhite,
         // YOLOv5
-        // {
-        //   width: (element.coordinate.x1 - element.coordinate.x0) * resizeRatio,
-        //   height: (element.coordinate.y1 - element.coordinate.y0) * resizeRatio,
-        //   left: element.coordinate.x0 * resizeRatio,
-        //   top: element.coordinate.y0 * resizeRatio,
-        // },
         {
-          left: element.bbox[0] * resizeRatio,
-          top: element.bbox[1] * resizeRatio,
-          width: element.bbox[2] * resizeRatio,
-          height: element.bbox[3] * resizeRatio,
+          width: (element.coordinate.x1 - element.coordinate.x0) * resizeRatio,
+          height: (element.coordinate.y1 - element.coordinate.y0) * resizeRatio,
+          left: element.coordinate.x0 * resizeRatio,
+          top: element.coordinate.y0 * resizeRatio,
         },
+        // COCO-SSD
+        // {
+        //   left: element.bbox[0] * resizeRatio,
+        //   top: element.bbox[1] * resizeRatio,
+        //   width: element.bbox[2] * resizeRatio,
+        //   height: element.bbox[3] * resizeRatio,
+        // },
       ]}
     />
   );
