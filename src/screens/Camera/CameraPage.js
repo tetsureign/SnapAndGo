@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {
   Text,
-  StyleSheet,
   View,
   Dimensions,
   Platform,
@@ -12,15 +11,15 @@ import {
 import {Camera, CameraType} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {useHeaderHeight} from '@react-navigation/elements';
 
 import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import ResizeImage from '../../utils/ResizeImage';
-import {
-  TakePictureButton,
-  ImagePickerButton,
-} from '../../components/Buttons/uniqueButtons';
+import {TakePictureButton, ImagePickerButton} from '../../components/Buttons';
+
+import ResizeImage from '../../utils/resizeImage';
+
+import styles from './CameraPage.styles';
 
 const CameraPage = ({navigation}) => {
   let camera = Camera;
@@ -186,41 +185,5 @@ const CameraPage = ({navigation}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'black',
-  },
-  camera: {
-    flex: 1,
-    alignContent: 'center',
-    backgroundColor: 'black',
-  },
-  buttonsPositioner: {
-    flex: 1,
-    position: 'absolute',
-    // bottom: 90,
-    width: '100%',
-  },
-  buttonsContainer: {
-    flex: 1,
-    justifyContent: 'space-evenly',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  flashScreen: {
-    flex: 1,
-    backgroundColor: 'black',
-  },
-  permissionText: {
-    textAlign: 'center',
-    color: 'white',
-    paddingVertical: 10,
-  },
-});
 
 export default CameraPage;
