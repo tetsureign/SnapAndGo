@@ -1,7 +1,8 @@
-// TODO: TypeScript types
-
 import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {
+  createBottomTabNavigator,
+  BottomTabNavigationOptions,
+} from '@react-navigation/bottom-tabs';
 import {View, Text} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Map, Search, List} from 'iconoir-react-native';
@@ -13,6 +14,12 @@ import CameraStack from './CameraNavigator';
 import HistoryPage from '../screens/HistoryPage';
 
 const Tab = createBottomTabNavigator();
+
+interface TabScreenOptions {
+  name: string;
+  component: React.FC;
+  options: BottomTabNavigationOptions;
+}
 
 const RenderTabsLabel = (focused: boolean, color: string, text: string) => {
   return focused && <Text style={{color: color}}>{text}</Text>;
@@ -29,7 +36,7 @@ const TabsNavigator = () => {
     orange: '#FF6901',
   };
 
-  const TabScreens = [
+  const TabScreens: TabScreenOptions[] = [
     {
       name: 'map-screen',
       component: MapPage,
@@ -42,7 +49,7 @@ const TabsNavigator = () => {
           {height: 75 + insets.bottom},
         ],
         tabBarActiveTintColor: colors.green,
-        tabBarIcon: ({focused, color, size}) => (
+        tabBarIcon: ({color, size}) => (
           <Map color={color} height={size * 1.5} width={size * 1.5} />
         ),
         tabBarLabel: ({focused, color}) => {
@@ -57,7 +64,7 @@ const TabsNavigator = () => {
         title: 'Tìm kiếm',
         headerShown: false,
         tabBarActiveTintColor: colors.blue,
-        tabBarIcon: ({focused, color, size}) => (
+        tabBarIcon: ({color, size}) => (
           <Search color={color} width={size * 1.5} height={size * 1.5} />
         ),
         tabBarLabel: ({focused, color}) => {
@@ -75,7 +82,7 @@ const TabsNavigator = () => {
           {height: 75 + insets.bottom},
         ],
         tabBarActiveTintColor: colors.orange,
-        tabBarIcon: ({focused, color, size}) => (
+        tabBarIcon: ({color, size}) => (
           <List color={color} width={size * 1.5} height={size * 1.5} />
         ),
         tabBarLabel: ({focused, color}) => {
@@ -88,7 +95,7 @@ const TabsNavigator = () => {
   return (
     <Tab.Navigator
       initialRouteName="camera-screen"
-      screenOptions={({route}) => ({
+      screenOptions={() => ({
         headerTitleAlign: 'center',
         tabBarInactiveTintColor: 'rgb(170, 170, 170)',
         tabBarStyle: [
