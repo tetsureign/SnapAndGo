@@ -3,17 +3,16 @@ import {TouchableOpacity} from 'react-native';
 import {Search} from 'iconoir-react-native';
 
 import {styles} from './Button.styles';
+import {colors} from '../../styles/colors';
 
 type TakePictureButtonProps = {
   onPress: () => void;
 };
 
-// TODO: Global styleeeee
-
 const TakePictureButton = ({onPress}: TakePictureButtonProps) => {
   return (
     <TouchableOpacity style={styles.captureButton} onPress={onPress}>
-      <Search color="#00C5FF" width={30} height={30} />
+      <Search color={colors.blue} width={30} height={30} />
     </TouchableOpacity>
   );
 };
