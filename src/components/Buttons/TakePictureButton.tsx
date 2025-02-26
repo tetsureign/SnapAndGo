@@ -3,7 +3,7 @@ import {TouchableOpacity} from 'react-native';
 import {Search} from 'iconoir-react-native';
 
 import {styles} from './Button.styles';
-import {colors} from '../../styles/colors';
+import {colors} from '@/styles/colors';
 
 type TakePictureButtonProps = {
   onPress: () => void;

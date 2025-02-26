@@ -8,19 +8,19 @@ import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {Search} from 'iconoir-react-native';
 
 // Component imports
-import {LoadingIndicator} from '../../components/LoadingIndicator';
-import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
-import {ErrorChip} from '../../components/ErrorMessage';
-import {GoButton} from '../../components/Buttons';
-import {DarkPersistentActionSheet} from '../../components/ActionSheet/';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
+import FocusAwareStatusBar from '@/components/FocusAwareStatusBar';
+import {ErrorChip} from '@/components/ErrorMessage';
+import {GoButton} from '@/components/Buttons';
+import {DarkPersistentActionSheet} from '@/components/ActionSheet/';
 
 // Helper component imports
-import {SelectedResultContext} from '../../contexts/DetectionResultContext';
+import {SelectedResultContext} from '@/contexts/DetectionResultContext';
 import {RectRender} from './components/ImageDetectRectDraw';
 import {ItemsButtonRender} from './components/ImageDetectResultList';
 
 // API imports
-import {imageDetect} from '../../api/endpoints/imageDetectApi';
+import {imageDetect} from '@/api/endpoints/imageDetectApi';
 
 // Style imports
 import {styles} from './ImageDetectPage.styles';

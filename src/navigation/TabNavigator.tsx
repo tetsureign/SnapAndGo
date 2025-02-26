@@ -7,12 +7,12 @@ import {View, Text} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Map, Search, List} from 'iconoir-react-native';
 
-import MapPage from '../screens/MapPage';
+import MapPage from '@/screens/MapPage';
 import CameraStack from './CameraNavigator';
-import HistoryPage from '../screens/HistoryPage';
+import HistoryPage from '@/screens/HistoryPage';
 
 import tabNavigatorStyles from './TabNavigator.styles';
-import {colors} from '../styles/colors';
+import {colors} from '@/styles/colors';
 
 const Tab = createBottomTabNavigator();
 
