@@ -8,11 +8,11 @@ import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {Search} from 'iconoir-react-native';
 
 // Component imports
-import LoadingIndicator from '../../components/LoadingIndicator';
-import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
-import {ErrorChip} from '../../components/ErrorMessage/ErrorChip';
+import {LoadingIndicator} from '../../components/LoadingIndicator';
+import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
+import {ErrorChip} from '../../components/ErrorMessage';
 import {GoButton} from '../../components/Buttons';
-import {DarkPersistentActionSheet} from '../../components/ActionSheet/ActionSheet';
+import {DarkPersistentActionSheet} from '../../components/ActionSheet/';
 
 // Helper component imports
 import {SelectedResultContext} from '../../contexts/DetectionResultContext';

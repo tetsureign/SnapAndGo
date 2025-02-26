@@ -1,7 +1,10 @@
 import React from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import {Text, View} from 'react-native';
 
-export const ErrorChip = ({status}) => {
+import {ErrorChipType} from '@/types/errorChip';
+import styles from './ErrorChip.styles';
+
+const ErrorChip = ({status}: ErrorChipType) => {
   switch (status) {
     case 'success':
       return (
@@ -34,30 +37,4 @@ export const ErrorChip = ({status}) => {
   }
 };
 
-const styles = StyleSheet.create({
-  backgroundSuccess: {
-    backgroundColor: '#5FC314',
-    marginHorizontal: 15,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-  },
-  backgroundError: {
-    backgroundColor: '#FF6901',
-    marginHorizontal: 15,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-  },
-  backgroundNeutral: {
-    backgroundColor: '#4d4d4d',
-    marginHorizontal: 15,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-  },
-  message: {
-    color: 'white',
-    textAlign: 'center',
-  },
-});
+export default ErrorChip;

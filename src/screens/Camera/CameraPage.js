@@ -14,7 +14,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {useHeaderHeight} from '@react-navigation/elements';
 
-import {FocusAwareStatusBar} from '../../components/FocusAwareStatusBar';
+import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
 import {TakePictureButton, ImagePickerButton} from '../../components/Buttons';
 
 import ResizeImage from '../../utils/resizeImage';
