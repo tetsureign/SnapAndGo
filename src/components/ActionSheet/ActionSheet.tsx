@@ -8,10 +8,7 @@ type ActionSheetProps = {
 };
 
 // This one isn't meant to use with SheetManager.
-export const DarkPersistentActionSheet = ({
-  innerRef,
-  children,
-}: ActionSheetProps) => {
+const DarkPersistentActionSheet = ({innerRef, children}: ActionSheetProps) => {
   return (
     <ActionSheet
       ref={innerRef}
@@ -29,3 +26,5 @@ export const DarkPersistentActionSheet = ({
     </ActionSheet>
   );
 };
+
+export default DarkPersistentActionSheet;

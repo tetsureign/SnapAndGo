@@ -10,10 +10,12 @@ type TakePictureButtonProps = {
 
 // TODO: Global styleeeee
 
-export const TakePictureButton = ({onPress}: TakePictureButtonProps) => {
+const TakePictureButton = ({onPress}: TakePictureButtonProps) => {
   return (
     <TouchableOpacity style={styles.captureButton} onPress={onPress}>
       <Search color="#00C5FF" width={30} height={30} />
     </TouchableOpacity>
   );
 };
+
+export default TakePictureButton;

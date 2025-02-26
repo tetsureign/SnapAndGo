@@ -10,7 +10,7 @@ type GoButtonProps = {
   color: string;
 };
 
-export const GoButton = ({onPress, icon, text, color}: GoButtonProps) => {
+const GoButton = ({onPress, icon, text, color}: GoButtonProps) => {
   return (
     <TouchableOpacity style={styles.goButton} onPress={onPress}>
       <View style={styles.goButtonViewInside}>
@@ -20,3 +20,5 @@ export const GoButton = ({onPress, icon, text, color}: GoButtonProps) => {
     </TouchableOpacity>
   );
 };
+
+export default GoButton;

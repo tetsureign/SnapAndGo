@@ -11,7 +11,7 @@ type ShowHideButtonProps = {
   color: string;
 };
 
-export const ShowHideButton = ({
+const ShowHideButton = ({
   onPress,
   isOpened,
   text,
@@ -43,3 +43,5 @@ export const ShowHideButton = ({
     </TouchableOpacity>
   );
 };
+
+export default ShowHideButton;
