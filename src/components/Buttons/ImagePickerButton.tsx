@@ -8,7 +8,7 @@ type ImagePickerButtonProps = {
   onPress: () => void;
 };
 
-export const ImagePickerButton = ({onPress}: ImagePickerButtonProps) => {
+const ImagePickerButton = ({onPress}: ImagePickerButtonProps) => {
   return (
     <View>
       <TouchableOpacity style={styles.imgPickerButton} onPress={onPress}>
@@ -17,3 +17,5 @@ export const ImagePickerButton = ({onPress}: ImagePickerButtonProps) => {
     </View>
   );
 };
+
+export default ImagePickerButton;
