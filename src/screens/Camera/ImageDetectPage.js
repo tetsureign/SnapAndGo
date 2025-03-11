@@ -24,6 +24,7 @@ import {imageDetect} from '@/api/endpoints/imageDetectApi';
 
 // Style imports
 import {styles} from './ImageDetectPage.styles';
+import {colors} from '@/styles/colors';
 
 const ResultButtonsRender = ({fetchResult}) => {
   return fetchResult.map((element, index) => {
@@ -216,9 +217,9 @@ const ImageDetectPage = ({route, navigation}) => {
           <View style={styles.actionButtons}>
             <GoButton
               onPress={__searchMap}
-              icon={<Search color="#00C5FF" width={30} height={30} />}
+              icon={<Search color={colors.blue} width={30} height={30} />}
               text={'Tìm kiếm'}
-              color={'#00C5FF'}
+              color={colors.blue}
             />
           </View>
           {/* )} */}
