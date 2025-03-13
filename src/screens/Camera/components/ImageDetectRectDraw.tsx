@@ -1,28 +1,33 @@
 import React, {useContext} from 'react';
 import {StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native';
+
 import {SelectedResultContext} from '@/contexts/DetectionResultContext';
 
-export const RectRender = ({element, index, isReliable}) => {
+import {DetectionResultType} from '@/types/detectionResult';
+
+type RectRenderProps = {
+  element: DetectionResultType;
+  index: number;
+  isReliable: boolean;
+};
+
+export const RectRender = ({element, index, isReliable}: RectRenderProps) => {
   const {selectedResult, setSelectedResult, resizeRatio} = useContext(
     SelectedResultContext,
   );
 
+  const hanldePress = () => {
+    setSelectedResult(prev =>
+      prev.index === index
+        ? {result: null, index: null}
+        : {result: element.object, index},
+    );
+  };
+
   return (
     <TouchableOpacity
-      onPress={() => {
-        if (selectedResult.index === index) {
-          setSelectedResult({
-            result: null,
-            index: null,
-          });
-        } else {
-          setSelectedResult({
-            result: element.object,
-            index: index,
-          });
-        }
-      }}
+      onPress={hanldePress}
       key={index}
       style={[
         styles.rect,

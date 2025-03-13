@@ -1,14 +1,35 @@
 import React, {useContext} from 'react';
 import {TouchableOpacity, StyleSheet, View, Text} from 'react-native';
+
 import {SelectedResultContext} from '@/contexts/DetectionResultContext';
 
-export const ItemsButtonRender = ({element, index, isReliable}) => {
+import {DetectionResultType} from '@/types/detectionResult';
+
+type ItemsButtonRenderProps = {
+  element: DetectionResultType;
+  index: number;
+  isReliable: boolean;
+};
+
+export const ItemsButtonRender = ({
+  element,
+  index,
+  isReliable,
+}: ItemsButtonRenderProps) => {
   const {selectedResult, setSelectedResult} = useContext(SelectedResultContext);
   const textStyles = [
     styles.itemsText,
     isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
     selectedResult.index === index && styles.itemsTextWhite,
   ];
+
+  const hanldePress = () => {
+    setSelectedResult(prev =>
+      prev.index === index
+        ? {result: null, index: null}
+        : {result: element.object, index},
+    );
+  };
 
   return (
     <View style={styles.detectedItemsButton}>
@@ -19,19 +40,7 @@ export const ItemsButtonRender = ({element, index, isReliable}) => {
             : styles.itemBackground
         }
         key={index}
-        onPress={() => {
-          if (selectedResult.index === index) {
-            setSelectedResult({
-              result: null,
-              index: null,
-            });
-          } else {
-            setSelectedResult({
-              result: element.object,
-              index: index,
-            });
-          }
-        }}>
+        onPress={hanldePress}>
         <View style={styles.itemsTextContainer}>
           <Text style={textStyles}>{element.object}</Text>
           <Text style={textStyles}>{Math.round(element.score)}%</Text>
