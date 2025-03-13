@@ -16,8 +16,7 @@ import {DarkPersistentActionSheet} from '@/components/ActionSheet/';
 
 // Helper component imports
 import {SelectedResultContext} from '@/contexts/DetectionResultContext';
-import {RectRender} from './components/ImageDetectRectDraw';
-import {ItemsButtonRender} from './components/ImageDetectResultList';
+import {DetectResultRenderer} from './components/DetectResultRenderer';
 
 // API imports
 import {imageDetect} from '@/api/endpoints/imageDetectApi';
@@ -26,39 +25,30 @@ import {imageDetect} from '@/api/endpoints/imageDetectApi';
 import {styles} from './ImageDetectPage.styles';
 import {colors} from '@/styles/colors';
 
-const ResultButtonsRender = ({fetchResult}) => {
+// Type imports
+import {DetectionResultType} from '@/types/detectionResult';
+
+type DetectResultRenderProps = {
+  fetchResult: DetectionResultType[];
+  type: 'button' | 'rect';
+};
+
+const DetectResultRender = ({fetchResult, type}: DetectResultRenderProps) => {
   return fetchResult.map((element, index) => {
-    let isReliable = false;
-    if (element.score >= 0.7) {
-      isReliable = true;
-    }
+    const isReliable = element.score >= 0.7;
     return (
-      <ItemsButtonRender
+      <DetectResultRenderer
         element={element}
         index={index}
         key={index}
         isReliable={isReliable}
+        renderType={type}
       />
     );
   });
 };
 
-const RectanglesRender = ({fetchResult}) => {
-  return fetchResult.map((element, index) => {
-    let isReliable = false;
-    if (element.score >= 0.7) {
-      isReliable = true;
-    }
-    return (
-      <RectRender
-        element={element}
-        index={index}
-        key={index}
-        isReliable={isReliable}
-      />
-    );
-  });
-};
+// TypeScript Refactor Checkpoint
 
 const ImageDetectPage = ({route, navigation}) => {
   // Get passed photo from routes
@@ -164,7 +154,7 @@ const ImageDetectPage = ({route, navigation}) => {
                   setSelectedResult,
                   resizeRatio,
                 }}>
-                <RectanglesRender fetchResult={fetchResult} />
+                <DetectResultRender fetchResult={fetchResult} type="rect" />
               </SelectedResultContext.Provider>
             </View>
           </View>
@@ -195,7 +185,7 @@ const ImageDetectPage = ({route, navigation}) => {
                 selectedResult,
                 setSelectedResult,
               }}>
-              <ResultButtonsRender fetchResult={fetchResult} />
+              <DetectResultRender fetchResult={fetchResult} type="button" />
             </SelectedResultContext.Provider>
           ) : status === 'empty' ? (
             <Button
@@ -212,17 +202,16 @@ const ImageDetectPage = ({route, navigation}) => {
           )}
 
           {/* The search button.*/}
-          {/* TODO: Not showing rn with checks on. Temporarily turned check off for debugging*/}
-          {/* {selectedResult.result && ( */}
-          <View style={styles.actionButtons}>
-            <GoButton
-              onPress={__searchMap}
-              icon={<Search color={colors.blue} width={30} height={30} />}
-              text={'Tìm kiếm'}
-              color={colors.blue}
-            />
-          </View>
-          {/* )} */}
+          {selectedResult.result && (
+            <View style={styles.actionButtons}>
+              <GoButton
+                onPress={__searchMap}
+                icon={<Search color={colors.blue} width={30} height={30} />}
+                text={'Tìm kiếm'}
+                color={colors.blue}
+              />
+            </View>
+          )}
         </View>
       </DarkPersistentActionSheet>
     </View>
