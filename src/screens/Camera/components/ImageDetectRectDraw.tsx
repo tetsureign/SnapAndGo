@@ -18,7 +18,7 @@ export const RectRender = ({element, index, isReliable}) => {
           });
         } else {
           setSelectedResult({
-            result: element.class,
+            result: element.object,
             index: index,
           });
         }
