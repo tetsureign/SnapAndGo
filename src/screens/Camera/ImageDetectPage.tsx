@@ -1,5 +1,5 @@
 // Lib imports
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useRef, useEffect, useState, useReducer} from 'react';
 import {View, ImageBackground, Button, Linking} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
@@ -27,13 +27,14 @@ import {colors} from '@/styles/colors';
 
 // Type imports
 import {DetectionResultType} from '@/types/detectionResult';
+import {PhotoParams} from '@/types/photoParams';
 
-type DetectResultRenderProps = {
+type DetectResultProps = {
   fetchResult: DetectionResultType[];
   type: 'button' | 'rect';
 };
 
-const DetectResultRender = ({fetchResult, type}: DetectResultRenderProps) => {
+const DetectResult = ({fetchResult, type}: DetectResultProps) => {
   return fetchResult.map((element, index) => {
     const isReliable = element.score >= 0.7;
     return (
@@ -48,15 +49,15 @@ const DetectResultRender = ({fetchResult, type}: DetectResultRenderProps) => {
   });
 };
 
-// TypeScript Refactor Checkpoint
-
 const ImageDetectPage = ({route, navigation}) => {
   // Get passed photo from routes
-  const {photoUri, photoWidth, photoHeight} = route.params;
+  const {photoUri, photoWidth, photoHeight}: PhotoParams = route.params;
 
   // RN navigation
   const headerHeight = useHeaderHeight();
   const bottomTabHeight = useBottomTabBarHeight();
+
+  // TypeScript Refactor Checkpoint
 
   // UI elements
   const [isLoading, setLoading] = useState(true);
@@ -65,16 +66,16 @@ const ImageDetectPage = ({route, navigation}) => {
     index: null,
   });
 
+  // Get data from API
+  const [fetchResult, setFetchResult] = useState(null);
+
   // Image resizing
   const [resizeRatio, setResizeRatio] = useState(null);
   const [imageWidthDevice, setImageWidthDevice] = useState(null);
 
   const [status, setStatus] = useState(null);
 
-  // Get data from API
-  const [fetchResult, setFetchResult] = useState(null);
-
-  async function getData(sourceUri) {
+  async function getData(sourceUri: string) {
     setLoading(true);
 
     try {
@@ -154,7 +155,7 @@ const ImageDetectPage = ({route, navigation}) => {
                   setSelectedResult,
                   resizeRatio,
                 }}>
-                <DetectResultRender fetchResult={fetchResult} type="rect" />
+                <DetectResult fetchResult={fetchResult} type="rect" />
               </SelectedResultContext.Provider>
             </View>
           </View>
@@ -185,7 +186,7 @@ const ImageDetectPage = ({route, navigation}) => {
                 selectedResult,
                 setSelectedResult,
               }}>
-              <DetectResultRender fetchResult={fetchResult} type="button" />
+              <DetectResult fetchResult={fetchResult} type="button" />
             </SelectedResultContext.Provider>
           ) : status === 'empty' ? (
             <Button

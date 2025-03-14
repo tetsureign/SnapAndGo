@@ -1,3 +1,5 @@
+// Haven't done TS yet
+
 import React, {useState, useEffect, useRef} from 'react';
 import {
   Text,
