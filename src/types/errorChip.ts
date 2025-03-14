@@ -1,3 +1,1 @@
-export type ErrorChipType = {
-  status: 'success' | 'empty' | 'failed';
-};
+export type ErrorChipType = 'success' | 'empty' | 'failed';

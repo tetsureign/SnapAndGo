@@ -28,6 +28,7 @@ import {colors} from '@/styles/colors';
 // Type imports
 import {DetectionResultType} from '@/types/detectionResult';
 import {PhotoParams} from '@/types/photoParams';
+import {ErrorChipType} from '@/types/errorChip';
 
 type DetectResultProps = {
   fetchResult: DetectionResultType[];
@@ -57,48 +58,86 @@ const ImageDetectPage = ({route, navigation}) => {
   const headerHeight = useHeaderHeight();
   const bottomTabHeight = useBottomTabBarHeight();
 
-  // TypeScript Refactor Checkpoint
-
   // UI elements
-  const [isLoading, setLoading] = useState(true);
   const [selectedResult, setSelectedResult] = useState({
     result: null,
     index: null,
   });
 
-  // Get data from API
-  const [fetchResult, setFetchResult] = useState(null);
-
   // Image resizing
   const [resizeRatio, setResizeRatio] = useState(null);
   const [imageWidthDevice, setImageWidthDevice] = useState(null);
 
-  const [status, setStatus] = useState(null);
+  interface DetectionState {
+    isLoading: boolean;
+    status: ErrorChipType | null;
+    fetchResult: DetectionResultType[] | null;
+  }
 
-  async function getData(sourceUri: string) {
-    setLoading(true);
+  type Action =
+    | {type: 'FETCH_START'}
+    | {type: 'FETCH_SUCCESS'; payload: DetectionResultType[]}
+    | {type: 'FETCH_EMPTY'}
+    | {type: 'FETCH_FAIL'};
 
-    try {
-      const responseData = await imageDetect(sourceUri);
-      console.log('Result: ', responseData);
+  function detectionReducer(
+    state: DetectionState,
+    action: Action,
+  ): DetectionState {
+    switch (action.type) {
+      case 'FETCH_START':
+        return {...state, isLoading: true};
 
-      if (responseData.success && responseData.data.length > 0) {
-        setFetchResult(responseData.data);
-        setStatus('success');
-      } else if (responseData.success && responseData.data.length === 0) {
-        setStatus('empty');
-      }
-    } catch (error) {
-      console.error(error);
-      setStatus('failed');
-    } finally {
-      setLoading(false);
+      case 'FETCH_SUCCESS':
+        return {
+          isLoading: false,
+          status: 'success',
+          fetchResult: action.payload,
+        };
+
+      case 'FETCH_EMPTY':
+        return {
+          isLoading: false,
+          status: 'empty',
+          fetchResult: null,
+        };
+
+      case 'FETCH_FAIL':
+        return {
+          isLoading: false,
+          status: 'failed',
+          fetchResult: null,
+        };
+
+      default:
+        return state;
     }
   }
 
-  function __getResults() {
-    setLoading(true);
-    getData(photoUri);
+  const [detectionState, detectionDispatch] = useReducer(detectionReducer, {
+    isLoading: true,
+    status: null,
+    fetchResult: null,
+  });
+
+  async function getData(sourceUri: string) {
+    detectionDispatch({type: 'FETCH_START'});
+
+    try {
+      const responseData = await imageDetect(sourceUri);
+
+      console.log('Result: ', responseData);
+
+      if (responseData.success && responseData.data.length > 0) {
+        detectionDispatch({type: 'FETCH_SUCCESS', payload: responseData.data});
+      } else if (responseData.success && responseData.data.length === 0) {
+        detectionDispatch({type: 'FETCH_EMPTY'});
+      }
+    } catch (error) {
+      console.error(error);
+
+      detectionDispatch({type: 'FETCH_FAIL'});
+    }
   }
 
   // Action sheet
@@ -113,10 +152,10 @@ const ImageDetectPage = ({route, navigation}) => {
   }, [photoUri]);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!detectionState.isLoading) {
       __openActionSheet();
     }
-  }, [isLoading]);
+  }, [detectionState.isLoading]);
 
   // Navigation
   function __goBack() {
@@ -142,7 +181,7 @@ const ImageDetectPage = ({route, navigation}) => {
           setImageWidthDevice(width);
         }}>
         {/* Detection rectangles */}
-        {fetchResult && (
+        {detectionState.fetchResult && (
           <View style={styles.rectContainer}>
             <View
               style={{
@@ -155,22 +194,25 @@ const ImageDetectPage = ({route, navigation}) => {
                   setSelectedResult,
                   resizeRatio,
                 }}>
-                <DetectResult fetchResult={fetchResult} type="rect" />
+                <DetectResult
+                  fetchResult={detectionState.fetchResult}
+                  type="rect"
+                />
               </SelectedResultContext.Provider>
             </View>
           </View>
         )}
 
         {/* Error chip */}
-        {status && (
+        {detectionState.status && (
           <View style={styles.errorContainer}>
             <View style={{marginTop: headerHeight + 15}} />
-            <ErrorChip status={status} />
+            <ErrorChip status={detectionState.status} />
           </View>
         )}
 
         {/* Loading indicator */}
-        {isLoading && <LoadingIndicator />}
+        {detectionState.isLoading && <LoadingIndicator />}
       </ImageBackground>
 
       <DarkPersistentActionSheet innerRef={resultsActionSheetRef}>
@@ -180,15 +222,18 @@ const ImageDetectPage = ({route, navigation}) => {
             {paddingBottom: bottomTabHeight + 15},
           ]}>
           {/* The main buttons */}
-          {fetchResult ? (
+          {detectionState.fetchResult ? (
             <SelectedResultContext.Provider
               value={{
                 selectedResult,
                 setSelectedResult,
               }}>
-              <DetectResult fetchResult={fetchResult} type="button" />
+              <DetectResult
+                fetchResult={detectionState.fetchResult}
+                type="button"
+              />
             </SelectedResultContext.Provider>
-          ) : status === 'empty' ? (
+          ) : detectionState.status === 'empty' ? (
             <Button
               onPress={__goBack}
               title="Thử chụp hình lại"
@@ -196,7 +241,7 @@ const ImageDetectPage = ({route, navigation}) => {
             />
           ) : (
             <Button
-              onPress={__getResults}
+              onPress={() => getData(photoUri)}
               title="Thử lại"
               style={styles.button}
             />
