@@ -1,62 +1,46 @@
-// Haven't done TS yet
-
 import React, {useState, useEffect, useRef} from 'react';
-import {
-  Text,
-  View,
-  Dimensions,
-  Platform,
-  Image,
-  Animated,
-  Button,
-} from 'react-native';
+import {Text, View, Image, Animated, Button} from 'react-native';
 import {Camera, CameraType} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import {useHeaderHeight} from '@react-navigation/elements';
 
 import FocusAwareStatusBar from '@/components/FocusAwareStatusBar';
 import {TakePictureButton, ImagePickerButton} from '@/components/Buttons';
 
 import ResizeImage from '@/utils/resizeImage';
+import {useCameraRatio} from '@/hooks/useCameraRatio';
 
 import styles from './CameraPage.styles';
 
+import {PhotoResizeResult} from '@/types/photoResizeResult';
+
 const CameraPage = ({navigation}) => {
-  let camera = Camera;
+  const cameraRef = useRef<Camera>(null);
 
   const bottomTabHeight = useBottomTabBarHeight();
 
-  // Get permission
+  // Camera ratio
+  const {realCameraWidth, cameraRatio, setCameraReady} = useCameraRatio();
+
+  // Camera states
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
+
+  // Flash screen state
   const [flashScreen, setFlashScreen] = useState(false);
 
-  // Check Focused
+  // Only show the camera when the tab is focused
   const isFocused = useIsFocused();
 
-  const navigateToDetect = photo => {
-    const photoUri = Image.resolveAssetSource(photo).uri;
-    const photoWidth = Image.resolveAssetSource(photo).width;
-    const photoHeight = Image.resolveAssetSource(photo).height;
-    navigation.navigate('detect-page', {photoUri, photoWidth, photoHeight});
-  };
-
-  // Screen Ratio and image padding
-  const [realCameraWidth, setRealCameraWidth] = useState(0);
-  const [cameraRatio, setRatio] = useState('4:3'); // default is 4:3
-  const {height, width} = Dimensions.get('window');
-  const screenRatio = height / width;
-  const [isRatioSet, setIsRatioSet] = useState(false);
+  // Permission logic
 
   if (!permission) {
-    // Camera permissions are still loading
     return <View />;
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet
     return (
       <View style={styles.container}>
         <Text style={styles.permissionText}>
@@ -67,56 +51,8 @@ const CameraPage = ({navigation}) => {
     );
   }
 
-  // set the camera ratio and padding. Only needed for Android
-  // this code assumes a portrait mode screen
-  const prepareRatio = async () => {
-    let desiredRatio = '4:3'; // Start with the system default
-    // This issue only affects Android
-    if (Platform.OS === 'android') {
-      const ratios = await camera.getSupportedRatiosAsync();
-
-      // Calculate the width/height of each of the supported camera ratios
-      // These width/height are measured in landscape mode
-      // find the ratio that is closest to the screen ratio without going over
-      let distances = {};
-      let realRatios = {};
-      let minDistance = null;
-      for (const ratio of ratios) {
-        const parts = ratio.split(':');
-        const realRatio = parseInt(parts[0], 10) / parseInt(parts[1], 10);
-        realRatios[ratio] = realRatio;
-        // ratio can't be taller than screen, so we don't want an abs()
-        const distance = screenRatio - realRatio;
-        distances[ratio] = realRatio;
-        if (minDistance == null) {
-          minDistance = ratio;
-        } else {
-          if (distance >= 0 && distance < distances[minDistance]) {
-            minDistance = ratio;
-          }
-        }
-      }
-      // set the best match
-      desiredRatio = minDistance;
-      const realCameraWidthCalc = Math.floor(
-        (width * screenRatio) / realRatios[desiredRatio],
-      );
-      setRealCameraWidth(realCameraWidthCalc);
-      // set the preview padding and preview ratio
-      setRatio(desiredRatio);
-      // Set a flag so we don't do this
-      // calculation each time the screen refreshes
-      setIsRatioSet(true);
-    }
-  };
-
-  // the camera must be loaded in order to access the supported ratios
-  const setCameraReady = async () => {
-    if (!isRatioSet) {
-      await prepareRatio();
-    }
-  };
-
+  // Flash screen animation when capturing a picture
+  // Might change later
   const FlashScreen = props => {
     const fadeAnim = useRef(new Animated.Value(1)).current; // Initial value for opacity: 0
 
@@ -140,11 +76,11 @@ const CameraPage = ({navigation}) => {
   };
 
   const __takePicture = async () => {
-    if (!camera) {
+    if (!cameraRef.current) {
       return;
     }
     setFlashScreen(true);
-    const photo = await camera.takePictureAsync();
+    const photo = await cameraRef.current.takePictureAsync();
     const resizedPhoto = await ResizeImage(photo.uri);
     setFlashScreen(false);
     navigateToDetect(resizedPhoto);
@@ -159,18 +95,24 @@ const CameraPage = ({navigation}) => {
     navigateToDetect(resizedPhoto);
   };
 
+  // Navigation logic
+  const navigateToDetect = (photo: PhotoResizeResult) => {
+    const photoUri = Image.resolveAssetSource(photo).uri;
+    const photoWidth = Image.resolveAssetSource(photo).width;
+    const photoHeight = Image.resolveAssetSource(photo).height;
+    navigation.navigate('detect-page', {photoUri, photoWidth, photoHeight});
+  };
+
   return (
     <View style={styles.container}>
       <FocusAwareStatusBar barStyle={'light-content'} />
       {isFocused && (
         <Camera
-          onCameraReady={setCameraReady}
+          onCameraReady={() => setCameraReady(cameraRef.current)}
           style={[styles.camera, {width: realCameraWidth}]}
           type={type}
           ratio={cameraRatio}
-          ref={r => {
-            camera = r;
-          }}>
+          ref={cameraRef}>
           {flashScreen && <FlashScreen style={styles.flashScreen} />}
           <View
             style={[styles.buttonsPositioner, {bottom: bottomTabHeight + 15}]}>

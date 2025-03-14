@@ -1,17 +1,9 @@
 import ImageResizer from '@bam.tech/react-native-image-resizer';
-
-interface ResizeResult {
-  uri: string;
-  path: string;
-  name: string;
-  size: number;
-  width: number;
-  height: number;
-}
+import {PhotoResizeResult} from '@/types/photoResizeResult';
 
 export default async function ResizeImage(
   image: string,
-): Promise<ResizeResult | undefined> {
+): Promise<PhotoResizeResult | undefined> {
   try {
     let result = await ImageResizer.createResizedImage(
       image,
