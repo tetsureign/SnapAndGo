@@ -1,5 +1,5 @@
 // Lib imports
-import React, {useRef, useEffect, useState, useReducer} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import {View, ImageBackground, Button, Linking} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
@@ -14,12 +14,10 @@ import {ErrorChip} from '@/components/ErrorMessage';
 import {GoButton} from '@/components/Buttons';
 import {DarkPersistentActionSheet} from '@/components/ActionSheet/';
 
-// Helper component imports
+// Helper imports
 import {SelectedResultContext} from '@/contexts/DetectionResultContext';
 import {DetectResultRenderer} from './components/DetectResultRenderer';
-
-// API imports
-import {imageDetect} from '@/api/endpoints/imageDetectApi';
+import {useDetection} from './hooks/useDetection';
 
 // Style imports
 import {styles} from './ImageDetectPage.styles';
@@ -28,7 +26,6 @@ import {colors} from '@/styles/colors';
 // Type imports
 import {DetectionResultType} from '@/types/detectionResult';
 import {PhotoParams} from '@/types/photoParams';
-import {ErrorChipType} from '@/types/errorChip';
 
 type DetectResultProps = {
   fetchResult: DetectionResultType[];
@@ -37,7 +34,7 @@ type DetectResultProps = {
 
 const DetectResult = ({fetchResult, type}: DetectResultProps) => {
   return fetchResult.map((element, index) => {
-    const isReliable = element.score >= 0.7;
+    const isReliable = element.score >= 70;
     return (
       <DetectResultRenderer
         element={element}
@@ -60,85 +57,16 @@ const ImageDetectPage = ({route, navigation}) => {
 
   // UI elements
   const [selectedResult, setSelectedResult] = useState({
-    result: null,
-    index: null,
+    result: '',
+    index: -1,
   });
 
   // Image resizing
-  const [resizeRatio, setResizeRatio] = useState(null);
-  const [imageWidthDevice, setImageWidthDevice] = useState(null);
+  const [resizeRatio, setResizeRatio] = useState(1);
+  const [imageWidthDevice, setImageWidthDevice] = useState(0);
 
-  interface DetectionState {
-    isLoading: boolean;
-    status: ErrorChipType | null;
-    fetchResult: DetectionResultType[] | null;
-  }
-
-  type Action =
-    | {type: 'FETCH_START'}
-    | {type: 'FETCH_SUCCESS'; payload: DetectionResultType[]}
-    | {type: 'FETCH_EMPTY'}
-    | {type: 'FETCH_FAIL'};
-
-  function detectionReducer(
-    state: DetectionState,
-    action: Action,
-  ): DetectionState {
-    switch (action.type) {
-      case 'FETCH_START':
-        return {...state, isLoading: true};
-
-      case 'FETCH_SUCCESS':
-        return {
-          isLoading: false,
-          status: 'success',
-          fetchResult: action.payload,
-        };
-
-      case 'FETCH_EMPTY':
-        return {
-          isLoading: false,
-          status: 'empty',
-          fetchResult: null,
-        };
-
-      case 'FETCH_FAIL':
-        return {
-          isLoading: false,
-          status: 'failed',
-          fetchResult: null,
-        };
-
-      default:
-        return state;
-    }
-  }
-
-  const [detectionState, detectionDispatch] = useReducer(detectionReducer, {
-    isLoading: true,
-    status: null,
-    fetchResult: null,
-  });
-
-  async function getData(sourceUri: string) {
-    detectionDispatch({type: 'FETCH_START'});
-
-    try {
-      const responseData = await imageDetect(sourceUri);
-
-      console.log('Result: ', responseData);
-
-      if (responseData.success && responseData.data.length > 0) {
-        detectionDispatch({type: 'FETCH_SUCCESS', payload: responseData.data});
-      } else if (responseData.success && responseData.data.length === 0) {
-        detectionDispatch({type: 'FETCH_EMPTY'});
-      }
-    } catch (error) {
-      console.error(error);
-
-      detectionDispatch({type: 'FETCH_FAIL'});
-    }
-  }
+  // Detection results
+  const {detectionState, getData} = useDetection();
 
   // Action sheet
   const resultsActionSheetRef = useRef(null);
@@ -149,7 +77,7 @@ const ImageDetectPage = ({route, navigation}) => {
 
   useEffect(() => {
     getData(photoUri);
-  }, [photoUri]);
+  }, [photoUri, getData]);
 
   useEffect(() => {
     if (!detectionState.isLoading) {
