@@ -55,20 +55,20 @@ const ImageDetectPage = ({route, navigation}) => {
   const headerHeight = useHeaderHeight();
   const bottomTabHeight = useBottomTabBarHeight();
 
-  // UI elements
+  // Result selecting state
   const [selectedResult, setSelectedResult] = useState({
     result: '',
     index: -1,
   });
 
-  // Image resizing
+  // Image resizing states
   const [resizeRatio, setResizeRatio] = useState(1);
   const [imageWidthDevice, setImageWidthDevice] = useState(0);
 
-  // Detection results
+  // Detection results states and function
   const {detectionState, getData} = useDetection();
 
-  // Action sheet
+  // Action sheet logic
   const resultsActionSheetRef = useRef(null);
 
   function __openActionSheet() {
@@ -76,16 +76,18 @@ const ImageDetectPage = ({route, navigation}) => {
   }
 
   useEffect(() => {
-    getData(photoUri);
-  }, [photoUri, getData]);
-
-  useEffect(() => {
     if (!detectionState.isLoading) {
       __openActionSheet();
     }
   }, [detectionState.isLoading]);
 
-  // Navigation
+  // Fetch data on first render
+
+  useEffect(() => {
+    getData(photoUri);
+  }, [photoUri, getData]);
+
+  // Navigation logic
   function __goBack() {
     navigation.navigate('main-camera');
   }
@@ -109,7 +111,7 @@ const ImageDetectPage = ({route, navigation}) => {
           setImageWidthDevice(width);
         }}>
         {/* Detection rectangles */}
-        {detectionState.fetchResult && (
+        {detectionState.fetchResult?.length && (
           <View style={styles.rectContainer}>
             <View
               style={{
@@ -150,7 +152,7 @@ const ImageDetectPage = ({route, navigation}) => {
             {paddingBottom: bottomTabHeight + 15},
           ]}>
           {/* The main buttons */}
-          {detectionState.fetchResult ? (
+          {detectionState.fetchResult?.length ? (
             <SelectedResultContext.Provider
               value={{
                 selectedResult,
@@ -162,17 +164,11 @@ const ImageDetectPage = ({route, navigation}) => {
               />
             </SelectedResultContext.Provider>
           ) : detectionState.status === 'empty' ? (
-            <Button
-              onPress={__goBack}
-              title="Thử chụp hình lại"
-              style={styles.button}
-            />
+            // TODO: Use a proper button after doing global style
+            <Button onPress={__goBack} title="Thử chụp hình lại" />
           ) : (
-            <Button
-              onPress={() => getData(photoUri)}
-              title="Thử lại"
-              style={styles.button}
-            />
+            // TODO: Use a proper button after doing global style
+            <Button onPress={() => getData(photoUri)} title="Thử lại" />
           )}
 
           {/* The search button.*/}

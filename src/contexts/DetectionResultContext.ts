@@ -9,11 +9,11 @@ type SelectedResultContextType = {
   setSelectedResult: (value: React.SetStateAction<SelectedResult>) => void;
   // Below is a fancier way of doing the same thing as above. Keeping for learning purposes.
   // setSelectedResult: React.Dispatch<React.SetStateAction<SelectedResult>>;
-  resizeRatio: number;
+  resizeRatio?: number;
 };
 
 export const SelectedResultContext = createContext<SelectedResultContextType>({
-  selectedResult: {result: null, index: null},
+  selectedResult: {result: '', index: -1},
   setSelectedResult: () => {}, // Placeholder function to avoid errors
-  resizeRatio: null,
+  resizeRatio: 1,
 });
