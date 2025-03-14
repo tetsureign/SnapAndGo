@@ -21,7 +21,7 @@ import {useDetection} from './hooks/useDetection';
 
 // Style imports
 import {styles} from './ImageDetectPage.styles';
-import {colors} from '@/styles/colors';
+import {theme} from '@/styles/theme';
 
 // Type imports
 import {DetectionResultType} from '@/types/detectionResult';
@@ -176,9 +176,11 @@ const ImageDetectPage = ({route, navigation}) => {
             <View style={styles.actionButtons}>
               <GoButton
                 onPress={__searchMap}
-                icon={<Search color={colors.blue} width={30} height={30} />}
+                icon={
+                  <Search color={theme.colors.blue} width={30} height={30} />
+                }
                 text={'Tìm kiếm'}
-                color={colors.blue}
+                color={theme.colors.blue}
               />
             </View>
           )}
