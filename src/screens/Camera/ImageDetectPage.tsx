@@ -75,13 +75,13 @@ const ImageDetectPage = ({route, navigation}) => {
   // Action sheet logic
   const resultsActionSheetRef = useRef(null);
 
-  function __openActionSheet() {
+  function openActionSheet() {
     resultsActionSheetRef.current?.show();
   }
 
   useEffect(() => {
     if (!detectionState.isLoading) {
-      __openActionSheet();
+      openActionSheet();
     }
   }, [detectionState.isLoading]);
 
@@ -92,11 +92,11 @@ const ImageDetectPage = ({route, navigation}) => {
   }, [photo, getData]);
 
   // Navigation logic
-  function __goBack() {
+  function goBack() {
     navigation.navigate('main-camera');
   }
 
-  function __searchMap() {
+  function searchMap() {
     Linking.openURL(
       'http://maps.google.com/?q=' + selectedResult.result + ' shop',
     );
@@ -169,7 +169,7 @@ const ImageDetectPage = ({route, navigation}) => {
             </SelectedResultContext.Provider>
           ) : detectionState.status === 'empty' ? (
             // TODO: Use a proper button after doing global style
-            <Button onPress={__goBack} title="Thử chụp hình lại" />
+            <Button onPress={goBack} title="Thử chụp hình lại" />
           ) : (
             // TODO: Use a proper button after doing global style
             <Button onPress={() => getData(photo.uri)} title="Thử lại" />
@@ -179,7 +179,7 @@ const ImageDetectPage = ({route, navigation}) => {
           {selectedResult.result && (
             <View style={styles.actionButtons}>
               <GoButton
-                onPress={__searchMap}
+                onPress={searchMap}
                 icon={
                   <Search color={theme.colors.blue} width={30} height={30} />
                 }
