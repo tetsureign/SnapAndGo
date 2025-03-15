@@ -1,10 +1,14 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {ErrorChipType} from '@/types/errorChip';
+import {ErrorType} from '@/types/error';
 import styles from './ErrorChip.styles';
 
-const ErrorChip = ({status}: ErrorChipType) => {
+type ErrorChipProps = {
+  status: ErrorType;
+};
+
+const ErrorChip = ({status}: ErrorChipProps) => {
   switch (status) {
     case 'success':
       return (
