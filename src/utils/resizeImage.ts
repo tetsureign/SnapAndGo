@@ -1,5 +1,5 @@
 import ImageResizer from '@bam.tech/react-native-image-resizer';
-import {PhotoResizeResult} from '@/types/photoResizeResult';
+import {PhotoResizeResult} from '@/types/photo';
 
 export default async function ResizeImage(
   image: string,

@@ -24,17 +24,19 @@ import {styles} from './ImageDetectPage.styles';
 import {theme} from '@/styles/theme';
 
 // Type imports
-import {DetectionResultType} from '@/types/detectionResult';
-import {PhotoParams} from '@/types/photoParams';
+import {DetectionResultType} from '@/types/detection';
+import {PhotoResizeResult} from '@/types/photo';
 
 type DetectResultProps = {
   fetchResult: DetectionResultType[];
   type: 'button' | 'rect';
 };
 
+const RELIABILITY_THRESHOLD = 70;
+
 const DetectResult = ({fetchResult, type}: DetectResultProps) => {
   return fetchResult.map((element, index) => {
-    const isReliable = element.score >= 70;
+    const isReliable = element.score >= RELIABILITY_THRESHOLD;
     return (
       <DetectResultRenderer
         element={element}
@@ -47,9 +49,11 @@ const DetectResult = ({fetchResult, type}: DetectResultProps) => {
   });
 };
 
+// TODO: Routes & Navigation types
+
 const ImageDetectPage = ({route, navigation}) => {
   // Get passed photo from routes
-  const {photoUri, photoWidth, photoHeight}: PhotoParams = route.params;
+  const photo: PhotoResizeResult = route.params.photo;
 
   // RN navigation
   const headerHeight = useHeaderHeight();
@@ -84,8 +88,8 @@ const ImageDetectPage = ({route, navigation}) => {
   // Fetch data on first render
 
   useEffect(() => {
-    getData(photoUri);
-  }, [photoUri, getData]);
+    getData(photo.uri);
+  }, [photo, getData]);
 
   // Navigation logic
   function __goBack() {
@@ -102,12 +106,12 @@ const ImageDetectPage = ({route, navigation}) => {
     <View style={styles.container}>
       <FocusAwareStatusBar barStyle={'light-content'} />
       <ImageBackground
-        source={{uri: photoUri}}
+        source={{uri: photo.uri}}
         style={styles.background}
         resizeMode={'contain'}
         onLayout={event => {
           const {width} = event.nativeEvent.layout;
-          setResizeRatio(width / photoWidth);
+          setResizeRatio(width / photo.width);
           setImageWidthDevice(width);
         }}>
         {/* Detection rectangles */}
@@ -116,7 +120,7 @@ const ImageDetectPage = ({route, navigation}) => {
             <View
               style={{
                 width: imageWidthDevice,
-                height: photoHeight * resizeRatio,
+                height: photo.height * resizeRatio,
               }}>
               <SelectedResultContext.Provider
                 value={{
@@ -168,7 +172,7 @@ const ImageDetectPage = ({route, navigation}) => {
             <Button onPress={__goBack} title="Thử chụp hình lại" />
           ) : (
             // TODO: Use a proper button after doing global style
-            <Button onPress={() => getData(photoUri)} title="Thử lại" />
+            <Button onPress={() => getData(photo.uri)} title="Thử lại" />
           )}
 
           {/* The search button.*/}

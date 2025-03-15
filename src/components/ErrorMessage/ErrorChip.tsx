@@ -1,11 +1,11 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-import {ErrorChipType} from '@/types/errorChip';
+import {ErrorType} from '@/types/error';
 import styles from './ErrorChip.styles';
 
 type ErrorChipProps = {
-  status: ErrorChipType;
+  status: ErrorType;
 };
 
 const ErrorChip = ({status}: ErrorChipProps) => {

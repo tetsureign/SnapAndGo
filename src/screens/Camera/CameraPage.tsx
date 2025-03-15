@@ -13,7 +13,7 @@ import {useCameraRatio} from '@/hooks/useCameraRatio';
 
 import styles from './CameraPage.styles';
 
-import {PhotoResizeResult} from '@/types/photoResizeResult';
+import {PhotoResizeResult} from '@/types/photo';
 
 const CameraPage = ({navigation}) => {
   const cameraRef = useRef<Camera>(null);
@@ -97,10 +97,7 @@ const CameraPage = ({navigation}) => {
 
   // Navigation logic
   const navigateToDetect = (photo: PhotoResizeResult) => {
-    const photoUri = Image.resolveAssetSource(photo).uri;
-    const photoWidth = Image.resolveAssetSource(photo).width;
-    const photoHeight = Image.resolveAssetSource(photo).height;
-    navigation.navigate('detect-page', {photoUri, photoWidth, photoHeight});
+    navigation.navigate('detect-page', {photo});
   };
 
   return (
