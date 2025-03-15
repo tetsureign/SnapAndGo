@@ -1,10 +1,13 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
 import CameraPage from '@/screens/Camera/CameraPage';
 import ImageDetectPage from '@/screens/Camera/ImageDetectPage';
 
-const Stack = createNativeStackNavigator();
+import {CameraStackParamList} from '@/types/navigation';
+
+const Stack = createNativeStackNavigator<CameraStackParamList>();
 
 const CameraStack = () => {
   return (
@@ -22,8 +25,8 @@ const CameraStack = () => {
         component={CameraPage}
       />
       <Stack.Screen
-        options={{title: 'Nhận diện'}}
         name="detect-page"
+        options={{title: 'Nhận diện'}}
         component={ImageDetectPage}
       />
       {/* <Stack.Screen name="Thông tin" component={InfoPage} /> */}

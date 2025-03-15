@@ -2,12 +2,12 @@ import {useReducer, useCallback} from 'react';
 
 import {imageDetect} from '@/api/endpoints/imageDetectApi';
 
-import {ErrorChipType} from '@/types/errorChip';
-import {DetectionResultType} from '@/types/detectionResult';
+import {ErrorType} from '@/types/error';
+import {DetectionResultType} from '@/types/detection';
 
 interface DetectionState {
   isLoading: boolean;
-  status: ErrorChipType | null;
+  status: ErrorType | null;
   fetchResult: DetectionResultType[] | null;
 }
 

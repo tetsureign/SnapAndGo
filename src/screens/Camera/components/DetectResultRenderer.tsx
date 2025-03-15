@@ -3,7 +3,7 @@ import {View, TouchableOpacity, Text} from 'react-native';
 
 import {SelectedResultContext} from '@/contexts/DetectionResultContext';
 
-import {DetectionResultType} from '@/types/detectionResult';
+import {DetectionResultType} from '@/types/detection';
 
 import {styles} from './DetectResultRenderer.styles';
 

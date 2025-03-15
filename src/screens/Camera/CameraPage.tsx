@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {Text, View, Image, Animated, Button} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {Text, View, Button} from 'react-native';
 import {Camera, CameraType} from 'expo-camera';
 import {useIsFocused} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -7,16 +7,18 @@ import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 import FocusAwareStatusBar from '@/components/FocusAwareStatusBar';
 import {TakePictureButton, ImagePickerButton} from '@/components/Buttons';
+import {FlashScreen} from '@/components/Animation';
 
 import ResizeImage from '@/utils/resizeImage';
 import {useCameraRatio} from '@/hooks/useCameraRatio';
 
 import styles from './CameraPage.styles';
 
-import {PhotoResizeResult} from '@/types/photoResizeResult';
+import {PhotoResizeResult} from '@/types/photo';
+import {CameraPageProps} from '@/types/navigation';
 
-const CameraPage = ({navigation}) => {
-  const cameraRef = useRef<Camera>(null);
+const CameraPage = ({navigation}: CameraPageProps) => {
+  const cameraRef = useRef<Camera | null>(null);
 
   const bottomTabHeight = useBottomTabBarHeight();
 
@@ -53,29 +55,8 @@ const CameraPage = ({navigation}) => {
 
   // Flash screen animation when capturing a picture
   // Might change later
-  const FlashScreen = props => {
-    const fadeAnim = useRef(new Animated.Value(1)).current; // Initial value for opacity: 0
 
-    useEffect(() => {
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }, [fadeAnim]);
-
-    return (
-      <Animated.View // Special animatable View
-        style={{
-          ...props.style,
-          opacity: fadeAnim, // Bind opacity to animated value
-        }}>
-        {props.children}
-      </Animated.View>
-    );
-  };
-
-  const __takePicture = async () => {
+  const takePicture = async () => {
     if (!cameraRef.current) {
       return;
     }
@@ -86,7 +67,7 @@ const CameraPage = ({navigation}) => {
     navigateToDetect(resizedPhoto);
   };
 
-  const __pickImage = async () => {
+  const pickImage = async () => {
     const photo = await launchImageLibrary({mediaType: 'photo'});
     if (photo.didCancel === true) {
       return;
@@ -97,10 +78,7 @@ const CameraPage = ({navigation}) => {
 
   // Navigation logic
   const navigateToDetect = (photo: PhotoResizeResult) => {
-    const photoUri = Image.resolveAssetSource(photo).uri;
-    const photoWidth = Image.resolveAssetSource(photo).width;
-    const photoHeight = Image.resolveAssetSource(photo).height;
-    navigation.navigate('detect-page', {photoUri, photoWidth, photoHeight});
+    navigation.navigate('detect-page', {photo});
   };
 
   return (
@@ -117,9 +95,9 @@ const CameraPage = ({navigation}) => {
           <View
             style={[styles.buttonsPositioner, {bottom: bottomTabHeight + 15}]}>
             <View style={styles.buttonsContainer}>
-              <ImagePickerButton onPress={__pickImage} />
+              <ImagePickerButton onPress={pickImage} />
 
-              <TakePictureButton onPress={__takePicture} />
+              <TakePictureButton onPress={takePicture} />
               {/* TODO: Switch camera button here */}
               <View style={{width: 60}} />
             </View>
