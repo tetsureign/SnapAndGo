@@ -26,6 +26,7 @@ import {theme} from '@/styles/theme';
 // Type imports
 import {DetectionResultType} from '@/types/detection';
 import {PhotoResizeResult} from '@/types/photo';
+import {ImageDetectPageProps} from '@/types/navigation';
 
 type DetectResultProps = {
   fetchResult: DetectionResultType[];
@@ -49,9 +50,7 @@ const DetectResult = ({fetchResult, type}: DetectResultProps) => {
   });
 };
 
-// TODO: Routes & Navigation types
-
-const ImageDetectPage = ({route, navigation}) => {
+const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
   // Get passed photo from routes
   const photo: PhotoResizeResult = route.params.photo;
 
@@ -144,9 +143,6 @@ const ImageDetectPage = ({route, navigation}) => {
             <ErrorChip status={detectionState.status} />
           </View>
         )}
-
-        {/* Loading indicator */}
-        {detectionState.isLoading && <LoadingIndicator />}
       </ImageBackground>
 
       <DarkPersistentActionSheet innerRef={resultsActionSheetRef}>
@@ -190,6 +186,9 @@ const ImageDetectPage = ({route, navigation}) => {
           )}
         </View>
       </DarkPersistentActionSheet>
+
+      {/* Loading indicator */}
+      {detectionState.isLoading && <LoadingIndicator />}
     </View>
   );
 };

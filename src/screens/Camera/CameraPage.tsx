@@ -15,8 +15,9 @@ import {useCameraRatio} from '@/hooks/useCameraRatio';
 import styles from './CameraPage.styles';
 
 import {PhotoResizeResult} from '@/types/photo';
+import {CameraPageProps} from '@/types/navigation';
 
-const CameraPage = ({navigation}) => {
+const CameraPage = ({navigation}: CameraPageProps) => {
   const cameraRef = useRef<Camera | null>(null);
 
   const bottomTabHeight = useBottomTabBarHeight();
@@ -66,7 +67,6 @@ const CameraPage = ({navigation}) => {
     navigateToDetect(resizedPhoto);
   };
 
-  // TODO: TypeScript Types checking
   const pickImage = async () => {
     const photo = await launchImageLibrary({mediaType: 'photo'});
     if (photo.didCancel === true) {
