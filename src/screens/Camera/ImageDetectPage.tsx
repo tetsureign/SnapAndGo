@@ -173,24 +173,14 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
           ) : detectionState.status === 'empty' ? (
             <GoButton
               onPress={goBack}
-              icon={
-                // TODO: Use proper width and height after doing global style
-                <ArrowLeft
-                  color={DarkTheme.colors.blue}
-                  width={30}
-                  height={30}
-                />
-              }
+              icon={<ArrowLeft />}
               text={'Trở về'}
               color={DarkTheme.colors.blue}
             />
           ) : (
             <GoButton
               onPress={() => getData(photo.uri)}
-              icon={
-                // TODO: Use proper width and height after doing global style
-                <Refresh color={DarkTheme.colors.blue} width={30} height={30} />
-              }
+              icon={<Refresh />}
               text={'Thử lại'}
               color={DarkTheme.colors.blue}
             />
@@ -201,14 +191,7 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
             <View style={styles.actionButtons}>
               <GoButton
                 onPress={searchMap}
-                icon={
-                  // TODO: Use proper width and height after doing global style
-                  <Search
-                    color={DarkTheme.colors.blue}
-                    width={30}
-                    height={30}
-                  />
-                }
+                icon={<Search />}
                 text={'Tìm kiếm'}
                 color={DarkTheme.colors.blue}
               />
