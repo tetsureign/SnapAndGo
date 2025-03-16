@@ -1,8 +1,26 @@
-export const theme = {
+export const BaseTheme = {
   colors: {
-    gray: '#AAAAAA',
-    green: '#37AE0F',
+    // gray: '#AAAAAA',
+    green: '#5FC314',
     blue: '#00C5FF',
     orange: '#FF6901',
+  },
+};
+
+export const LightTheme = {
+  ...BaseTheme,
+  colors: {
+    ...BaseTheme.colors,
+    background: 'white',
+    text: 'black',
+  },
+};
+
+export const DarkTheme = {
+  ...BaseTheme,
+  colors: {
+    ...BaseTheme.colors,
+    background: '#434343',
+    text: 'white',
   },
 };
