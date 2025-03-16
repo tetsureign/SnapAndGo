@@ -1,6 +1,6 @@
 export const BaseTheme = {
   colors: {
-    // gray: '#AAAAAA',
+    gray: '#4d4d4d',
     green: '#5FC314',
     blue: '#00C5FF',
     orange: '#FF6901',

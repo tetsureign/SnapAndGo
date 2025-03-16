@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   backgroundNeutral: {
-    backgroundColor: '#4d4d4d',
+    backgroundColor: BaseTheme.colors.gray,
     marginHorizontal: 15,
     paddingVertical: 6,
     paddingHorizontal: 12,
