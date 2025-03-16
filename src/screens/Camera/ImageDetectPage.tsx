@@ -1,11 +1,13 @@
 // Lib imports
 import React, {useRef, useEffect, useState} from 'react';
-import {View, ImageBackground, Button, Linking} from 'react-native';
+import {View, ImageBackground, Linking} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 // Icon imports
 import {Search} from 'iconoir-react-native';
+import {Refresh} from 'iconoir-react-native';
+import {ArrowLeft} from 'iconoir-react-native';
 
 // Component imports
 import {LoadingIndicator} from '@/components/LoadingIndicator';
@@ -25,8 +27,8 @@ import {theme} from '@/styles/theme';
 
 // Type imports
 import {DetectionResultType} from '@/types/detection';
-import {PhotoResizeResult} from '@/types/photo';
 import {ImageDetectPageProps} from '@/types/navigation';
+import {ActionSheetRef} from 'react-native-actions-sheet';
 
 type DetectResultProps = {
   fetchResult: DetectionResultType[];
@@ -52,7 +54,7 @@ const DetectResult = ({fetchResult, type}: DetectResultProps) => {
 
 const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
   // Get passed photo from routes
-  const photo: PhotoResizeResult = route.params.photo;
+  const {photo} = route.params;
 
   // RN navigation
   const headerHeight = useHeaderHeight();
@@ -72,7 +74,7 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
   const {detectionState, getData} = useDetection();
 
   // Action sheet logic
-  const resultsActionSheetRef = useRef(null);
+  const resultsActionSheetRef = useRef<ActionSheetRef>(null);
 
   function openActionSheet() {
     resultsActionSheetRef.current?.show();
@@ -145,7 +147,11 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
         )}
       </ImageBackground>
 
-      <DarkPersistentActionSheet innerRef={resultsActionSheetRef}>
+      <DarkPersistentActionSheet
+        innerRef={resultsActionSheetRef}
+        // TODO: Dynamic MIDDLE snap point
+        snapPoints={[20, 60, 100]}
+        initialSnapIndex={0}>
         <View
           style={[
             styles.actionSheetItems,
@@ -164,11 +170,25 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
               />
             </SelectedResultContext.Provider>
           ) : detectionState.status === 'empty' ? (
-            // TODO: Use a proper button after doing global style
-            <Button onPress={goBack} title="Thử chụp hình lại" />
+            <GoButton
+              onPress={goBack}
+              icon={
+                // TODO: Use proper width and height after doing global style
+                <ArrowLeft color={theme.colors.blue} width={30} height={30} />
+              }
+              text={'Trở về'}
+              color={theme.colors.blue}
+            />
           ) : (
-            // TODO: Use a proper button after doing global style
-            <Button onPress={() => getData(photo.uri)} title="Thử lại" />
+            <GoButton
+              onPress={() => getData(photo.uri)}
+              icon={
+                // TODO: Use proper width and height after doing global style
+                <Refresh color={theme.colors.blue} width={30} height={30} />
+              }
+              text={'Thử lại'}
+              color={theme.colors.blue}
+            />
           )}
 
           {/* The search button.*/}
@@ -177,6 +197,7 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
               <GoButton
                 onPress={searchMap}
                 icon={
+                  // TODO: Use proper width and height after doing global style
                   <Search color={theme.colors.blue} width={30} height={30} />
                 }
                 text={'Tìm kiếm'}
