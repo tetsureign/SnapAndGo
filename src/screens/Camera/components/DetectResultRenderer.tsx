@@ -1,6 +1,8 @@
 import React, {useContext} from 'react';
 import {View, TouchableOpacity, Text} from 'react-native';
 
+import {GeneralButton} from '@/components/Buttons';
+
 import {SelectedResultContext} from '@/contexts/DetectionResultContext';
 
 import {DetectionResultType} from '@/types/detection';
@@ -24,12 +26,7 @@ const DetectResultRendererComponent = ({
     SelectedResultContext,
   );
 
-  const buttonStyle = [
-    selectedResult.index === index
-      ? styles.selectedItemBackground
-      : styles.itemBackground,
-  ];
-
+  const buttonStyle = selectedResult.index !== index && styles.itemBackground;
   const textStyle = [
     styles.itemsText,
     isReliable ? styles.itemsTextWhite : styles.itemsTextFade,
@@ -55,12 +52,12 @@ const DetectResultRendererComponent = ({
     <>
       {renderType === 'button' ? (
         <View style={styles.detectedItemsButton}>
-          <TouchableOpacity style={buttonStyle} onPress={handlePress}>
+          <GeneralButton style={buttonStyle} onPress={handlePress}>
             <View style={styles.itemsTextContainer}>
               <Text style={textStyle}>{element.object}</Text>
               <Text style={textStyle}>{Math.round(element.score)}%</Text>
             </View>
-          </TouchableOpacity>
+          </GeneralButton>
         </View>
       ) : (
         <TouchableOpacity
