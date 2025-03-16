@@ -12,7 +12,7 @@ import CameraStack from './CameraNavigator';
 import HistoryPage from '@/screens/HistoryPage';
 
 import tabNavigatorStyles from './TabNavigator.styles';
-import {theme} from '@/styles/theme';
+import {BaseTheme} from '@/styles/theme';
 
 const Tab = createBottomTabNavigator();
 
@@ -41,7 +41,7 @@ const TabsNavigator = () => {
           tabNavigatorStyles.lightTabBar,
           {height: 75 + insets.bottom},
         ],
-        tabBarActiveTintColor: theme.colors.green,
+        tabBarActiveTintColor: BaseTheme.colors.green,
         tabBarIcon: ({color, size}) => (
           <Map color={color} height={size * 1.5} width={size * 1.5} />
         ),
@@ -56,7 +56,7 @@ const TabsNavigator = () => {
       options: {
         title: 'Tìm kiếm',
         headerShown: false,
-        tabBarActiveTintColor: theme.colors.blue,
+        tabBarActiveTintColor: BaseTheme.colors.blue,
         tabBarIcon: ({color, size}) => (
           <Search color={color} width={size * 1.5} height={size * 1.5} />
         ),
@@ -74,7 +74,7 @@ const TabsNavigator = () => {
           tabNavigatorStyles.lightTabBar,
           {height: 75 + insets.bottom},
         ],
-        tabBarActiveTintColor: theme.colors.orange,
+        tabBarActiveTintColor: BaseTheme.colors.orange,
         tabBarIcon: ({color, size}) => (
           <List color={color} width={size * 1.5} height={size * 1.5} />
         ),

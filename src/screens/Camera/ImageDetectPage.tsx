@@ -23,7 +23,8 @@ import {useDetection} from './hooks/useDetection';
 
 // Style imports
 import {styles} from './ImageDetectPage.styles';
-import {theme} from '@/styles/theme';
+// This page ALWAYS use dark theme
+import {DarkTheme} from '@/styles/theme';
 
 // Type imports
 import {DetectionResultType} from '@/types/detection';
@@ -174,20 +175,24 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
               onPress={goBack}
               icon={
                 // TODO: Use proper width and height after doing global style
-                <ArrowLeft color={theme.colors.blue} width={30} height={30} />
+                <ArrowLeft
+                  color={DarkTheme.colors.blue}
+                  width={30}
+                  height={30}
+                />
               }
               text={'Trở về'}
-              color={theme.colors.blue}
+              color={DarkTheme.colors.blue}
             />
           ) : (
             <GoButton
               onPress={() => getData(photo.uri)}
               icon={
                 // TODO: Use proper width and height after doing global style
-                <Refresh color={theme.colors.blue} width={30} height={30} />
+                <Refresh color={DarkTheme.colors.blue} width={30} height={30} />
               }
               text={'Thử lại'}
-              color={theme.colors.blue}
+              color={DarkTheme.colors.blue}
             />
           )}
 
@@ -198,10 +203,14 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
                 onPress={searchMap}
                 icon={
                   // TODO: Use proper width and height after doing global style
-                  <Search color={theme.colors.blue} width={30} height={30} />
+                  <Search
+                    color={DarkTheme.colors.blue}
+                    width={30}
+                    height={30}
+                  />
                 }
                 text={'Tìm kiếm'}
-                color={theme.colors.blue}
+                color={DarkTheme.colors.blue}
               />
             </View>
           )}
