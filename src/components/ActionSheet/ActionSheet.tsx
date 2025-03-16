@@ -1,17 +1,20 @@
 import React from 'react';
-import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
+import ActionSheet, {
+  ActionSheetRef,
+  ActionSheetProps,
+} from 'react-native-actions-sheet';
 import {actionSheetStyle} from './ActionSheet.styles';
 
-type ActionSheetProps = {
+interface DarkPersistentActionSheetProps extends ActionSheetProps {
   innerRef: React.RefObject<ActionSheetRef>;
-  children: React.ReactNode;
-};
+}
 
 // This one isn't meant to use with SheetManager.
-const DarkPersistentActionSheet = ({innerRef, children}: ActionSheetProps) => {
+const DarkPersistentActionSheet = (props: DarkPersistentActionSheetProps) => {
   return (
     <ActionSheet
-      ref={innerRef}
+      {...props}
+      ref={props.innerRef}
       backgroundInteractionEnabled={true}
       containerStyle={actionSheetStyle.actionSheet}
       // useBottomSafeAreaPadding={true}
@@ -19,10 +22,8 @@ const DarkPersistentActionSheet = ({innerRef, children}: ActionSheetProps) => {
       gestureEnabled={true}
       closable={false}
       drawUnderStatusBar={false}
-      indicatorStyle={actionSheetStyle.actionSheetIndicator}
-      snapPoints={[20, 60, 100]}
-      initialSnapIndex={0}>
-      {children}
+      indicatorStyle={actionSheetStyle.actionSheetIndicator}>
+      {props.children}
     </ActionSheet>
   );
 };
