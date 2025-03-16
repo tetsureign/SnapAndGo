@@ -1,6 +1,14 @@
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
+  // General button
+  buttonBackground: {
+    padding: 5,
+    backgroundColor: '#646464',
+    borderWidth: 1,
+    borderColor: '#858585',
+    borderRadius: 10,
+  },
   // Image capture button
   captureButton: {
     alignItems: 'center',
@@ -25,18 +33,16 @@ export const styles = StyleSheet.create({
 
   // Go button
   goButton: {
-    height: 40,
-    marginTop: 5,
-    marginBottom: 5,
+    margin: 5,
   },
   goButtonViewInside: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 5,
   },
   goButtonText: {
     fontSize: 25,
-    paddingLeft: 5,
   },
 
   // Show hide button
