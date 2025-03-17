@@ -4,7 +4,7 @@ import {DarkTheme} from '@/styles/theme';
 export const styles = StyleSheet.create({
   // General
   container: {
-    justifyContent: 'center',
+    // justifyContent: 'center',
     flex: 1,
   },
   background: {
