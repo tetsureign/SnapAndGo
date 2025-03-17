@@ -5,15 +5,10 @@ export const actionSheetStyle = StyleSheet.create({
   actionSheet: {
     height: '85%',
     backgroundColor: DarkTheme.colors.background,
-    borderRadius: 10,
-  },
-  actionSheetItems: {
-    padding: 20,
-    paddingTop: 0,
-    // paddingBottom: 75,
+    borderRadius: DarkTheme.borderRadius.lg,
   },
   actionSheetIndicator: {
-    marginTop: 15,
+    marginTop: DarkTheme.spacing.md,
     width: 60,
   },
 });

@@ -2,7 +2,6 @@
 import React, {useRef, useEffect, useState} from 'react';
 import {View, ImageBackground, Linking} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 // Icon imports
 import {Search} from 'iconoir-react-native';
@@ -59,7 +58,6 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
 
   // RN navigation
   const headerHeight = useHeaderHeight();
-  const bottomTabHeight = useBottomTabBarHeight();
 
   // Result selecting state
   const [selectedResult, setSelectedResult] = useState({
@@ -142,7 +140,7 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
         {/* Error chip */}
         {detectionState.status && (
           <View style={styles.errorContainer}>
-            <View style={{marginTop: headerHeight + 15}} />
+            <View style={{marginTop: headerHeight + DarkTheme.spacing.md}} />
             <ErrorChip status={detectionState.status} />
           </View>
         )}
@@ -153,11 +151,7 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
         // TODO: Dynamic MIDDLE snap point
         snapPoints={[20, 60, 100]}
         initialSnapIndex={0}>
-        <View
-          style={[
-            styles.actionSheetItems,
-            {paddingBottom: bottomTabHeight + 15},
-          ]}>
+        <View style={[styles.actionSheetItems]}>
           {/* The main buttons */}
           {detectionState.fetchResult?.length ? (
             <SelectedResultContext.Provider

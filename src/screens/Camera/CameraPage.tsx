@@ -13,6 +13,7 @@ import ResizeImage from '@/utils/resizeImage';
 import {useCameraRatio} from '@/hooks/useCameraRatio';
 
 import styles from './CameraPage.styles';
+import {DarkTheme} from '@/styles/theme';
 
 import {PhotoResizeResult} from '@/types/photo';
 import {CameraPageProps} from '@/types/navigation';
@@ -93,11 +94,15 @@ const CameraPage = ({navigation}: CameraPageProps) => {
           ref={cameraRef}>
           {flashScreen && <FlashScreen style={styles.flashScreen} />}
           <View
-            style={[styles.buttonsPositioner, {bottom: bottomTabHeight + 15}]}>
+            style={[
+              styles.buttonsPositioner,
+              {bottom: bottomTabHeight + DarkTheme.spacing.md},
+            ]}>
             <View style={styles.buttonsContainer}>
               <ImagePickerButton onPress={pickImage} />
 
               <TakePictureButton onPress={takePicture} />
+
               {/* TODO: Switch camera button here */}
               <View style={{width: 60}} />
             </View>

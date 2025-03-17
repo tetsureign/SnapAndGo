@@ -51,14 +51,12 @@ const DetectResultRendererComponent = ({
   return (
     <>
       {renderType === 'button' ? (
-        <View style={styles.detectedItemsButton}>
-          <GeneralButton style={buttonStyle} onPress={handlePress}>
-            <View style={styles.itemsTextContainer}>
-              <Text style={textStyle}>{element.object}</Text>
-              <Text style={textStyle}>{Math.round(element.score)}%</Text>
-            </View>
-          </GeneralButton>
-        </View>
+        <GeneralButton style={buttonStyle} onPress={handlePress}>
+          <View style={styles.itemsTextContainer}>
+            <Text style={textStyle}>{element.object}</Text>
+            <Text style={textStyle}>{Math.round(element.score)}%</Text>
+          </View>
+        </GeneralButton>
       ) : (
         <TouchableOpacity
           onPress={handlePress}

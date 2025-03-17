@@ -8,6 +8,7 @@ import {
 import {IconoirProvider} from 'iconoir-react-native';
 
 import {styles} from './Button.styles';
+import {BaseTheme} from '@/styles/theme';
 
 interface GoButtonProps extends TouchableOpacityProps {
   icon: React.ReactElement;
@@ -18,7 +19,12 @@ interface GoButtonProps extends TouchableOpacityProps {
 const GoButton = (props: GoButtonProps) => {
   return (
     // TODO: Global style for all these sizes, padding, ...
-    <IconoirProvider iconProps={{width: 30, height: 30, color: props.color}}>
+    <IconoirProvider
+      iconProps={{
+        width: BaseTheme.fontSize.xl,
+        height: BaseTheme.fontSize.xl,
+        color: props.color,
+      }}>
       <TouchableOpacity
         {...props}
         style={styles.goButton}

@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {DarkTheme} from '@/styles/theme';
 
 export const styles = StyleSheet.create({
   // General
@@ -8,7 +9,7 @@ export const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
-    backgroundColor: '#212121',
+    backgroundColor: DarkTheme.colors.background,
   },
 
   // Error messages area
@@ -27,13 +28,6 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 
-  //   Retry buttons TODO use a proper one after doing global style
-  button: {
-    // flex: 1,
-    alignSelf: 'center',
-    alignItems: 'center',
-  },
-
   //   Action buttons
   actionButtons: {
     flexDirection: 'row',
@@ -42,8 +36,7 @@ export const styles = StyleSheet.create({
 
   //   Actionsheet styles
   actionSheetItems: {
-    padding: 20,
-    paddingTop: 0,
-    // paddingBottom: 75,
+    paddingHorizontal: DarkTheme.spacing.md,
+    gap: DarkTheme.spacing.xs,
   },
 });

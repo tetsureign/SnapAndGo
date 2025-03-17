@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {DarkTheme} from '@/styles/theme';
 
 const styles = StyleSheet.create({
   container: {
@@ -6,12 +7,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black',
+    backgroundColor: DarkTheme.colors.background,
   },
   camera: {
     flex: 1,
     alignContent: 'center',
-    backgroundColor: 'black',
+    backgroundColor: DarkTheme.colors.background,
   },
   buttonsPositioner: {
     flex: 1,
@@ -31,8 +32,8 @@ const styles = StyleSheet.create({
   },
   permissionText: {
     textAlign: 'center',
-    color: 'white',
-    paddingVertical: 10,
+    color: DarkTheme.colors.text,
+    paddingVertical: DarkTheme.spacing.sm,
   },
 });
 
