@@ -1,5 +1,5 @@
 // Lib imports
-import React, {useRef, useEffect, useState, useMemo} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import {View, ImageBackground, Linking} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
@@ -156,13 +156,12 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
       <DarkPersistentActionSheet
         innerRef={resultsActionSheetRef}
         snapPoints={[initSnapPoint, 100]}
-        initialSnapIndex={1}>
+        initialSnapIndex={1}
+        onChange={(position, height) => {
+          setSheetChildrenHeight(height);
+        }}>
         <View
-          style={[styles.actionSheetItems, {paddingBottom: bottomTabHeight}]}
-          onLayout={event => {
-            const {height: childrenHeight} = event.nativeEvent.layout;
-            setSheetChildrenHeight(childrenHeight + sheetIndicatorHeight);
-          }}>
+          style={[styles.actionSheetItems, {paddingBottom: bottomTabHeight}]}>
           {/* The main buttons */}
           {detectionState.fetchResult?.length ? (
             <SelectedResultContext.Provider
