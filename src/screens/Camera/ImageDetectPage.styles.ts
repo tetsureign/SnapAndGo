@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
 
   //   Actionsheet styles
   actionSheetItems: {
-    paddingHorizontal: DarkTheme.spacing.md,
+    // paddingHorizontal: DarkTheme.spacing.md,
     gap: DarkTheme.spacing.xs,
   },
 });

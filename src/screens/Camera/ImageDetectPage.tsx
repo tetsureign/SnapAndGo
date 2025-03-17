@@ -3,6 +3,7 @@ import React, {useRef, useEffect, useState} from 'react';
 import {View, ImageBackground, Linking} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 // Icon imports
 import {Search} from 'iconoir-react-native';
@@ -62,6 +63,9 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
   const headerHeight = useHeaderHeight();
   const bottomTabHeight = useBottomTabBarHeight();
 
+  // Inset
+  const insets = useSafeAreaInsets();
+
   // Result selecting state
   const [selectedResult, setSelectedResult] = useState({
     result: '',
@@ -79,7 +83,9 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
   const resultsActionSheetRef = useRef<ActionSheetRef>(null);
   const sheetIndicatorHeight = DarkTheme.spacing.sm + DarkTheme.spacing.md * 2;
   const {setSheetChildrenHeight, initSnapPoint} = useActionSheetInitPoint(
-    sheetIndicatorHeight + bottomTabHeight,
+    // insets.bottom * 2 is a workaround for ActionSheet - it added something like that for some reason
+    // maybe i'll debug more later. idk. i hate this
+    sheetIndicatorHeight + bottomTabHeight - insets.bottom * 2,
   );
 
   function openActionSheet() {
@@ -160,8 +166,7 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
         onChange={(position, height) => {
           setSheetChildrenHeight(height);
         }}>
-        <View
-          style={[styles.actionSheetItems, {paddingBottom: bottomTabHeight}]}>
+        <View style={[styles.actionSheetItems]}>
           {/* The main buttons */}
           {detectionState.fetchResult?.length ? (
             <SelectedResultContext.Provider
