@@ -1,15 +1,16 @@
 import {StyleSheet} from 'react-native';
+import {DarkTheme, BaseTheme} from '@/styles/theme';
 
 export const styles = StyleSheet.create({
   // General button
   buttonBackground: {
-    padding: 5,
-    backgroundColor: '#646464',
-    borderWidth: 1,
-    borderColor: '#858585',
-    borderRadius: 10,
+    padding: DarkTheme.spacing.xs,
+    backgroundColor: DarkTheme.colors.buttonBackground,
+    borderWidth: DarkTheme.borderWidth.thin,
+    borderColor: DarkTheme.colors.buttonBorder,
+    borderRadius: DarkTheme.borderRadius.lg,
   },
-  // Image capture button
+  // Image capture button. Keeping hardcoded values
   captureButton: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -25,24 +26,24 @@ export const styles = StyleSheet.create({
     width: 60,
     height: 60,
     backgroundColor: 'rgba(33, 33, 33, 0.85)',
-    borderRadius: 10,
+    borderRadius: DarkTheme.borderRadius.lg,
     borderColor: 'white',
-    borderWidth: 5,
+    borderWidth: DarkTheme.borderWidth.thick,
     elevation: 5,
   },
 
   // Go button
   goButton: {
-    margin: 5,
+    padding: BaseTheme.spacing.xs,
   },
   goButtonViewInside: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 5,
+    gap: BaseTheme.spacing.xs,
   },
   goButtonText: {
-    fontSize: 25,
+    fontSize: BaseTheme.fontSize.xl,
   },
 
   // Show hide button
@@ -52,7 +53,7 @@ export const styles = StyleSheet.create({
   },
   showHideButtonText: {
     // color: '#C7C7C7',
-    fontSize: 15,
+    fontSize: BaseTheme.fontSize.sm,
   },
   // showHideButtonArrow: {
   //   width: 18,

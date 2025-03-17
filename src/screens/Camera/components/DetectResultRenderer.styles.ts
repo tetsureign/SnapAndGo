@@ -1,14 +1,18 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, ViewStyle} from 'react-native';
+import {DarkTheme} from '@/styles/theme';
+
+const rectStyle: ViewStyle = {
+  borderWidth: DarkTheme.borderWidth.thick,
+  borderRadius: DarkTheme.borderRadius.lg,
+  shadowRadius: DarkTheme.shadow.lg.shadowRadius,
+};
 
 export const styles = StyleSheet.create({
   // Buttons
-  detectedItemsButton: {
-    paddingBottom: 5,
-  },
   itemBackground: {
-    padding: 5,
+    padding: DarkTheme.spacing.xs,
     backgroundColor: 'transparent',
-    borderWidth: 1,
+    borderWidth: DarkTheme.borderWidth.thin,
     borderColor: 'transparent',
   },
   itemsTextContainer: {
@@ -16,11 +20,10 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   itemsText: {
-    // TODO: Global style anyone??
-    fontSize: 25,
+    fontSize: DarkTheme.fontSize.xl,
   },
   itemsTextWhite: {
-    color: 'white',
+    color: DarkTheme.colors.text,
   },
   itemsTextFade: {
     color: 'rgba(255, 255, 255, 0.25)',
@@ -32,14 +35,10 @@ export const styles = StyleSheet.create({
   },
   rectFade: {
     borderColor: 'rgba(255, 255, 255, 0.3)',
-    borderWidth: 5,
-    borderRadius: 10,
-    shadowRadius: 4,
+    ...rectStyle,
   },
   rectWhite: {
     borderColor: 'white',
-    borderWidth: 5,
-    borderRadius: 10,
-    shadowRadius: 4,
+    ...rectStyle,
   },
 });

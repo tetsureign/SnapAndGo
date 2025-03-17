@@ -1,28 +1,27 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, ViewStyle} from 'react-native';
 
 import {BaseTheme} from '@/styles/theme';
+
+const baseValues: ViewStyle = {
+  marginHorizontal: BaseTheme.spacing.md,
+  paddingVertical: BaseTheme.spacing.xs,
+  paddingHorizontal: BaseTheme.spacing.md,
+  borderRadius: BaseTheme.borderRadius.lg,
+  opacity: BaseTheme.opacity.medium,
+};
 
 const styles = StyleSheet.create({
   backgroundSuccess: {
     backgroundColor: BaseTheme.colors.green,
-    marginHorizontal: 15,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    ...baseValues,
   },
   backgroundError: {
     backgroundColor: BaseTheme.colors.orange,
-    marginHorizontal: 15,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    ...baseValues,
   },
   backgroundNeutral: {
     backgroundColor: BaseTheme.colors.gray,
-    marginHorizontal: 15,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    ...baseValues,
   },
   message: {
     color: 'white',
