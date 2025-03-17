@@ -18,8 +18,6 @@ export const useActionSheetSnapPoint = (heightPercentage: number) => {
     );
   }, [sheetChildrenHeight, sheetContainerHeight, heightPercentage]);
 
-  console.log(snapPoint);
-
   return {
     sheetContainerHeight,
     setSheetContainerHeight,

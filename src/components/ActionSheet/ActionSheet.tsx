@@ -17,7 +17,6 @@ const DarkPersistentActionSheet = (props: DarkPersistentActionSheetProps) => {
       ref={props.innerRef}
       backgroundInteractionEnabled={true}
       containerStyle={actionSheetStyle.actionSheet}
-      // useBottomSafeAreaPadding={true}
       headerAlwaysVisible={true}
       gestureEnabled={true}
       closable={false}

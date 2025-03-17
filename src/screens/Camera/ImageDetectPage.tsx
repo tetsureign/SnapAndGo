@@ -1,5 +1,5 @@
 // Lib imports
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useRef, useEffect, useState, useMemo} from 'react';
 import {View, ImageBackground, Linking} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/elements';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
@@ -20,7 +20,7 @@ import {DarkPersistentActionSheet} from '@/components/ActionSheet/';
 import {SelectedResultContext} from '@/contexts/DetectionResultContext';
 import {DetectResultRenderer} from './components/DetectResultRenderer';
 import {useDetection} from './hooks/useDetection';
-import {useActionSheetSnapPoint} from '@/hooks/useActionSheetSnapPoint';
+import {useActionSheetInitPoint} from '@/hooks/useActionSheetInitPoint';
 
 // Style imports
 import {styles} from './ImageDetectPage.styles';
@@ -77,8 +77,10 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
 
   // Action sheet logic
   const resultsActionSheetRef = useRef<ActionSheetRef>(null);
-  const {setSheetContainerHeight, setSheetChildrenHeight, snapPoint} =
-    useActionSheetSnapPoint(85);
+  const sheetIndicatorHeight = DarkTheme.spacing.sm + DarkTheme.spacing.md * 2;
+  const {setSheetChildrenHeight, initSnapPoint} = useActionSheetInitPoint(
+    sheetIndicatorHeight + bottomTabHeight,
+  );
 
   function openActionSheet() {
     resultsActionSheetRef.current?.show();
@@ -108,12 +110,7 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
   }
 
   return (
-    <View
-      style={styles.container}
-      onLayout={event => {
-        const {height: containerHeight} = event.nativeEvent.layout;
-        setSheetContainerHeight(containerHeight);
-      }}>
+    <View style={styles.container}>
       <FocusAwareStatusBar barStyle={'light-content'} />
       <ImageBackground
         source={{uri: photo.uri}}
@@ -158,16 +155,13 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
 
       <DarkPersistentActionSheet
         innerRef={resultsActionSheetRef}
-        // TODO: Dynamic MIDDLE snap point
-        snapPoints={[20, snapPoint]}
-        initialSnapIndex={0}>
+        snapPoints={[initSnapPoint, 100]}
+        initialSnapIndex={1}>
         <View
-          style={[styles.actionSheetItems]}
+          style={[styles.actionSheetItems, {paddingBottom: bottomTabHeight}]}
           onLayout={event => {
             const {height: childrenHeight} = event.nativeEvent.layout;
-            setSheetChildrenHeight(
-              childrenHeight + bottomTabHeight + DarkTheme.spacing.md * 3,
-            );
+            setSheetChildrenHeight(childrenHeight + sheetIndicatorHeight);
           }}>
           {/* The main buttons */}
           {detectionState.fetchResult?.length ? (
