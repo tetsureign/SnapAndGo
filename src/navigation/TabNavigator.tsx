@@ -3,7 +3,7 @@ import {
   createBottomTabNavigator,
   BottomTabNavigationOptions,
 } from '@react-navigation/bottom-tabs';
-import {View, Text} from 'react-native';
+import {View, Text, ViewStyle} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Map, Search, List} from 'iconoir-react-native';
 
@@ -28,6 +28,18 @@ const RenderTabsLabel = (focused: boolean, color: string, text: string) => {
 
 const TabsNavigator = () => {
   const insets = useSafeAreaInsets();
+  const tabBarHeight = 75;
+  const iconSizeMultiplier = 1.5;
+
+  const lightTabBarStyle: ViewStyle[] = [
+    tabNavigatorStyles.lightTabBar,
+    {height: tabBarHeight + insets.bottom},
+  ];
+
+  const darkTabBarStyle: ViewStyle[] = [
+    tabNavigatorStyles.darkTabBar,
+    {height: tabBarHeight + insets.bottom},
+  ];
 
   const TabScreens: TabScreenOptions[] = [
     {
@@ -37,13 +49,14 @@ const TabsNavigator = () => {
         title: 'Bản đồ',
         headerTransparent: true,
         headerBackground: () => <View style={tabNavigatorStyles.lightHeader} />,
-        tabBarStyle: [
-          tabNavigatorStyles.lightTabBar,
-          {height: 75 + insets.bottom},
-        ],
+        tabBarStyle: lightTabBarStyle,
         tabBarActiveTintColor: BaseTheme.colors.green,
         tabBarIcon: ({color, size}) => (
-          <Map color={color} height={size * 1.5} width={size * 1.5} />
+          <Map
+            color={color}
+            height={size * iconSizeMultiplier}
+            width={size * iconSizeMultiplier}
+          />
         ),
         tabBarLabel: ({focused, color}) => {
           return RenderTabsLabel(focused, color, 'Bản đồ');
@@ -56,9 +69,14 @@ const TabsNavigator = () => {
       options: {
         title: 'Tìm kiếm',
         headerShown: false,
+        tabBarStyle: darkTabBarStyle,
         tabBarActiveTintColor: BaseTheme.colors.blue,
         tabBarIcon: ({color, size}) => (
-          <Search color={color} width={size * 1.5} height={size * 1.5} />
+          <Search
+            color={color}
+            width={size * iconSizeMultiplier}
+            height={size * iconSizeMultiplier}
+          />
         ),
         tabBarLabel: ({focused, color}) => {
           return RenderTabsLabel(focused, color, 'Tìm kiếm');
@@ -70,13 +88,14 @@ const TabsNavigator = () => {
       component: HistoryPage,
       options: {
         title: 'Lịch sử',
-        tabBarStyle: [
-          tabNavigatorStyles.lightTabBar,
-          {height: 75 + insets.bottom},
-        ],
+        tabBarStyle: lightTabBarStyle,
         tabBarActiveTintColor: BaseTheme.colors.orange,
         tabBarIcon: ({color, size}) => (
-          <List color={color} width={size * 1.5} height={size * 1.5} />
+          <List
+            color={color}
+            width={size * iconSizeMultiplier}
+            height={size * iconSizeMultiplier}
+          />
         ),
         tabBarLabel: ({focused, color}) => {
           return RenderTabsLabel(focused, color, 'Lịch sử');
@@ -91,10 +110,6 @@ const TabsNavigator = () => {
       screenOptions={() => ({
         headerTitleAlign: 'center',
         tabBarInactiveTintColor: 'rgb(170, 170, 170)',
-        tabBarStyle: [
-          tabNavigatorStyles.darkTabBar,
-          {height: 75 + insets.bottom},
-        ],
       })}>
       {TabScreens.map((element, index) => {
         return (
