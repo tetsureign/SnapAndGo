@@ -8,7 +8,7 @@ export const actionSheetStyle = StyleSheet.create({
     borderRadius: DarkTheme.borderRadius.lg,
   },
   actionSheetIndicator: {
-    marginTop: DarkTheme.spacing.md,
+    marginVertical: DarkTheme.spacing.md,
     width: 60,
   },
 });
