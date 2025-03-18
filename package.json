@@ -35,7 +35,8 @@
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-svg": "14.1.0",
-    "expo-navigation-bar": "~2.8.1"
+    "expo-navigation-bar": "~2.8.1",
+    "expo-dev-client": "~3.3.12"
   },
   "devDependencies": {
     "@babel/core": "^7.26.9",

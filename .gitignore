@@ -70,3 +70,6 @@ buck-out/
 .expo
 ios/
 android/
+
+# Expo Dev Client artifact(s)
+%ProgramData%/
