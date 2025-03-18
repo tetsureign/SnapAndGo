@@ -5,6 +5,7 @@ import ActionSheet, {
 } from 'react-native-actions-sheet';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import {actionSheetStyle} from './ActionSheet.styles';
 import {DarkTheme} from '@/styles/theme';
@@ -23,7 +24,7 @@ const DarkPersistentActionSheet = (props: DarkPersistentActionSheetProps) => {
       {...props}
       ref={props.innerRef}
       children={props.children}
-      backgroundInteractionEnabled={true}
+      backgroundInteractionEnabled
       containerStyle={{
         backgroundColor: DarkTheme.colors.background,
         borderRadius: DarkTheme.borderRadius.lg,
@@ -35,6 +36,7 @@ const DarkPersistentActionSheet = (props: DarkPersistentActionSheetProps) => {
       drawUnderStatusBar={false}
       safeAreaInsets={insets}
       indicatorStyle={actionSheetStyle.actionSheetIndicator}
+      isModal={false}
     />
   );
 };

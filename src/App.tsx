@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {StatusBar} from 'react-native';
 import {SheetProvider} from 'react-native-actions-sheet';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import * as NavigationBar from 'expo-navigation-bar';
 
 import TabsNavigator from './navigation/TabNavigator';
@@ -16,12 +17,14 @@ const App = () => {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        <SheetProvider>
-          <StatusBar translucent={true} backgroundColor={'transparent'} />
-          <TabsNavigator />
-        </SheetProvider>
-      </NavigationContainer>
+      <GestureHandlerRootView>
+        <NavigationContainer>
+          <SheetProvider>
+            <StatusBar translucent={true} backgroundColor={'transparent'} />
+            <TabsNavigator />
+          </SheetProvider>
+        </NavigationContainer>
+      </GestureHandlerRootView>
     </SafeAreaProvider>
   );
 };
