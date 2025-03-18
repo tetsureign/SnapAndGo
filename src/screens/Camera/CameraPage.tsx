@@ -1,6 +1,6 @@
 import React, {useState, useRef} from 'react';
 import {Text, View, Button} from 'react-native';
-import {Camera, CameraType} from 'expo-camera';
+import {Camera, CameraType} from 'expo-camera/legacy';
 import {useIsFocused} from '@react-navigation/native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';

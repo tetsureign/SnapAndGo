@@ -81,6 +81,7 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
 
   // Action sheet logic
   const resultsActionSheetRef = useRef<ActionSheetRef>(null);
+  // Ref: @/components/ActionSheet/ActionSheet.styles.ts
   const sheetIndicatorHeight = DarkTheme.spacing.sm + DarkTheme.spacing.md * 2;
   const {setSheetChildrenHeight, initSnapPoint} = useActionSheetInitPoint(
     // insets.bottom * 2 is a workaround for ActionSheet - it added something like that for some reason
