@@ -5,6 +5,7 @@
     "version": "1.2.0",
     "orientation": "portrait",
     "plugins": [
+      "expo-asset",
       "expo-build-properties",
       [
         "expo-camera",
