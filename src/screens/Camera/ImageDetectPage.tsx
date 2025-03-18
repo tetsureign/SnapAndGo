@@ -84,8 +84,8 @@ const ImageDetectPage = ({route, navigation}: ImageDetectPageProps) => {
   // Ref: @/components/ActionSheet/ActionSheet.styles.ts
   const sheetIndicatorHeight = DarkTheme.spacing.md * 2 + DarkTheme.spacing.sm;
   const {setSheetChildrenHeight, initSnapPoint} = useActionSheetInitPoint(
-    // This AC automatically adds navbar inset to its height
-    // To calculate the desired location, we need to exclude it
+    // This AS automatically adds the OS navbar height to its height
+    // To calculate the desired location, we need to minus it
     sheetIndicatorHeight + bottomTabHeight - insets.bottom,
   );
 
