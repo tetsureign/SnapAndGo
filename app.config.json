@@ -22,6 +22,11 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.INTERNET"
       ]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0cb971d3-56d9-4048-9fa7-715089b875ad"
+      }
     }
   }
 }
