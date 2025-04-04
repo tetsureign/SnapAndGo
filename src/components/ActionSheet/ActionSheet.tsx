@@ -21,9 +21,9 @@ const DarkPersistentActionSheet = (props: DarkPersistentActionSheetProps) => {
 
   return (
     <ActionSheet
-      {...props}
       ref={props.innerRef}
       children={props.children}
+      {...props}
       backgroundInteractionEnabled
       containerStyle={{
         backgroundColor: DarkTheme.colors.background,

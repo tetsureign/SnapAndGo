@@ -16,7 +16,7 @@ const App = () => {
   }, []);
 
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={{flex: 1}}>
       <GestureHandlerRootView>
         <NavigationContainer>
           <SheetProvider>
