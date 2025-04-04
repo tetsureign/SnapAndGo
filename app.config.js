@@ -1,7 +1,8 @@
-module.exports = ({config}) => {
+export default ({config}) => {
   return {
     ...config,
     expo: {
+      ...config.expo,
       android: {
         package: 'com.snapandgo',
         permissions: [
@@ -18,6 +19,11 @@ module.exports = ({config}) => {
       ios: {
         config: {
           googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
+        },
+      },
+      extra: {
+        eas: {
+          projectId: 'a48402b3-e093-4edc-813f-8bf1b5a4fc29',
         },
       },
     },
