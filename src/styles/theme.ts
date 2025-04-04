@@ -75,6 +75,8 @@ export const DarkTheme = {
   ...BaseTheme,
   colors: {
     ...BaseTheme.colors,
+    // TODO: This is the action sheet background color, not the color that's supposed to be used everywhere
+    // Pls fix
     background: '#434343',
     text: 'white',
     buttonBackground: '#646464',

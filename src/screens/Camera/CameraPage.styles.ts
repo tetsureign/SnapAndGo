@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: 'center',
     backgroundColor: DarkTheme.colors.background,
+    width: '100%',
   },
   buttonsPositioner: {
     flex: 1,
