@@ -1,9 +1,8 @@
-import {useReducer, useCallback} from 'react';
+import {useCallback, useReducer} from 'react';
 
-import {imageDetect} from '@/api/endpoints/imageDetectApi';
-
-import {ErrorType} from '@/types/error';
+import {imageDetectService} from '@/services/imageDetectService';
 import {DetectionResultType} from '@/types/detection';
+import {ErrorType} from '@/types/error';
 
 interface DetectionState {
   isLoading: boolean;
@@ -62,7 +61,7 @@ export function useDetection() {
     dispatch({type: 'FETCH_START'});
 
     try {
-      const responseData = await imageDetect(sourceUri);
+      const responseData = await imageDetectService.detectImage(sourceUri);
 
       console.log('Result: ', responseData);
 
