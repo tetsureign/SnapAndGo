@@ -1,18 +1,18 @@
+import {List, Map, Search} from 'iconoir-react-native';
 import React from 'react';
-import {
-  createBottomTabNavigator,
-  BottomTabNavigationOptions,
-} from '@react-navigation/bottom-tabs';
-import {View, Text, ViewStyle} from 'react-native';
+import {Text, View, ViewStyle} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Map, Search, List} from 'iconoir-react-native';
 
-import MapPage from '@/screens/MapPage';
-import CameraStack from './CameraNavigator';
-import HistoryPage from '@/screens/HistoryPage';
+import CameraStack from '@/screens/Camera/navigator';
+import UserPage from '@/screens/User/UserPage';
+import MapPage from '@/screens/Map/MapPage';
+import {BaseTheme} from '@/styles/theme';
+import {
+  BottomTabNavigationOptions,
+  createBottomTabNavigator,
+} from '@react-navigation/bottom-tabs';
 
 import tabNavigatorStyles from './TabNavigator.styles';
-import {BaseTheme} from '@/styles/theme';
 
 const Tab = createBottomTabNavigator();
 
@@ -84,10 +84,10 @@ const TabsNavigator = () => {
       },
     },
     {
-      name: 'history-page',
-      component: HistoryPage,
+      name: 'user-page',
+      component: UserPage,
       options: {
-        title: 'Lịch sử',
+        title: 'Tài khoản',
         tabBarStyle: lightTabBarStyle,
         tabBarActiveTintColor: BaseTheme.colors.orange,
         tabBarIcon: ({color, size}) => (
@@ -98,7 +98,7 @@ const TabsNavigator = () => {
           />
         ),
         tabBarLabel: ({focused, color}) => {
-          return RenderTabsLabel(focused, color, 'Lịch sử');
+          return RenderTabsLabel(focused, color, 'Tài khoản');
         },
       },
     },
