@@ -2,7 +2,7 @@
 
 A Google Lens-like mobile app that detects objects in images and searches for shops that sell them. This is a personal project built with React Native, object detection powered by YOLOv5 and shop search on Google Maps.
 
-This is a university project. Originally a two-person project. You can view it at the branch [uni-project-finalver](/tetsureign/SnapAndGo/tree/uni-project-finalver). I mostly did the React Native app and detection integration. History was saved to a Firebase instance, done by [@SwankyOrcc](https://github.com/SwankyOrcc). I've decided to iterate through this project from time to time and build a separate backend to study.
+This is a university project. Originally a two-person project. You can view it at the branch [uni-project-finalver](../../tree/uni-project-finalver). I mostly did the React Native app and detection integration. History was saved to a Firebase instance, done by [@SwankyOrcc](https://github.com/SwankyOrcc). I've decided to iterate through this project from time to time and build a separate backend to study.
 
 ## Features
 
@@ -33,7 +33,7 @@ This is a university project. Originally a two-person project. You can view it a
 - **HTTP Client**: Axios
 - **UI**: react-native-actions-sheet
 - **Maps**: react-native-maps (with Google Maps integration)
-- **Backend**: Fastify ([Repo](/tetsureign/snap-n-go-apiv2))
+- **Backend**: Fastify ([Repo](https://github.com/tetsureign/snap-n-go-apiv2))
 - **ML Service**: YOLOv5 microservice on FastAPI (separate repo)
 - **Language**: TypeScript
 - **Tooling**: ESLint, Jest
