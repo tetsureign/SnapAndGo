@@ -2,7 +2,48 @@
 
 A Google Lens-like mobile app that detects objects in images and searches for shops that sell them. This is a personal project built with React Native, object detection powered by YOLOv5 and shop search on Google Maps.
 
-This is a university project. Originally a two-person project. You can view it at the branch [uni-project-finalver](../../tree/uni-project-finalver). I mostly did the React Native app and detection integration. History was saved to a Firebase instance, done by [@SwankyOrcc](https://github.com/SwankyOrcc). I've decided to iterate through this project from time to time and build a separate backend to study.
+This is a university project. Originally a two-person project. You can view it at the branch [uni-project-finalver](https://github.com/tetsureign/SnapAndGo/tree/uni-project-finalver). I mostly did the React Native app and detection integration. History was saved to a Firebase instance, done by [@SwankyOrcc](https://github.com/SwankyOrcc). I've decided to iterate through this project from time to time and build a separate backend to study.
+
+## Project History
+
+### Initial Development (University Project - late 2022)
+
+- Originally a two-person university project where I focused on the React Native mobile app and object detection integration
+- Search history was saved to Firebase (handled by [@SwankyOrcc](https://github.com/SwankyOrcc))
+- Initially I only wanted to use bare-metal React Native, as I thought maybe it would be easier to integrate native modules that way. Well, not using Expo from the get-go introduced many problems, and I had to wrestle with RN and native modules for quite a bit
+- I introduced the core Expo package anyway, since I needed to use `expo-camera`, because I encountered some odd issues that I can't recall at the time of writing this readme from `react-native-vision-camera`
+- Initial MVP was developed in about one and a half week. Turns out, learning React, React Native, JavaScript, their ecosystem and mobile at the same time in a short amount of time was quite taxing
+- Object detection powered by YOLOv5 through direct API calls to the FastAPI Microservice. Originally planned to run the model locally using ONNX, but turns out I didn't have the skills to do that, and the speed should vary greatly depends on which device it runs on. Doing and running ML in Python is still easier, so my friend [@HoangLongHotarou](https://github.com/HoangLongHotarou) drafted a very simple FastAPI project that could run the base YOLOv5s model. Had the experience of trying to deploy the Docker image of it on AWS EC2 also. Still using it as a microservice for now
+- No UI styling library used
+- Received 8.7/10 for this project
+
+### Structural Refactor (late 2024)
+
+- The project structure was too messy at the time of MVP and university-presentable state, as one file could handle multiple things at once. Since I also wanted to add more functionalities to the project, I've decided to make it at least maintainable first
+- Done some misc fixes around that time as well. In the end, the project was definitely more maintainable, but there are still works to be done...
+- The new backend wasn't done at the time, and the new features depends on the new backend, so the project is on hiatus yet again
+
+### Backend Refactor (late 2024 - early 2025)
+
+- Built a custom Express backend that tried to run a ML service in Node with TensorFlow.js, based on the Coco-SSD model as a temporary step towards fully implementing back YOLOv5 in Node
+
+### TypeScript Refactor and Expo upgrades (early 2025)
+
+- Learned first-hand with this project that using JavaScript is a bit of a pain. No IntelliSense, no type safety. So, I've decided to refactor the project to fully use TypeScript as I'm learning it along the way
+- Upgraded Expo by incrementally bumping versions and fixing package conflicts along the way. Also adopted Expo Prebuild. I'm done wrestling with native `android/` and `ios/` folders
+- Did some additional structural refactor this time as well, to better align with conventions and improve maintainability. Most notable: extracted styles to component-aligned style files, and reusable styles to `src/styles/theme.ts`
+
+### Final Backend Architecture (early 2025)
+
+- In the end, running ML in Python is still easier, so I scrapped running it on Node and decided to use the microservice architecture (still barebone API calling for now, no message queue for more reliabitity yet)
+- Built a proper backend architecture with user accounts handling with OAuth and search history saving. Also upgraded from Express to Fastify because I wanted a bit more toys and less pain DIY-ing everything
+- Separated concerns: Fastify backend handles API routing and business logic, while YOLOv5 runs as an independent FastAPI microservice
+- This was also primarily for learning purposes
+
+### Current Iteration
+
+- Planning to add user authentication and search history features, as they have already been finished on the backend
+- Maybe explore better state management patterns and performance optimizations
 
 ## Features
 
@@ -13,9 +54,7 @@ This is a university project. Originally a two-person project. You can view it a
 - Google Maps search integration for detected objects
 - Action sheet UI for results interaction
 
-- SoonTM: Users & Search histories
-
-## Design
+## UI Design
 
 [Figma Prototype](https://www.figma.com/proto/TVJnAe6SNH8h2RSS8qGMgz/Snap-Go?node-id=1-3&t=gihwzmkpijuaxpk4-1&starting-point-node-id=1%3A3)
 
@@ -32,9 +71,9 @@ This is a university project. Originally a two-person project. You can view it a
 - **State Management**: React hooks (useReducer, useState)
 - **HTTP Client**: Axios
 - **UI**: react-native-actions-sheet
-- **Maps**: react-native-maps (with Google Maps integration)
+- **Maps**: react-native-maps (with Google Maps integration - not currently using, resdirects to Google's main app for now)
 - **Backend**: Fastify ([Repo](https://github.com/tetsureign/snap-n-go-apiv2))
-- **ML Service**: YOLOv5 microservice on FastAPI (separate repo)
+- **ML Service**: YOLOv5 microservice on FastAPI ([Repo](https://github.com/tetsureign/SnapAndGo-microsvc-objdetect))
 - **Language**: TypeScript
 - **Tooling**: ESLint, Jest
 
